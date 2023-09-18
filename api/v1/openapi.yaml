@@ -1,0 +1,153 @@
+openapi: 3.1.0
+
+servers:
+  - url: /api/v1
+
+info:
+  title: Projects Service
+  version: 0.0.1
+
+paths:
+  /add-project:
+    post:
+      summary: Add a single project
+      description: Add a single project
+      operationId: addProject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddProjectRequest'
+        required: true
+      responses:
+        '200':
+          description: Success
+        default:
+          $ref: "#/components/responses/Error"
+
+  /get-project:
+    post:
+      summary: Get a single project
+      description: get a single project
+      operationId: getProject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetProjectRequest'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetProjectResponse"
+        default:
+          $ref: "#/components/responses/Error"
+
+security:
+  - apiKey: []
+
+
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  schemas:
+    AddProjectRequest:
+      type: object
+      allOf:
+        - type: object
+          properties:
+            type:
+              type: string
+            identifier:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                  propertyID:
+                    type: string
+                  value:
+                    type: string
+                required: [type, propertyID, value]
+            name:
+              type: string
+            description:
+              type: string
+            foundingDate:
+              type: string
+            dissolutionDate:
+              type: string
+          required: [type, identifier, name, description, foundingDate, dissolutionDate]
+
+    GetProjectRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+      required: [id]
+
+    GetProjectResponse:
+      type: object
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+            identifier:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                  propertyID:
+                    type: string
+                  value:
+                    type: string
+                required: [type, propertyID, value]
+            name:
+              type: string
+            description:
+              type: string
+            foundingDate:
+              type: string
+            dissolutionDate:
+              type: string
+            created:
+              type: string
+              format: date-time
+            modified:
+              type: string
+              format: date-time
+          required: [type, identifier, name, description, foundingDate, dissolutionDate, created, modified]
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int64
+        message:
+          type: string
+      required:
+        - code
+        - message
