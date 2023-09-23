@@ -64,6 +64,10 @@ var serverCmd = &cobra.Command{
 
 		// mount api
 		mux.Mount("/api/v1", http.StripPrefix("/api/v1", apiServer))
+		mux.Get("/api/v1/openapi.yaml", func(w http.ResponseWriter, r *http.Request) {
+			http.ServeFile(w, r, "api/v1/openapi.yaml")
+		})
+		mux.Mount("/swagger/", http.StripPrefix("/swagger/", http.FileServer(http.Dir("public/swagger-ui-5.1.0"))))
 
 		// start server
 		server := graceful.WithDefaults(&http.Server{
