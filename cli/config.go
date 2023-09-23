@@ -14,7 +14,12 @@ type Config struct {
 	Host   string `env:"PROJECTS_HOST"`
 	Port   int    `env:"PROJECTS_PORT" envDefault:"3000"`
 	APIKey string `env:"PROJECTS_API_KEY"`
-	Repo   struct {
+	Nats   struct {
+		URL      string `env:"URL,notEmpty"`
+		Stream   string `env:"STREAM,notEmpty"`
+		Consumer string `env:"CONSUMER,notEmpty"`
+	} `envPrefix:"PROJECTS_NATS_"`
+	Repo struct {
 		Conn   string `env:"CONN,notEmpty"`
 		Secret string `env:"SECRET,notEmpty"`
 	} `envPrefix:"PROJECTS_REPO_"`
