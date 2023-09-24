@@ -2,7 +2,7 @@ package gismo
 
 type Identifier struct {
 	Type       string `json:"type"`
-	PropertyID string `json:"property_id"`
+	PropertyID string `json:"propertyID"`
 	Value      string `json:"value"`
 }
 
@@ -11,6 +11,6 @@ type Project struct {
 	Identifier      []*Identifier `json:"identifier"`
 	Name            string        `json:"name,omitempty"`
 	Description     string        `json:"description,omitempty"`
-	FoundingDate    string        `json:"founding_date,omitempty"`
-	DissolutionDate string        `json:"dissolution_date,omitempty"`
+	FoundingDate    string        `json:"foundingDate,omitempty"`
+	DissolutionDate string        `json:"dissolutionDate,omitempty"`
 }
