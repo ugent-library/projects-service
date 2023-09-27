@@ -21,6 +21,22 @@ import (
 	"github.com/ogen-go/ogen/uri"
 )
 
+// Invoker invokes operations described by OpenAPI v3 specification.
+type Invoker interface {
+	// AddProject invokes addProject operation.
+	//
+	// Add a single project.
+	//
+	// POST /add-project
+	AddProject(ctx context.Context, request *AddProjectRequest) error
+	// GetProject invokes getProject operation.
+	//
+	// Get a single project.
+	//
+	// POST /get-project
+	GetProject(ctx context.Context, request *GetProjectRequest) (*GetProjectResponse, error)
+}
+
 // Client implements OAS client.
 type Client struct {
 	serverURL *url.URL

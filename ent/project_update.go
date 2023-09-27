@@ -48,6 +48,26 @@ func (pu *ProjectUpdate) ClearIdentifier() *ProjectUpdate {
 	return pu
 }
 
+// SetIsFundedBy sets the "is_funded_by" field.
+func (pu *ProjectUpdate) SetIsFundedBy(s schema.Grant) *ProjectUpdate {
+	pu.mutation.SetIsFundedBy(s)
+	return pu
+}
+
+// SetNillableIsFundedBy sets the "is_funded_by" field if the given value is not nil.
+func (pu *ProjectUpdate) SetNillableIsFundedBy(s *schema.Grant) *ProjectUpdate {
+	if s != nil {
+		pu.SetIsFundedBy(*s)
+	}
+	return pu
+}
+
+// ClearIsFundedBy clears the value of the "is_funded_by" field.
+func (pu *ProjectUpdate) ClearIsFundedBy() *ProjectUpdate {
+	pu.mutation.ClearIsFundedBy()
+	return pu
+}
+
 // SetName sets the "name" field.
 func (pu *ProjectUpdate) SetName(s string) *ProjectUpdate {
 	pu.mutation.SetName(s)
@@ -69,6 +89,12 @@ func (pu *ProjectUpdate) SetFoundingDate(s string) *ProjectUpdate {
 // SetDissolutionDate sets the "dissolution_date" field.
 func (pu *ProjectUpdate) SetDissolutionDate(s string) *ProjectUpdate {
 	pu.mutation.SetDissolutionDate(s)
+	return pu
+}
+
+// SetHasAcronym sets the "has_acronym" field.
+func (pu *ProjectUpdate) SetHasAcronym(s string) *ProjectUpdate {
+	pu.mutation.SetHasAcronym(s)
 	return pu
 }
 
@@ -139,6 +165,12 @@ func (pu *ProjectUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if pu.mutation.IdentifierCleared() {
 		_spec.ClearField(project.FieldIdentifier, field.TypeJSON)
 	}
+	if value, ok := pu.mutation.IsFundedBy(); ok {
+		_spec.SetField(project.FieldIsFundedBy, field.TypeJSON, value)
+	}
+	if pu.mutation.IsFundedByCleared() {
+		_spec.ClearField(project.FieldIsFundedBy, field.TypeJSON)
+	}
 	if value, ok := pu.mutation.Name(); ok {
 		_spec.SetField(project.FieldName, field.TypeString, value)
 	}
@@ -150,6 +182,9 @@ func (pu *ProjectUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := pu.mutation.DissolutionDate(); ok {
 		_spec.SetField(project.FieldDissolutionDate, field.TypeString, value)
+	}
+	if value, ok := pu.mutation.HasAcronym(); ok {
+		_spec.SetField(project.FieldHasAcronym, field.TypeString, value)
 	}
 	if value, ok := pu.mutation.Modified(); ok {
 		_spec.SetField(project.FieldModified, field.TypeTime, value)
@@ -192,6 +227,26 @@ func (puo *ProjectUpdateOne) ClearIdentifier() *ProjectUpdateOne {
 	return puo
 }
 
+// SetIsFundedBy sets the "is_funded_by" field.
+func (puo *ProjectUpdateOne) SetIsFundedBy(s schema.Grant) *ProjectUpdateOne {
+	puo.mutation.SetIsFundedBy(s)
+	return puo
+}
+
+// SetNillableIsFundedBy sets the "is_funded_by" field if the given value is not nil.
+func (puo *ProjectUpdateOne) SetNillableIsFundedBy(s *schema.Grant) *ProjectUpdateOne {
+	if s != nil {
+		puo.SetIsFundedBy(*s)
+	}
+	return puo
+}
+
+// ClearIsFundedBy clears the value of the "is_funded_by" field.
+func (puo *ProjectUpdateOne) ClearIsFundedBy() *ProjectUpdateOne {
+	puo.mutation.ClearIsFundedBy()
+	return puo
+}
+
 // SetName sets the "name" field.
 func (puo *ProjectUpdateOne) SetName(s string) *ProjectUpdateOne {
 	puo.mutation.SetName(s)
@@ -213,6 +268,12 @@ func (puo *ProjectUpdateOne) SetFoundingDate(s string) *ProjectUpdateOne {
 // SetDissolutionDate sets the "dissolution_date" field.
 func (puo *ProjectUpdateOne) SetDissolutionDate(s string) *ProjectUpdateOne {
 	puo.mutation.SetDissolutionDate(s)
+	return puo
+}
+
+// SetHasAcronym sets the "has_acronym" field.
+func (puo *ProjectUpdateOne) SetHasAcronym(s string) *ProjectUpdateOne {
+	puo.mutation.SetHasAcronym(s)
 	return puo
 }
 
@@ -313,6 +374,12 @@ func (puo *ProjectUpdateOne) sqlSave(ctx context.Context) (_node *Project, err e
 	if puo.mutation.IdentifierCleared() {
 		_spec.ClearField(project.FieldIdentifier, field.TypeJSON)
 	}
+	if value, ok := puo.mutation.IsFundedBy(); ok {
+		_spec.SetField(project.FieldIsFundedBy, field.TypeJSON, value)
+	}
+	if puo.mutation.IsFundedByCleared() {
+		_spec.ClearField(project.FieldIsFundedBy, field.TypeJSON)
+	}
 	if value, ok := puo.mutation.Name(); ok {
 		_spec.SetField(project.FieldName, field.TypeString, value)
 	}
@@ -324,6 +391,9 @@ func (puo *ProjectUpdateOne) sqlSave(ctx context.Context) (_node *Project, err e
 	}
 	if value, ok := puo.mutation.DissolutionDate(); ok {
 		_spec.SetField(project.FieldDissolutionDate, field.TypeString, value)
+	}
+	if value, ok := puo.mutation.HasAcronym(); ok {
+		_spec.SetField(project.FieldHasAcronym, field.TypeString, value)
 	}
 	if value, ok := puo.mutation.Modified(); ok {
 		_spec.SetField(project.FieldModified, field.TypeTime, value)

@@ -84,6 +84,11 @@ func DissolutionDate(v string) predicate.Project {
 	return predicate.Project(sql.FieldEQ(FieldDissolutionDate, v))
 }
 
+// HasAcronym applies equality check predicate on the "has_acronym" field. It's identical to HasAcronymEQ.
+func HasAcronym(v string) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldHasAcronym, v))
+}
+
 // Created applies equality check predicate on the "created" field. It's identical to CreatedEQ.
 func Created(v time.Time) predicate.Project {
 	return predicate.Project(sql.FieldEQ(FieldCreated, v))
@@ -102,6 +107,16 @@ func IdentifierIsNil() predicate.Project {
 // IdentifierNotNil applies the NotNil predicate on the "identifier" field.
 func IdentifierNotNil() predicate.Project {
 	return predicate.Project(sql.FieldNotNull(FieldIdentifier))
+}
+
+// IsFundedByIsNil applies the IsNil predicate on the "is_funded_by" field.
+func IsFundedByIsNil() predicate.Project {
+	return predicate.Project(sql.FieldIsNull(FieldIsFundedBy))
+}
+
+// IsFundedByNotNil applies the NotNil predicate on the "is_funded_by" field.
+func IsFundedByNotNil() predicate.Project {
+	return predicate.Project(sql.FieldNotNull(FieldIsFundedBy))
 }
 
 // NameEQ applies the EQ predicate on the "name" field.
@@ -362,6 +377,71 @@ func DissolutionDateEqualFold(v string) predicate.Project {
 // DissolutionDateContainsFold applies the ContainsFold predicate on the "dissolution_date" field.
 func DissolutionDateContainsFold(v string) predicate.Project {
 	return predicate.Project(sql.FieldContainsFold(FieldDissolutionDate, v))
+}
+
+// HasAcronymEQ applies the EQ predicate on the "has_acronym" field.
+func HasAcronymEQ(v string) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldHasAcronym, v))
+}
+
+// HasAcronymNEQ applies the NEQ predicate on the "has_acronym" field.
+func HasAcronymNEQ(v string) predicate.Project {
+	return predicate.Project(sql.FieldNEQ(FieldHasAcronym, v))
+}
+
+// HasAcronymIn applies the In predicate on the "has_acronym" field.
+func HasAcronymIn(vs ...string) predicate.Project {
+	return predicate.Project(sql.FieldIn(FieldHasAcronym, vs...))
+}
+
+// HasAcronymNotIn applies the NotIn predicate on the "has_acronym" field.
+func HasAcronymNotIn(vs ...string) predicate.Project {
+	return predicate.Project(sql.FieldNotIn(FieldHasAcronym, vs...))
+}
+
+// HasAcronymGT applies the GT predicate on the "has_acronym" field.
+func HasAcronymGT(v string) predicate.Project {
+	return predicate.Project(sql.FieldGT(FieldHasAcronym, v))
+}
+
+// HasAcronymGTE applies the GTE predicate on the "has_acronym" field.
+func HasAcronymGTE(v string) predicate.Project {
+	return predicate.Project(sql.FieldGTE(FieldHasAcronym, v))
+}
+
+// HasAcronymLT applies the LT predicate on the "has_acronym" field.
+func HasAcronymLT(v string) predicate.Project {
+	return predicate.Project(sql.FieldLT(FieldHasAcronym, v))
+}
+
+// HasAcronymLTE applies the LTE predicate on the "has_acronym" field.
+func HasAcronymLTE(v string) predicate.Project {
+	return predicate.Project(sql.FieldLTE(FieldHasAcronym, v))
+}
+
+// HasAcronymContains applies the Contains predicate on the "has_acronym" field.
+func HasAcronymContains(v string) predicate.Project {
+	return predicate.Project(sql.FieldContains(FieldHasAcronym, v))
+}
+
+// HasAcronymHasPrefix applies the HasPrefix predicate on the "has_acronym" field.
+func HasAcronymHasPrefix(v string) predicate.Project {
+	return predicate.Project(sql.FieldHasPrefix(FieldHasAcronym, v))
+}
+
+// HasAcronymHasSuffix applies the HasSuffix predicate on the "has_acronym" field.
+func HasAcronymHasSuffix(v string) predicate.Project {
+	return predicate.Project(sql.FieldHasSuffix(FieldHasAcronym, v))
+}
+
+// HasAcronymEqualFold applies the EqualFold predicate on the "has_acronym" field.
+func HasAcronymEqualFold(v string) predicate.Project {
+	return predicate.Project(sql.FieldEqualFold(FieldHasAcronym, v))
+}
+
+// HasAcronymContainsFold applies the ContainsFold predicate on the "has_acronym" field.
+func HasAcronymContainsFold(v string) predicate.Project {
+	return predicate.Project(sql.FieldContainsFold(FieldHasAcronym, v))
 }
 
 // CreatedEQ applies the EQ predicate on the "created" field.

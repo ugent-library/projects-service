@@ -59,13 +59,29 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 		})
 	}
 
-	_, err := r.client.Project.Create().
+	pc := r.client.Project.Create().
 		SetName(p.Name).
 		SetDescription(p.Description).
 		SetIdentifier(sids).
+		SetHasAcronym(p.HasAcronym).
 		SetFoundingDate(p.FoundingDate).
-		SetDissolutionDate(p.DissolutionDate).
-		Save(ctx)
+		SetDissolutionDate(p.DissolutionDate)
+
+	if p.IsFundedBy != nil {
+		g := schema.Grant{
+			Identifier: p.IsFundedBy.Identifier,
+		}
+
+		if p.IsFundedBy.IsAwardedBy != nil {
+			g.IsAwardedBy = schema.FundingProgramme{
+				Name: p.IsFundedBy.IsAwardedBy.Name,
+			}
+		}
+
+		pc.SetIsFundedBy(g)
+	}
+
+	_, err := pc.Save(ctx)
 
 	return err
 }

@@ -18,6 +18,8 @@ type AddProjectOK struct{}
 type AddProjectRequest struct {
 	Type            string                            `json:"type"`
 	Identifier      []AddProjectRequestIdentifierItem `json:"identifier"`
+	IsFundedBy      OptAddProjectRequestIsFundedBy    `json:"is_funded_by"`
+	HasAcronym      OptString                         `json:"has_acronym"`
 	Name            string                            `json:"name"`
 	Description     string                            `json:"description"`
 	FoundingDate    string                            `json:"foundingDate"`
@@ -32,6 +34,16 @@ func (s *AddProjectRequest) GetType() string {
 // GetIdentifier returns the value of Identifier.
 func (s *AddProjectRequest) GetIdentifier() []AddProjectRequestIdentifierItem {
 	return s.Identifier
+}
+
+// GetIsFundedBy returns the value of IsFundedBy.
+func (s *AddProjectRequest) GetIsFundedBy() OptAddProjectRequestIsFundedBy {
+	return s.IsFundedBy
+}
+
+// GetHasAcronym returns the value of HasAcronym.
+func (s *AddProjectRequest) GetHasAcronym() OptString {
+	return s.HasAcronym
 }
 
 // GetName returns the value of Name.
@@ -62,6 +74,16 @@ func (s *AddProjectRequest) SetType(val string) {
 // SetIdentifier sets the value of Identifier.
 func (s *AddProjectRequest) SetIdentifier(val []AddProjectRequestIdentifierItem) {
 	s.Identifier = val
+}
+
+// SetIsFundedBy sets the value of IsFundedBy.
+func (s *AddProjectRequest) SetIsFundedBy(val OptAddProjectRequestIsFundedBy) {
+	s.IsFundedBy = val
+}
+
+// SetHasAcronym sets the value of HasAcronym.
+func (s *AddProjectRequest) SetHasAcronym(val OptString) {
+	s.HasAcronym = val
 }
 
 // SetName sets the value of Name.
@@ -118,6 +140,67 @@ func (s *AddProjectRequestIdentifierItem) SetPropertyID(val string) {
 // SetValue sets the value of Value.
 func (s *AddProjectRequestIdentifierItem) SetValue(val string) {
 	s.Value = val
+}
+
+type AddProjectRequestIsFundedBy struct {
+	Type        string                                    `json:"type"`
+	Identifier  string                                    `json:"identifier"`
+	IsAwardedBy OptAddProjectRequestIsFundedByIsAwardedBy `json:"is_awarded_by"`
+}
+
+// GetType returns the value of Type.
+func (s *AddProjectRequestIsFundedBy) GetType() string {
+	return s.Type
+}
+
+// GetIdentifier returns the value of Identifier.
+func (s *AddProjectRequestIsFundedBy) GetIdentifier() string {
+	return s.Identifier
+}
+
+// GetIsAwardedBy returns the value of IsAwardedBy.
+func (s *AddProjectRequestIsFundedBy) GetIsAwardedBy() OptAddProjectRequestIsFundedByIsAwardedBy {
+	return s.IsAwardedBy
+}
+
+// SetType sets the value of Type.
+func (s *AddProjectRequestIsFundedBy) SetType(val string) {
+	s.Type = val
+}
+
+// SetIdentifier sets the value of Identifier.
+func (s *AddProjectRequestIsFundedBy) SetIdentifier(val string) {
+	s.Identifier = val
+}
+
+// SetIsAwardedBy sets the value of IsAwardedBy.
+func (s *AddProjectRequestIsFundedBy) SetIsAwardedBy(val OptAddProjectRequestIsFundedByIsAwardedBy) {
+	s.IsAwardedBy = val
+}
+
+type AddProjectRequestIsFundedByIsAwardedBy struct {
+	Type string `json:"type"`
+	Name string `json:"name"`
+}
+
+// GetType returns the value of Type.
+func (s *AddProjectRequestIsFundedByIsAwardedBy) GetType() string {
+	return s.Type
+}
+
+// GetName returns the value of Name.
+func (s *AddProjectRequestIsFundedByIsAwardedBy) GetName() string {
+	return s.Name
+}
+
+// SetType sets the value of Type.
+func (s *AddProjectRequestIsFundedByIsAwardedBy) SetType(val string) {
+	s.Type = val
+}
+
+// SetName sets the value of Name.
+func (s *AddProjectRequestIsFundedByIsAwardedBy) SetName(val string) {
+	s.Name = val
 }
 
 type ApiKey struct {
@@ -206,6 +289,7 @@ type GetProjectResponse struct {
 	ID              OptString                          `json:"id"`
 	Type            string                             `json:"type"`
 	Identifier      []GetProjectResponseIdentifierItem `json:"identifier"`
+	HasAcronym      string                             `json:"has_acronym"`
 	Name            string                             `json:"name"`
 	Description     string                             `json:"description"`
 	FoundingDate    string                             `json:"foundingDate"`
@@ -227,6 +311,11 @@ func (s *GetProjectResponse) GetType() string {
 // GetIdentifier returns the value of Identifier.
 func (s *GetProjectResponse) GetIdentifier() []GetProjectResponseIdentifierItem {
 	return s.Identifier
+}
+
+// GetHasAcronym returns the value of HasAcronym.
+func (s *GetProjectResponse) GetHasAcronym() string {
+	return s.HasAcronym
 }
 
 // GetName returns the value of Name.
@@ -272,6 +361,11 @@ func (s *GetProjectResponse) SetType(val string) {
 // SetIdentifier sets the value of Identifier.
 func (s *GetProjectResponse) SetIdentifier(val []GetProjectResponseIdentifierItem) {
 	s.Identifier = val
+}
+
+// SetHasAcronym sets the value of HasAcronym.
+func (s *GetProjectResponse) SetHasAcronym(val string) {
+	s.HasAcronym = val
 }
 
 // SetName sets the value of Name.
@@ -338,6 +432,98 @@ func (s *GetProjectResponseIdentifierItem) SetPropertyID(val string) {
 // SetValue sets the value of Value.
 func (s *GetProjectResponseIdentifierItem) SetValue(val string) {
 	s.Value = val
+}
+
+// NewOptAddProjectRequestIsFundedBy returns new OptAddProjectRequestIsFundedBy with value set to v.
+func NewOptAddProjectRequestIsFundedBy(v AddProjectRequestIsFundedBy) OptAddProjectRequestIsFundedBy {
+	return OptAddProjectRequestIsFundedBy{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAddProjectRequestIsFundedBy is optional AddProjectRequestIsFundedBy.
+type OptAddProjectRequestIsFundedBy struct {
+	Value AddProjectRequestIsFundedBy
+	Set   bool
+}
+
+// IsSet returns true if OptAddProjectRequestIsFundedBy was set.
+func (o OptAddProjectRequestIsFundedBy) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAddProjectRequestIsFundedBy) Reset() {
+	var v AddProjectRequestIsFundedBy
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAddProjectRequestIsFundedBy) SetTo(v AddProjectRequestIsFundedBy) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAddProjectRequestIsFundedBy) Get() (v AddProjectRequestIsFundedBy, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAddProjectRequestIsFundedBy) Or(d AddProjectRequestIsFundedBy) AddProjectRequestIsFundedBy {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptAddProjectRequestIsFundedByIsAwardedBy returns new OptAddProjectRequestIsFundedByIsAwardedBy with value set to v.
+func NewOptAddProjectRequestIsFundedByIsAwardedBy(v AddProjectRequestIsFundedByIsAwardedBy) OptAddProjectRequestIsFundedByIsAwardedBy {
+	return OptAddProjectRequestIsFundedByIsAwardedBy{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAddProjectRequestIsFundedByIsAwardedBy is optional AddProjectRequestIsFundedByIsAwardedBy.
+type OptAddProjectRequestIsFundedByIsAwardedBy struct {
+	Value AddProjectRequestIsFundedByIsAwardedBy
+	Set   bool
+}
+
+// IsSet returns true if OptAddProjectRequestIsFundedByIsAwardedBy was set.
+func (o OptAddProjectRequestIsFundedByIsAwardedBy) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAddProjectRequestIsFundedByIsAwardedBy) Reset() {
+	var v AddProjectRequestIsFundedByIsAwardedBy
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAddProjectRequestIsFundedByIsAwardedBy) SetTo(v AddProjectRequestIsFundedByIsAwardedBy) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAddProjectRequestIsFundedByIsAwardedBy) Get() (v AddProjectRequestIsFundedByIsAwardedBy, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAddProjectRequestIsFundedByIsAwardedBy) Or(d AddProjectRequestIsFundedByIsAwardedBy) AddProjectRequestIsFundedByIsAwardedBy {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
 }
 
 // NewOptString returns new OptString with value set to v.

@@ -26,13 +26,33 @@ func (s *Service) AddProject(ctx context.Context, req *AddProjectRequest) error 
 		})
 	}
 
-	return s.repo.AddProject(ctx, &models.Project{
+	p := &models.Project{
 		Name:            req.Name,
 		Description:     req.Description,
 		Identifier:      ids,
+		IsFundedBy:      nil,
 		FoundingDate:    req.FoundingDate,
 		DissolutionDate: req.DissolutionDate,
-	})
+	}
+
+	if req.GetIsFundedBy().IsSet() {
+		fb := req.GetIsFundedBy().Value
+
+		p.IsFundedBy = &models.Grant{
+			Identifier: fb.Identifier,
+		}
+
+		if fb.IsAwardedBy.IsSet() {
+			ab := fb.GetIsAwardedBy()
+			p.IsFundedBy.IsAwardedBy = &models.FundingProgramme{
+				Name: ab.Value.Name,
+			}
+		}
+	}
+
+	p.HasAcronym = req.GetHasAcronym().Or("")
+
+	return s.repo.AddProject(ctx, p)
 }
 
 func (s *Service) GetProject(ctx context.Context, req *GetProjectRequest) (*GetProjectResponse, error) {

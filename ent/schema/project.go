@@ -21,6 +21,15 @@ type Identifier struct {
 	Value      string `json:"value"`
 }
 
+type Grant struct {
+	Identifier  string           `json:"identifier"`
+	IsAwardedBy FundingProgramme `json:"isAwardedBy"`
+}
+
+type FundingProgramme struct {
+	Name string `json:"name"`
+}
+
 func (Project) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id").
@@ -32,10 +41,14 @@ func (Project) Fields() []ent.Field {
 		field.JSON("identifier", []Identifier{}).
 			Optional().
 			Default([]Identifier{}),
+		field.JSON("is_funded_by", Grant{}).
+			Optional().
+			Default(Grant{}),
 		field.String("name"),
 		field.Text("description"),
 		field.String("founding_date"),
 		field.String("dissolution_date"),
+		field.String("has_acronym"),
 		field.Time("created").
 			Default(timeUTC).
 			Immutable(),

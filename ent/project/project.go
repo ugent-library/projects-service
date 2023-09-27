@@ -16,6 +16,8 @@ const (
 	FieldID = "id"
 	// FieldIdentifier holds the string denoting the identifier field in the database.
 	FieldIdentifier = "identifier"
+	// FieldIsFundedBy holds the string denoting the is_funded_by field in the database.
+	FieldIsFundedBy = "is_funded_by"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldDescription holds the string denoting the description field in the database.
@@ -24,6 +26,8 @@ const (
 	FieldFoundingDate = "founding_date"
 	// FieldDissolutionDate holds the string denoting the dissolution_date field in the database.
 	FieldDissolutionDate = "dissolution_date"
+	// FieldHasAcronym holds the string denoting the has_acronym field in the database.
+	FieldHasAcronym = "has_acronym"
 	// FieldCreated holds the string denoting the created field in the database.
 	FieldCreated = "created"
 	// FieldModified holds the string denoting the modified field in the database.
@@ -36,10 +40,12 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldIdentifier,
+	FieldIsFundedBy,
 	FieldName,
 	FieldDescription,
 	FieldFoundingDate,
 	FieldDissolutionDate,
+	FieldHasAcronym,
 	FieldCreated,
 	FieldModified,
 }
@@ -57,6 +63,8 @@ func ValidColumn(column string) bool {
 var (
 	// DefaultIdentifier holds the default value on creation for the "identifier" field.
 	DefaultIdentifier []schema.Identifier
+	// DefaultIsFundedBy holds the default value on creation for the "is_funded_by" field.
+	DefaultIsFundedBy schema.Grant
 	// DefaultCreated holds the default value on creation for the "created" field.
 	DefaultCreated func() time.Time
 	// DefaultModified holds the default value on creation for the "modified" field.
@@ -93,6 +101,11 @@ func ByFoundingDate(opts ...sql.OrderTermOption) OrderOption {
 // ByDissolutionDate orders the results by the dissolution_date field.
 func ByDissolutionDate(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDissolutionDate, opts...).ToFunc()
+}
+
+// ByHasAcronym orders the results by the has_acronym field.
+func ByHasAcronym(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldHasAcronym, opts...).ToFunc()
 }
 
 // ByCreated orders the results by the created field.

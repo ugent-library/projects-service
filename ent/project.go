@@ -21,6 +21,8 @@ type Project struct {
 	ID string `json:"id,omitempty"`
 	// Identifier holds the value of the "identifier" field.
 	Identifier []schema.Identifier `json:"identifier,omitempty"`
+	// IsFundedBy holds the value of the "is_funded_by" field.
+	IsFundedBy schema.Grant `json:"is_funded_by,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
@@ -29,6 +31,8 @@ type Project struct {
 	FoundingDate string `json:"founding_date,omitempty"`
 	// DissolutionDate holds the value of the "dissolution_date" field.
 	DissolutionDate string `json:"dissolution_date,omitempty"`
+	// HasAcronym holds the value of the "has_acronym" field.
+	HasAcronym string `json:"has_acronym,omitempty"`
 	// Created holds the value of the "created" field.
 	Created time.Time `json:"created,omitempty"`
 	// Modified holds the value of the "modified" field.
@@ -41,9 +45,9 @@ func (*Project) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case project.FieldIdentifier:
+		case project.FieldIdentifier, project.FieldIsFundedBy:
 			values[i] = new([]byte)
-		case project.FieldID, project.FieldName, project.FieldDescription, project.FieldFoundingDate, project.FieldDissolutionDate:
+		case project.FieldID, project.FieldName, project.FieldDescription, project.FieldFoundingDate, project.FieldDissolutionDate, project.FieldHasAcronym:
 			values[i] = new(sql.NullString)
 		case project.FieldCreated, project.FieldModified:
 			values[i] = new(sql.NullTime)
@@ -76,6 +80,14 @@ func (pr *Project) assignValues(columns []string, values []any) error {
 					return fmt.Errorf("unmarshal field identifier: %w", err)
 				}
 			}
+		case project.FieldIsFundedBy:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field is_funded_by", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &pr.IsFundedBy); err != nil {
+					return fmt.Errorf("unmarshal field is_funded_by: %w", err)
+				}
+			}
 		case project.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -99,6 +111,12 @@ func (pr *Project) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field dissolution_date", values[i])
 			} else if value.Valid {
 				pr.DissolutionDate = value.String
+			}
+		case project.FieldHasAcronym:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field has_acronym", values[i])
+			} else if value.Valid {
+				pr.HasAcronym = value.String
 			}
 		case project.FieldCreated:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -151,6 +169,9 @@ func (pr *Project) String() string {
 	builder.WriteString("identifier=")
 	builder.WriteString(fmt.Sprintf("%v", pr.Identifier))
 	builder.WriteString(", ")
+	builder.WriteString("is_funded_by=")
+	builder.WriteString(fmt.Sprintf("%v", pr.IsFundedBy))
+	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(pr.Name)
 	builder.WriteString(", ")
@@ -162,6 +183,9 @@ func (pr *Project) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("dissolution_date=")
 	builder.WriteString(pr.DissolutionDate)
+	builder.WriteString(", ")
+	builder.WriteString("has_acronym=")
+	builder.WriteString(pr.HasAcronym)
 	builder.WriteString(", ")
 	builder.WriteString("created=")
 	builder.WriteString(pr.Created.Format(time.ANSIC))
