@@ -19,38 +19,29 @@ func NewService(repo *repositories.Repo) *Service {
 
 func (s *Service) AddProject(ctx context.Context, req *AddProjectRequest) error {
 	ids := make([]*models.Identifier, 0, len(req.Identifier))
-	for _, id := range req.Identifier {
+	for _, id := range req.GetIdentifier() {
 		ids = append(ids, &models.Identifier{
-			PropertyID: id.PropertyID,
-			Value:      id.Value,
+			PropertyID: id.GetPropertyID(),
+			Value:      id.GetValue(),
 		})
 	}
 
 	p := &models.Project{
-		Name:            req.Name,
-		Description:     req.Description,
+		Name:            req.GetName().Or(""),
+		Description:     req.GetDescription().Or(""),
 		Identifier:      ids,
-		IsFundedBy:      nil,
-		FoundingDate:    req.FoundingDate,
-		DissolutionDate: req.DissolutionDate,
+		FoundingDate:    req.GetFoundingDate().Or(""),
+		DissolutionDate: req.GetDissolutionDate().Or(""),
+		Acronym:         req.GetHasAcronym().Or(""),
 	}
 
-	if req.GetIsFundedBy().IsSet() {
-		fb := req.GetIsFundedBy().Value
+	if fb, ok := req.GetIsFundedBy().Get(); ok {
+		p.Grant = fb.GetIdentifier()
 
-		p.IsFundedBy = &models.Grant{
-			Identifier: fb.Identifier,
-		}
-
-		if fb.IsAwardedBy.IsSet() {
-			ab := fb.GetIsAwardedBy()
-			p.IsFundedBy.IsAwardedBy = &models.FundingProgramme{
-				Name: ab.Value.Name,
-			}
+		if ab, ok := fb.GetIsAwardedBy().Get(); ok {
+			p.FundingProgramme = ab.Name
 		}
 	}
-
-	p.HasAcronym = req.GetHasAcronym().Or("")
 
 	return s.repo.AddProject(ctx, p)
 }
@@ -71,12 +62,30 @@ func (s *Service) GetProject(ctx context.Context, req *GetProjectRequest) (*GetP
 		})
 	}
 
+	g := NewOptGetProjectResponseIsFundedBy(GetProjectResponseIsFundedBy{})
+	if p.Grant != "" {
+		g.Value.SetIdentifier(p.Grant)
+		g.Value.SetType("Grant")
+
+		fp := NewOptGetProjectResponseIsFundedByIsAwardedBy(GetProjectResponseIsFundedByIsAwardedBy{})
+
+		if p.FundingProgramme != "" {
+			fp.Value.SetName(p.FundingProgramme)
+			fp.Value.SetType("FundingProgramme")
+		}
+	} else {
+		g.Reset()
+	}
+
 	return &GetProjectResponse{
 		Type:            "ResearchProject",
 		Identifier:      ids,
-		Name:            p.Name,
-		FoundingDate:    p.FoundingDate,
-		DissolutionDate: p.DissolutionDate,
+		Name:            NewOptString(p.Name),
+		Description:     NewOptString(p.Description),
+		IsFundedBy:      g,
+		HasAcronym:      NewOptString(p.Acronym),
+		FoundingDate:    NewOptString(p.FoundingDate),
+		DissolutionDate: NewOptString(p.DissolutionDate),
 		Created:         *p.DateCreated,
 		Modified:        *p.DateModified,
 	}, nil

@@ -19,16 +19,12 @@ func init() {
 	projectDescIdentifier := projectFields[1].Descriptor()
 	// project.DefaultIdentifier holds the default value on creation for the identifier field.
 	project.DefaultIdentifier = projectDescIdentifier.Default.([]schema.Identifier)
-	// projectDescIsFundedBy is the schema descriptor for is_funded_by field.
-	projectDescIsFundedBy := projectFields[2].Descriptor()
-	// project.DefaultIsFundedBy holds the default value on creation for the is_funded_by field.
-	project.DefaultIsFundedBy = projectDescIsFundedBy.Default.(schema.Grant)
 	// projectDescCreated is the schema descriptor for created field.
-	projectDescCreated := projectFields[8].Descriptor()
+	projectDescCreated := projectFields[9].Descriptor()
 	// project.DefaultCreated holds the default value on creation for the created field.
 	project.DefaultCreated = projectDescCreated.Default.(func() time.Time)
 	// projectDescModified is the schema descriptor for modified field.
-	projectDescModified := projectFields[9].Descriptor()
+	projectDescModified := projectFields[10].Descriptor()
 	// project.DefaultModified holds the default value on creation for the modified field.
 	project.DefaultModified = projectDescModified.Default.(func() time.Time)
 	// project.UpdateDefaultModified holds the default value on update for the modified field.

@@ -16,8 +16,6 @@ const (
 	FieldID = "id"
 	// FieldIdentifier holds the string denoting the identifier field in the database.
 	FieldIdentifier = "identifier"
-	// FieldIsFundedBy holds the string denoting the is_funded_by field in the database.
-	FieldIsFundedBy = "is_funded_by"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldDescription holds the string denoting the description field in the database.
@@ -26,8 +24,12 @@ const (
 	FieldFoundingDate = "founding_date"
 	// FieldDissolutionDate holds the string denoting the dissolution_date field in the database.
 	FieldDissolutionDate = "dissolution_date"
-	// FieldHasAcronym holds the string denoting the has_acronym field in the database.
-	FieldHasAcronym = "has_acronym"
+	// FieldAcronym holds the string denoting the acronym field in the database.
+	FieldAcronym = "acronym"
+	// FieldGrant holds the string denoting the grant field in the database.
+	FieldGrant = "grant"
+	// FieldFundingProgramme holds the string denoting the funding_programme field in the database.
+	FieldFundingProgramme = "funding_programme"
 	// FieldCreated holds the string denoting the created field in the database.
 	FieldCreated = "created"
 	// FieldModified holds the string denoting the modified field in the database.
@@ -40,12 +42,13 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldIdentifier,
-	FieldIsFundedBy,
 	FieldName,
 	FieldDescription,
 	FieldFoundingDate,
 	FieldDissolutionDate,
-	FieldHasAcronym,
+	FieldAcronym,
+	FieldGrant,
+	FieldFundingProgramme,
 	FieldCreated,
 	FieldModified,
 }
@@ -63,8 +66,6 @@ func ValidColumn(column string) bool {
 var (
 	// DefaultIdentifier holds the default value on creation for the "identifier" field.
 	DefaultIdentifier []schema.Identifier
-	// DefaultIsFundedBy holds the default value on creation for the "is_funded_by" field.
-	DefaultIsFundedBy schema.Grant
 	// DefaultCreated holds the default value on creation for the "created" field.
 	DefaultCreated func() time.Time
 	// DefaultModified holds the default value on creation for the "modified" field.
@@ -103,9 +104,19 @@ func ByDissolutionDate(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDissolutionDate, opts...).ToFunc()
 }
 
-// ByHasAcronym orders the results by the has_acronym field.
-func ByHasAcronym(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldHasAcronym, opts...).ToFunc()
+// ByAcronym orders the results by the acronym field.
+func ByAcronym(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAcronym, opts...).ToFunc()
+}
+
+// ByGrant orders the results by the grant field.
+func ByGrant(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldGrant, opts...).ToFunc()
+}
+
+// ByFundingProgramme orders the results by the funding_programme field.
+func ByFundingProgramme(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFundingProgramme, opts...).ToFunc()
 }
 
 // ByCreated orders the results by the created field.

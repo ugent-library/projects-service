@@ -39,21 +39,27 @@ func (Project) Fields() []ent.Field {
 				return ulid.Make().String()
 			}),
 		field.JSON("identifier", []Identifier{}).
-			Optional().
 			Default([]Identifier{}),
-		field.JSON("is_funded_by", Grant{}).
-			Optional().
-			Default(Grant{}),
-		field.String("name"),
-		field.Text("description"),
-		field.String("founding_date"),
-		field.String("dissolution_date"),
-		field.String("has_acronym"),
+		field.String("name").
+			Optional(),
+		field.Text("description").
+			Optional(),
+		field.String("founding_date").
+			Optional(),
+		field.String("dissolution_date").
+			Optional(),
+		field.String("acronym").
+			Optional(),
+		field.String("grant").
+			Optional(),
+		field.String("funding_programme").
+			Optional(),
 		field.Time("created").
 			Default(timeUTC).
 			Immutable(),
 		field.Time("modified").
 			Default(timeUTC).
-			UpdateDefault(timeUTC),
+			UpdateDefault(timeUTC).
+			Immutable(),
 	}
 }

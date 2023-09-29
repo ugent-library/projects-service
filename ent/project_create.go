@@ -30,23 +30,17 @@ func (pc *ProjectCreate) SetIdentifier(s []schema.Identifier) *ProjectCreate {
 	return pc
 }
 
-// SetIsFundedBy sets the "is_funded_by" field.
-func (pc *ProjectCreate) SetIsFundedBy(s schema.Grant) *ProjectCreate {
-	pc.mutation.SetIsFundedBy(s)
-	return pc
-}
-
-// SetNillableIsFundedBy sets the "is_funded_by" field if the given value is not nil.
-func (pc *ProjectCreate) SetNillableIsFundedBy(s *schema.Grant) *ProjectCreate {
-	if s != nil {
-		pc.SetIsFundedBy(*s)
-	}
-	return pc
-}
-
 // SetName sets the "name" field.
 func (pc *ProjectCreate) SetName(s string) *ProjectCreate {
 	pc.mutation.SetName(s)
+	return pc
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (pc *ProjectCreate) SetNillableName(s *string) *ProjectCreate {
+	if s != nil {
+		pc.SetName(*s)
+	}
 	return pc
 }
 
@@ -56,9 +50,25 @@ func (pc *ProjectCreate) SetDescription(s string) *ProjectCreate {
 	return pc
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (pc *ProjectCreate) SetNillableDescription(s *string) *ProjectCreate {
+	if s != nil {
+		pc.SetDescription(*s)
+	}
+	return pc
+}
+
 // SetFoundingDate sets the "founding_date" field.
 func (pc *ProjectCreate) SetFoundingDate(s string) *ProjectCreate {
 	pc.mutation.SetFoundingDate(s)
+	return pc
+}
+
+// SetNillableFoundingDate sets the "founding_date" field if the given value is not nil.
+func (pc *ProjectCreate) SetNillableFoundingDate(s *string) *ProjectCreate {
+	if s != nil {
+		pc.SetFoundingDate(*s)
+	}
 	return pc
 }
 
@@ -68,9 +78,53 @@ func (pc *ProjectCreate) SetDissolutionDate(s string) *ProjectCreate {
 	return pc
 }
 
-// SetHasAcronym sets the "has_acronym" field.
-func (pc *ProjectCreate) SetHasAcronym(s string) *ProjectCreate {
-	pc.mutation.SetHasAcronym(s)
+// SetNillableDissolutionDate sets the "dissolution_date" field if the given value is not nil.
+func (pc *ProjectCreate) SetNillableDissolutionDate(s *string) *ProjectCreate {
+	if s != nil {
+		pc.SetDissolutionDate(*s)
+	}
+	return pc
+}
+
+// SetAcronym sets the "acronym" field.
+func (pc *ProjectCreate) SetAcronym(s string) *ProjectCreate {
+	pc.mutation.SetAcronym(s)
+	return pc
+}
+
+// SetNillableAcronym sets the "acronym" field if the given value is not nil.
+func (pc *ProjectCreate) SetNillableAcronym(s *string) *ProjectCreate {
+	if s != nil {
+		pc.SetAcronym(*s)
+	}
+	return pc
+}
+
+// SetGrant sets the "grant" field.
+func (pc *ProjectCreate) SetGrant(s string) *ProjectCreate {
+	pc.mutation.SetGrant(s)
+	return pc
+}
+
+// SetNillableGrant sets the "grant" field if the given value is not nil.
+func (pc *ProjectCreate) SetNillableGrant(s *string) *ProjectCreate {
+	if s != nil {
+		pc.SetGrant(*s)
+	}
+	return pc
+}
+
+// SetFundingProgramme sets the "funding_programme" field.
+func (pc *ProjectCreate) SetFundingProgramme(s string) *ProjectCreate {
+	pc.mutation.SetFundingProgramme(s)
+	return pc
+}
+
+// SetNillableFundingProgramme sets the "funding_programme" field if the given value is not nil.
+func (pc *ProjectCreate) SetNillableFundingProgramme(s *string) *ProjectCreate {
+	if s != nil {
+		pc.SetFundingProgramme(*s)
+	}
 	return pc
 }
 
@@ -155,10 +209,6 @@ func (pc *ProjectCreate) defaults() {
 		v := project.DefaultIdentifier
 		pc.mutation.SetIdentifier(v)
 	}
-	if _, ok := pc.mutation.IsFundedBy(); !ok {
-		v := project.DefaultIsFundedBy
-		pc.mutation.SetIsFundedBy(v)
-	}
 	if _, ok := pc.mutation.Created(); !ok {
 		v := project.DefaultCreated()
 		pc.mutation.SetCreated(v)
@@ -175,20 +225,8 @@ func (pc *ProjectCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (pc *ProjectCreate) check() error {
-	if _, ok := pc.mutation.Name(); !ok {
-		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Project.name"`)}
-	}
-	if _, ok := pc.mutation.Description(); !ok {
-		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "Project.description"`)}
-	}
-	if _, ok := pc.mutation.FoundingDate(); !ok {
-		return &ValidationError{Name: "founding_date", err: errors.New(`ent: missing required field "Project.founding_date"`)}
-	}
-	if _, ok := pc.mutation.DissolutionDate(); !ok {
-		return &ValidationError{Name: "dissolution_date", err: errors.New(`ent: missing required field "Project.dissolution_date"`)}
-	}
-	if _, ok := pc.mutation.HasAcronym(); !ok {
-		return &ValidationError{Name: "has_acronym", err: errors.New(`ent: missing required field "Project.has_acronym"`)}
+	if _, ok := pc.mutation.Identifier(); !ok {
+		return &ValidationError{Name: "identifier", err: errors.New(`ent: missing required field "Project.identifier"`)}
 	}
 	if _, ok := pc.mutation.Created(); !ok {
 		return &ValidationError{Name: "created", err: errors.New(`ent: missing required field "Project.created"`)}
@@ -236,10 +274,6 @@ func (pc *ProjectCreate) createSpec() (*Project, *sqlgraph.CreateSpec) {
 		_spec.SetField(project.FieldIdentifier, field.TypeJSON, value)
 		_node.Identifier = value
 	}
-	if value, ok := pc.mutation.IsFundedBy(); ok {
-		_spec.SetField(project.FieldIsFundedBy, field.TypeJSON, value)
-		_node.IsFundedBy = value
-	}
 	if value, ok := pc.mutation.Name(); ok {
 		_spec.SetField(project.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -256,9 +290,17 @@ func (pc *ProjectCreate) createSpec() (*Project, *sqlgraph.CreateSpec) {
 		_spec.SetField(project.FieldDissolutionDate, field.TypeString, value)
 		_node.DissolutionDate = value
 	}
-	if value, ok := pc.mutation.HasAcronym(); ok {
-		_spec.SetField(project.FieldHasAcronym, field.TypeString, value)
-		_node.HasAcronym = value
+	if value, ok := pc.mutation.Acronym(); ok {
+		_spec.SetField(project.FieldAcronym, field.TypeString, value)
+		_node.Acronym = value
+	}
+	if value, ok := pc.mutation.Grant(); ok {
+		_spec.SetField(project.FieldGrant, field.TypeString, value)
+		_node.Grant = value
+	}
+	if value, ok := pc.mutation.FundingProgramme(); ok {
+		_spec.SetField(project.FieldFundingProgramme, field.TypeString, value)
+		_node.FundingProgramme = value
 	}
 	if value, ok := pc.mutation.Created(); ok {
 		_spec.SetField(project.FieldCreated, field.TypeTime, value)
@@ -332,30 +374,6 @@ func (u *ProjectUpsert) UpdateIdentifier() *ProjectUpsert {
 	return u
 }
 
-// ClearIdentifier clears the value of the "identifier" field.
-func (u *ProjectUpsert) ClearIdentifier() *ProjectUpsert {
-	u.SetNull(project.FieldIdentifier)
-	return u
-}
-
-// SetIsFundedBy sets the "is_funded_by" field.
-func (u *ProjectUpsert) SetIsFundedBy(v schema.Grant) *ProjectUpsert {
-	u.Set(project.FieldIsFundedBy, v)
-	return u
-}
-
-// UpdateIsFundedBy sets the "is_funded_by" field to the value that was provided on create.
-func (u *ProjectUpsert) UpdateIsFundedBy() *ProjectUpsert {
-	u.SetExcluded(project.FieldIsFundedBy)
-	return u
-}
-
-// ClearIsFundedBy clears the value of the "is_funded_by" field.
-func (u *ProjectUpsert) ClearIsFundedBy() *ProjectUpsert {
-	u.SetNull(project.FieldIsFundedBy)
-	return u
-}
-
 // SetName sets the "name" field.
 func (u *ProjectUpsert) SetName(v string) *ProjectUpsert {
 	u.Set(project.FieldName, v)
@@ -365,6 +383,12 @@ func (u *ProjectUpsert) SetName(v string) *ProjectUpsert {
 // UpdateName sets the "name" field to the value that was provided on create.
 func (u *ProjectUpsert) UpdateName() *ProjectUpsert {
 	u.SetExcluded(project.FieldName)
+	return u
+}
+
+// ClearName clears the value of the "name" field.
+func (u *ProjectUpsert) ClearName() *ProjectUpsert {
+	u.SetNull(project.FieldName)
 	return u
 }
 
@@ -380,6 +404,12 @@ func (u *ProjectUpsert) UpdateDescription() *ProjectUpsert {
 	return u
 }
 
+// ClearDescription clears the value of the "description" field.
+func (u *ProjectUpsert) ClearDescription() *ProjectUpsert {
+	u.SetNull(project.FieldDescription)
+	return u
+}
+
 // SetFoundingDate sets the "founding_date" field.
 func (u *ProjectUpsert) SetFoundingDate(v string) *ProjectUpsert {
 	u.Set(project.FieldFoundingDate, v)
@@ -389,6 +419,12 @@ func (u *ProjectUpsert) SetFoundingDate(v string) *ProjectUpsert {
 // UpdateFoundingDate sets the "founding_date" field to the value that was provided on create.
 func (u *ProjectUpsert) UpdateFoundingDate() *ProjectUpsert {
 	u.SetExcluded(project.FieldFoundingDate)
+	return u
+}
+
+// ClearFoundingDate clears the value of the "founding_date" field.
+func (u *ProjectUpsert) ClearFoundingDate() *ProjectUpsert {
+	u.SetNull(project.FieldFoundingDate)
 	return u
 }
 
@@ -404,27 +440,63 @@ func (u *ProjectUpsert) UpdateDissolutionDate() *ProjectUpsert {
 	return u
 }
 
-// SetHasAcronym sets the "has_acronym" field.
-func (u *ProjectUpsert) SetHasAcronym(v string) *ProjectUpsert {
-	u.Set(project.FieldHasAcronym, v)
+// ClearDissolutionDate clears the value of the "dissolution_date" field.
+func (u *ProjectUpsert) ClearDissolutionDate() *ProjectUpsert {
+	u.SetNull(project.FieldDissolutionDate)
 	return u
 }
 
-// UpdateHasAcronym sets the "has_acronym" field to the value that was provided on create.
-func (u *ProjectUpsert) UpdateHasAcronym() *ProjectUpsert {
-	u.SetExcluded(project.FieldHasAcronym)
+// SetAcronym sets the "acronym" field.
+func (u *ProjectUpsert) SetAcronym(v string) *ProjectUpsert {
+	u.Set(project.FieldAcronym, v)
 	return u
 }
 
-// SetModified sets the "modified" field.
-func (u *ProjectUpsert) SetModified(v time.Time) *ProjectUpsert {
-	u.Set(project.FieldModified, v)
+// UpdateAcronym sets the "acronym" field to the value that was provided on create.
+func (u *ProjectUpsert) UpdateAcronym() *ProjectUpsert {
+	u.SetExcluded(project.FieldAcronym)
 	return u
 }
 
-// UpdateModified sets the "modified" field to the value that was provided on create.
-func (u *ProjectUpsert) UpdateModified() *ProjectUpsert {
-	u.SetExcluded(project.FieldModified)
+// ClearAcronym clears the value of the "acronym" field.
+func (u *ProjectUpsert) ClearAcronym() *ProjectUpsert {
+	u.SetNull(project.FieldAcronym)
+	return u
+}
+
+// SetGrant sets the "grant" field.
+func (u *ProjectUpsert) SetGrant(v string) *ProjectUpsert {
+	u.Set(project.FieldGrant, v)
+	return u
+}
+
+// UpdateGrant sets the "grant" field to the value that was provided on create.
+func (u *ProjectUpsert) UpdateGrant() *ProjectUpsert {
+	u.SetExcluded(project.FieldGrant)
+	return u
+}
+
+// ClearGrant clears the value of the "grant" field.
+func (u *ProjectUpsert) ClearGrant() *ProjectUpsert {
+	u.SetNull(project.FieldGrant)
+	return u
+}
+
+// SetFundingProgramme sets the "funding_programme" field.
+func (u *ProjectUpsert) SetFundingProgramme(v string) *ProjectUpsert {
+	u.Set(project.FieldFundingProgramme, v)
+	return u
+}
+
+// UpdateFundingProgramme sets the "funding_programme" field to the value that was provided on create.
+func (u *ProjectUpsert) UpdateFundingProgramme() *ProjectUpsert {
+	u.SetExcluded(project.FieldFundingProgramme)
+	return u
+}
+
+// ClearFundingProgramme clears the value of the "funding_programme" field.
+func (u *ProjectUpsert) ClearFundingProgramme() *ProjectUpsert {
+	u.SetNull(project.FieldFundingProgramme)
 	return u
 }
 
@@ -447,6 +519,9 @@ func (u *ProjectUpsertOne) UpdateNewValues() *ProjectUpsertOne {
 		}
 		if _, exists := u.create.mutation.Created(); exists {
 			s.SetIgnore(project.FieldCreated)
+		}
+		if _, exists := u.create.mutation.Modified(); exists {
+			s.SetIgnore(project.FieldModified)
 		}
 	}))
 	return u
@@ -493,34 +568,6 @@ func (u *ProjectUpsertOne) UpdateIdentifier() *ProjectUpsertOne {
 	})
 }
 
-// ClearIdentifier clears the value of the "identifier" field.
-func (u *ProjectUpsertOne) ClearIdentifier() *ProjectUpsertOne {
-	return u.Update(func(s *ProjectUpsert) {
-		s.ClearIdentifier()
-	})
-}
-
-// SetIsFundedBy sets the "is_funded_by" field.
-func (u *ProjectUpsertOne) SetIsFundedBy(v schema.Grant) *ProjectUpsertOne {
-	return u.Update(func(s *ProjectUpsert) {
-		s.SetIsFundedBy(v)
-	})
-}
-
-// UpdateIsFundedBy sets the "is_funded_by" field to the value that was provided on create.
-func (u *ProjectUpsertOne) UpdateIsFundedBy() *ProjectUpsertOne {
-	return u.Update(func(s *ProjectUpsert) {
-		s.UpdateIsFundedBy()
-	})
-}
-
-// ClearIsFundedBy clears the value of the "is_funded_by" field.
-func (u *ProjectUpsertOne) ClearIsFundedBy() *ProjectUpsertOne {
-	return u.Update(func(s *ProjectUpsert) {
-		s.ClearIsFundedBy()
-	})
-}
-
 // SetName sets the "name" field.
 func (u *ProjectUpsertOne) SetName(v string) *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
@@ -532,6 +579,13 @@ func (u *ProjectUpsertOne) SetName(v string) *ProjectUpsertOne {
 func (u *ProjectUpsertOne) UpdateName() *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
 		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *ProjectUpsertOne) ClearName() *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.ClearName()
 	})
 }
 
@@ -549,6 +603,13 @@ func (u *ProjectUpsertOne) UpdateDescription() *ProjectUpsertOne {
 	})
 }
 
+// ClearDescription clears the value of the "description" field.
+func (u *ProjectUpsertOne) ClearDescription() *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.ClearDescription()
+	})
+}
+
 // SetFoundingDate sets the "founding_date" field.
 func (u *ProjectUpsertOne) SetFoundingDate(v string) *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
@@ -560,6 +621,13 @@ func (u *ProjectUpsertOne) SetFoundingDate(v string) *ProjectUpsertOne {
 func (u *ProjectUpsertOne) UpdateFoundingDate() *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
 		s.UpdateFoundingDate()
+	})
+}
+
+// ClearFoundingDate clears the value of the "founding_date" field.
+func (u *ProjectUpsertOne) ClearFoundingDate() *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.ClearFoundingDate()
 	})
 }
 
@@ -577,31 +645,73 @@ func (u *ProjectUpsertOne) UpdateDissolutionDate() *ProjectUpsertOne {
 	})
 }
 
-// SetHasAcronym sets the "has_acronym" field.
-func (u *ProjectUpsertOne) SetHasAcronym(v string) *ProjectUpsertOne {
+// ClearDissolutionDate clears the value of the "dissolution_date" field.
+func (u *ProjectUpsertOne) ClearDissolutionDate() *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
-		s.SetHasAcronym(v)
+		s.ClearDissolutionDate()
 	})
 }
 
-// UpdateHasAcronym sets the "has_acronym" field to the value that was provided on create.
-func (u *ProjectUpsertOne) UpdateHasAcronym() *ProjectUpsertOne {
+// SetAcronym sets the "acronym" field.
+func (u *ProjectUpsertOne) SetAcronym(v string) *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
-		s.UpdateHasAcronym()
+		s.SetAcronym(v)
 	})
 }
 
-// SetModified sets the "modified" field.
-func (u *ProjectUpsertOne) SetModified(v time.Time) *ProjectUpsertOne {
+// UpdateAcronym sets the "acronym" field to the value that was provided on create.
+func (u *ProjectUpsertOne) UpdateAcronym() *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
-		s.SetModified(v)
+		s.UpdateAcronym()
 	})
 }
 
-// UpdateModified sets the "modified" field to the value that was provided on create.
-func (u *ProjectUpsertOne) UpdateModified() *ProjectUpsertOne {
+// ClearAcronym clears the value of the "acronym" field.
+func (u *ProjectUpsertOne) ClearAcronym() *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
-		s.UpdateModified()
+		s.ClearAcronym()
+	})
+}
+
+// SetGrant sets the "grant" field.
+func (u *ProjectUpsertOne) SetGrant(v string) *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.SetGrant(v)
+	})
+}
+
+// UpdateGrant sets the "grant" field to the value that was provided on create.
+func (u *ProjectUpsertOne) UpdateGrant() *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.UpdateGrant()
+	})
+}
+
+// ClearGrant clears the value of the "grant" field.
+func (u *ProjectUpsertOne) ClearGrant() *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.ClearGrant()
+	})
+}
+
+// SetFundingProgramme sets the "funding_programme" field.
+func (u *ProjectUpsertOne) SetFundingProgramme(v string) *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.SetFundingProgramme(v)
+	})
+}
+
+// UpdateFundingProgramme sets the "funding_programme" field to the value that was provided on create.
+func (u *ProjectUpsertOne) UpdateFundingProgramme() *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.UpdateFundingProgramme()
+	})
+}
+
+// ClearFundingProgramme clears the value of the "funding_programme" field.
+func (u *ProjectUpsertOne) ClearFundingProgramme() *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.ClearFundingProgramme()
 	})
 }
 
@@ -787,6 +897,9 @@ func (u *ProjectUpsertBulk) UpdateNewValues() *ProjectUpsertBulk {
 			if _, exists := b.mutation.Created(); exists {
 				s.SetIgnore(project.FieldCreated)
 			}
+			if _, exists := b.mutation.Modified(); exists {
+				s.SetIgnore(project.FieldModified)
+			}
 		}
 	}))
 	return u
@@ -833,34 +946,6 @@ func (u *ProjectUpsertBulk) UpdateIdentifier() *ProjectUpsertBulk {
 	})
 }
 
-// ClearIdentifier clears the value of the "identifier" field.
-func (u *ProjectUpsertBulk) ClearIdentifier() *ProjectUpsertBulk {
-	return u.Update(func(s *ProjectUpsert) {
-		s.ClearIdentifier()
-	})
-}
-
-// SetIsFundedBy sets the "is_funded_by" field.
-func (u *ProjectUpsertBulk) SetIsFundedBy(v schema.Grant) *ProjectUpsertBulk {
-	return u.Update(func(s *ProjectUpsert) {
-		s.SetIsFundedBy(v)
-	})
-}
-
-// UpdateIsFundedBy sets the "is_funded_by" field to the value that was provided on create.
-func (u *ProjectUpsertBulk) UpdateIsFundedBy() *ProjectUpsertBulk {
-	return u.Update(func(s *ProjectUpsert) {
-		s.UpdateIsFundedBy()
-	})
-}
-
-// ClearIsFundedBy clears the value of the "is_funded_by" field.
-func (u *ProjectUpsertBulk) ClearIsFundedBy() *ProjectUpsertBulk {
-	return u.Update(func(s *ProjectUpsert) {
-		s.ClearIsFundedBy()
-	})
-}
-
 // SetName sets the "name" field.
 func (u *ProjectUpsertBulk) SetName(v string) *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
@@ -872,6 +957,13 @@ func (u *ProjectUpsertBulk) SetName(v string) *ProjectUpsertBulk {
 func (u *ProjectUpsertBulk) UpdateName() *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
 		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *ProjectUpsertBulk) ClearName() *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.ClearName()
 	})
 }
 
@@ -889,6 +981,13 @@ func (u *ProjectUpsertBulk) UpdateDescription() *ProjectUpsertBulk {
 	})
 }
 
+// ClearDescription clears the value of the "description" field.
+func (u *ProjectUpsertBulk) ClearDescription() *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.ClearDescription()
+	})
+}
+
 // SetFoundingDate sets the "founding_date" field.
 func (u *ProjectUpsertBulk) SetFoundingDate(v string) *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
@@ -900,6 +999,13 @@ func (u *ProjectUpsertBulk) SetFoundingDate(v string) *ProjectUpsertBulk {
 func (u *ProjectUpsertBulk) UpdateFoundingDate() *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
 		s.UpdateFoundingDate()
+	})
+}
+
+// ClearFoundingDate clears the value of the "founding_date" field.
+func (u *ProjectUpsertBulk) ClearFoundingDate() *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.ClearFoundingDate()
 	})
 }
 
@@ -917,31 +1023,73 @@ func (u *ProjectUpsertBulk) UpdateDissolutionDate() *ProjectUpsertBulk {
 	})
 }
 
-// SetHasAcronym sets the "has_acronym" field.
-func (u *ProjectUpsertBulk) SetHasAcronym(v string) *ProjectUpsertBulk {
+// ClearDissolutionDate clears the value of the "dissolution_date" field.
+func (u *ProjectUpsertBulk) ClearDissolutionDate() *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
-		s.SetHasAcronym(v)
+		s.ClearDissolutionDate()
 	})
 }
 
-// UpdateHasAcronym sets the "has_acronym" field to the value that was provided on create.
-func (u *ProjectUpsertBulk) UpdateHasAcronym() *ProjectUpsertBulk {
+// SetAcronym sets the "acronym" field.
+func (u *ProjectUpsertBulk) SetAcronym(v string) *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
-		s.UpdateHasAcronym()
+		s.SetAcronym(v)
 	})
 }
 
-// SetModified sets the "modified" field.
-func (u *ProjectUpsertBulk) SetModified(v time.Time) *ProjectUpsertBulk {
+// UpdateAcronym sets the "acronym" field to the value that was provided on create.
+func (u *ProjectUpsertBulk) UpdateAcronym() *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
-		s.SetModified(v)
+		s.UpdateAcronym()
 	})
 }
 
-// UpdateModified sets the "modified" field to the value that was provided on create.
-func (u *ProjectUpsertBulk) UpdateModified() *ProjectUpsertBulk {
+// ClearAcronym clears the value of the "acronym" field.
+func (u *ProjectUpsertBulk) ClearAcronym() *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
-		s.UpdateModified()
+		s.ClearAcronym()
+	})
+}
+
+// SetGrant sets the "grant" field.
+func (u *ProjectUpsertBulk) SetGrant(v string) *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.SetGrant(v)
+	})
+}
+
+// UpdateGrant sets the "grant" field to the value that was provided on create.
+func (u *ProjectUpsertBulk) UpdateGrant() *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.UpdateGrant()
+	})
+}
+
+// ClearGrant clears the value of the "grant" field.
+func (u *ProjectUpsertBulk) ClearGrant() *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.ClearGrant()
+	})
+}
+
+// SetFundingProgramme sets the "funding_programme" field.
+func (u *ProjectUpsertBulk) SetFundingProgramme(v string) *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.SetFundingProgramme(v)
+	})
+}
+
+// UpdateFundingProgramme sets the "funding_programme" field to the value that was provided on create.
+func (u *ProjectUpsertBulk) UpdateFundingProgramme() *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.UpdateFundingProgramme()
+	})
+}
+
+// ClearFundingProgramme clears the value of the "funding_programme" field.
+func (u *ProjectUpsertBulk) ClearFundingProgramme() *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.ClearFundingProgramme()
 	})
 }
 

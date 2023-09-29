@@ -18,12 +18,12 @@ type AddProjectOK struct{}
 type AddProjectRequest struct {
 	Type            string                            `json:"type"`
 	Identifier      []AddProjectRequestIdentifierItem `json:"identifier"`
-	IsFundedBy      OptAddProjectRequestIsFundedBy    `json:"is_funded_by"`
-	HasAcronym      OptString                         `json:"has_acronym"`
-	Name            string                            `json:"name"`
-	Description     string                            `json:"description"`
-	FoundingDate    string                            `json:"foundingDate"`
-	DissolutionDate string                            `json:"dissolutionDate"`
+	IsFundedBy      OptAddProjectRequestIsFundedBy    `json:"isFundedBy"`
+	HasAcronym      OptString                         `json:"hasAcronym"`
+	Name            OptString                         `json:"name"`
+	Description     OptString                         `json:"description"`
+	FoundingDate    OptString                         `json:"foundingDate"`
+	DissolutionDate OptString                         `json:"dissolutionDate"`
 }
 
 // GetType returns the value of Type.
@@ -47,22 +47,22 @@ func (s *AddProjectRequest) GetHasAcronym() OptString {
 }
 
 // GetName returns the value of Name.
-func (s *AddProjectRequest) GetName() string {
+func (s *AddProjectRequest) GetName() OptString {
 	return s.Name
 }
 
 // GetDescription returns the value of Description.
-func (s *AddProjectRequest) GetDescription() string {
+func (s *AddProjectRequest) GetDescription() OptString {
 	return s.Description
 }
 
 // GetFoundingDate returns the value of FoundingDate.
-func (s *AddProjectRequest) GetFoundingDate() string {
+func (s *AddProjectRequest) GetFoundingDate() OptString {
 	return s.FoundingDate
 }
 
 // GetDissolutionDate returns the value of DissolutionDate.
-func (s *AddProjectRequest) GetDissolutionDate() string {
+func (s *AddProjectRequest) GetDissolutionDate() OptString {
 	return s.DissolutionDate
 }
 
@@ -87,22 +87,22 @@ func (s *AddProjectRequest) SetHasAcronym(val OptString) {
 }
 
 // SetName sets the value of Name.
-func (s *AddProjectRequest) SetName(val string) {
+func (s *AddProjectRequest) SetName(val OptString) {
 	s.Name = val
 }
 
 // SetDescription sets the value of Description.
-func (s *AddProjectRequest) SetDescription(val string) {
+func (s *AddProjectRequest) SetDescription(val OptString) {
 	s.Description = val
 }
 
 // SetFoundingDate sets the value of FoundingDate.
-func (s *AddProjectRequest) SetFoundingDate(val string) {
+func (s *AddProjectRequest) SetFoundingDate(val OptString) {
 	s.FoundingDate = val
 }
 
 // SetDissolutionDate sets the value of DissolutionDate.
-func (s *AddProjectRequest) SetDissolutionDate(val string) {
+func (s *AddProjectRequest) SetDissolutionDate(val OptString) {
 	s.DissolutionDate = val
 }
 
@@ -145,7 +145,7 @@ func (s *AddProjectRequestIdentifierItem) SetValue(val string) {
 type AddProjectRequestIsFundedBy struct {
 	Type        string                                    `json:"type"`
 	Identifier  string                                    `json:"identifier"`
-	IsAwardedBy OptAddProjectRequestIsFundedByIsAwardedBy `json:"is_awarded_by"`
+	IsAwardedBy OptAddProjectRequestIsFundedByIsAwardedBy `json:"isAwardedBy"`
 }
 
 // GetType returns the value of Type.
@@ -289,11 +289,12 @@ type GetProjectResponse struct {
 	ID              OptString                          `json:"id"`
 	Type            string                             `json:"type"`
 	Identifier      []GetProjectResponseIdentifierItem `json:"identifier"`
-	HasAcronym      string                             `json:"has_acronym"`
-	Name            string                             `json:"name"`
-	Description     string                             `json:"description"`
-	FoundingDate    string                             `json:"foundingDate"`
-	DissolutionDate string                             `json:"dissolutionDate"`
+	IsFundedBy      OptGetProjectResponseIsFundedBy    `json:"isFundedBy"`
+	HasAcronym      OptString                          `json:"hasAcronym"`
+	Name            OptString                          `json:"name"`
+	Description     OptString                          `json:"description"`
+	FoundingDate    OptString                          `json:"foundingDate"`
+	DissolutionDate OptString                          `json:"dissolutionDate"`
 	Created         time.Time                          `json:"created"`
 	Modified        time.Time                          `json:"modified"`
 }
@@ -313,28 +314,33 @@ func (s *GetProjectResponse) GetIdentifier() []GetProjectResponseIdentifierItem 
 	return s.Identifier
 }
 
+// GetIsFundedBy returns the value of IsFundedBy.
+func (s *GetProjectResponse) GetIsFundedBy() OptGetProjectResponseIsFundedBy {
+	return s.IsFundedBy
+}
+
 // GetHasAcronym returns the value of HasAcronym.
-func (s *GetProjectResponse) GetHasAcronym() string {
+func (s *GetProjectResponse) GetHasAcronym() OptString {
 	return s.HasAcronym
 }
 
 // GetName returns the value of Name.
-func (s *GetProjectResponse) GetName() string {
+func (s *GetProjectResponse) GetName() OptString {
 	return s.Name
 }
 
 // GetDescription returns the value of Description.
-func (s *GetProjectResponse) GetDescription() string {
+func (s *GetProjectResponse) GetDescription() OptString {
 	return s.Description
 }
 
 // GetFoundingDate returns the value of FoundingDate.
-func (s *GetProjectResponse) GetFoundingDate() string {
+func (s *GetProjectResponse) GetFoundingDate() OptString {
 	return s.FoundingDate
 }
 
 // GetDissolutionDate returns the value of DissolutionDate.
-func (s *GetProjectResponse) GetDissolutionDate() string {
+func (s *GetProjectResponse) GetDissolutionDate() OptString {
 	return s.DissolutionDate
 }
 
@@ -363,28 +369,33 @@ func (s *GetProjectResponse) SetIdentifier(val []GetProjectResponseIdentifierIte
 	s.Identifier = val
 }
 
+// SetIsFundedBy sets the value of IsFundedBy.
+func (s *GetProjectResponse) SetIsFundedBy(val OptGetProjectResponseIsFundedBy) {
+	s.IsFundedBy = val
+}
+
 // SetHasAcronym sets the value of HasAcronym.
-func (s *GetProjectResponse) SetHasAcronym(val string) {
+func (s *GetProjectResponse) SetHasAcronym(val OptString) {
 	s.HasAcronym = val
 }
 
 // SetName sets the value of Name.
-func (s *GetProjectResponse) SetName(val string) {
+func (s *GetProjectResponse) SetName(val OptString) {
 	s.Name = val
 }
 
 // SetDescription sets the value of Description.
-func (s *GetProjectResponse) SetDescription(val string) {
+func (s *GetProjectResponse) SetDescription(val OptString) {
 	s.Description = val
 }
 
 // SetFoundingDate sets the value of FoundingDate.
-func (s *GetProjectResponse) SetFoundingDate(val string) {
+func (s *GetProjectResponse) SetFoundingDate(val OptString) {
 	s.FoundingDate = val
 }
 
 // SetDissolutionDate sets the value of DissolutionDate.
-func (s *GetProjectResponse) SetDissolutionDate(val string) {
+func (s *GetProjectResponse) SetDissolutionDate(val OptString) {
 	s.DissolutionDate = val
 }
 
@@ -432,6 +443,67 @@ func (s *GetProjectResponseIdentifierItem) SetPropertyID(val string) {
 // SetValue sets the value of Value.
 func (s *GetProjectResponseIdentifierItem) SetValue(val string) {
 	s.Value = val
+}
+
+type GetProjectResponseIsFundedBy struct {
+	Type        string                                     `json:"type"`
+	Identifier  string                                     `json:"identifier"`
+	IsAwardedBy OptGetProjectResponseIsFundedByIsAwardedBy `json:"isAwardedBy"`
+}
+
+// GetType returns the value of Type.
+func (s *GetProjectResponseIsFundedBy) GetType() string {
+	return s.Type
+}
+
+// GetIdentifier returns the value of Identifier.
+func (s *GetProjectResponseIsFundedBy) GetIdentifier() string {
+	return s.Identifier
+}
+
+// GetIsAwardedBy returns the value of IsAwardedBy.
+func (s *GetProjectResponseIsFundedBy) GetIsAwardedBy() OptGetProjectResponseIsFundedByIsAwardedBy {
+	return s.IsAwardedBy
+}
+
+// SetType sets the value of Type.
+func (s *GetProjectResponseIsFundedBy) SetType(val string) {
+	s.Type = val
+}
+
+// SetIdentifier sets the value of Identifier.
+func (s *GetProjectResponseIsFundedBy) SetIdentifier(val string) {
+	s.Identifier = val
+}
+
+// SetIsAwardedBy sets the value of IsAwardedBy.
+func (s *GetProjectResponseIsFundedBy) SetIsAwardedBy(val OptGetProjectResponseIsFundedByIsAwardedBy) {
+	s.IsAwardedBy = val
+}
+
+type GetProjectResponseIsFundedByIsAwardedBy struct {
+	Type string `json:"type"`
+	Name string `json:"name"`
+}
+
+// GetType returns the value of Type.
+func (s *GetProjectResponseIsFundedByIsAwardedBy) GetType() string {
+	return s.Type
+}
+
+// GetName returns the value of Name.
+func (s *GetProjectResponseIsFundedByIsAwardedBy) GetName() string {
+	return s.Name
+}
+
+// SetType sets the value of Type.
+func (s *GetProjectResponseIsFundedByIsAwardedBy) SetType(val string) {
+	s.Type = val
+}
+
+// SetName sets the value of Name.
+func (s *GetProjectResponseIsFundedByIsAwardedBy) SetName(val string) {
+	s.Name = val
 }
 
 // NewOptAddProjectRequestIsFundedBy returns new OptAddProjectRequestIsFundedBy with value set to v.
@@ -520,6 +592,98 @@ func (o OptAddProjectRequestIsFundedByIsAwardedBy) Get() (v AddProjectRequestIsF
 
 // Or returns value if set, or given parameter if does not.
 func (o OptAddProjectRequestIsFundedByIsAwardedBy) Or(d AddProjectRequestIsFundedByIsAwardedBy) AddProjectRequestIsFundedByIsAwardedBy {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptGetProjectResponseIsFundedBy returns new OptGetProjectResponseIsFundedBy with value set to v.
+func NewOptGetProjectResponseIsFundedBy(v GetProjectResponseIsFundedBy) OptGetProjectResponseIsFundedBy {
+	return OptGetProjectResponseIsFundedBy{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetProjectResponseIsFundedBy is optional GetProjectResponseIsFundedBy.
+type OptGetProjectResponseIsFundedBy struct {
+	Value GetProjectResponseIsFundedBy
+	Set   bool
+}
+
+// IsSet returns true if OptGetProjectResponseIsFundedBy was set.
+func (o OptGetProjectResponseIsFundedBy) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetProjectResponseIsFundedBy) Reset() {
+	var v GetProjectResponseIsFundedBy
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetProjectResponseIsFundedBy) SetTo(v GetProjectResponseIsFundedBy) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetProjectResponseIsFundedBy) Get() (v GetProjectResponseIsFundedBy, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetProjectResponseIsFundedBy) Or(d GetProjectResponseIsFundedBy) GetProjectResponseIsFundedBy {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptGetProjectResponseIsFundedByIsAwardedBy returns new OptGetProjectResponseIsFundedByIsAwardedBy with value set to v.
+func NewOptGetProjectResponseIsFundedByIsAwardedBy(v GetProjectResponseIsFundedByIsAwardedBy) OptGetProjectResponseIsFundedByIsAwardedBy {
+	return OptGetProjectResponseIsFundedByIsAwardedBy{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetProjectResponseIsFundedByIsAwardedBy is optional GetProjectResponseIsFundedByIsAwardedBy.
+type OptGetProjectResponseIsFundedByIsAwardedBy struct {
+	Value GetProjectResponseIsFundedByIsAwardedBy
+	Set   bool
+}
+
+// IsSet returns true if OptGetProjectResponseIsFundedByIsAwardedBy was set.
+func (o OptGetProjectResponseIsFundedByIsAwardedBy) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetProjectResponseIsFundedByIsAwardedBy) Reset() {
+	var v GetProjectResponseIsFundedByIsAwardedBy
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetProjectResponseIsFundedByIsAwardedBy) SetTo(v GetProjectResponseIsFundedByIsAwardedBy) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetProjectResponseIsFundedByIsAwardedBy) Get() (v GetProjectResponseIsFundedByIsAwardedBy, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetProjectResponseIsFundedByIsAwardedBy) Or(d GetProjectResponseIsFundedByIsAwardedBy) GetProjectResponseIsFundedByIsAwardedBy {
 	if v, ok := o.Get(); ok {
 		return v
 	}

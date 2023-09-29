@@ -84,9 +84,19 @@ func DissolutionDate(v string) predicate.Project {
 	return predicate.Project(sql.FieldEQ(FieldDissolutionDate, v))
 }
 
-// HasAcronym applies equality check predicate on the "has_acronym" field. It's identical to HasAcronymEQ.
-func HasAcronym(v string) predicate.Project {
-	return predicate.Project(sql.FieldEQ(FieldHasAcronym, v))
+// Acronym applies equality check predicate on the "acronym" field. It's identical to AcronymEQ.
+func Acronym(v string) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldAcronym, v))
+}
+
+// Grant applies equality check predicate on the "grant" field. It's identical to GrantEQ.
+func Grant(v string) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldGrant, v))
+}
+
+// FundingProgramme applies equality check predicate on the "funding_programme" field. It's identical to FundingProgrammeEQ.
+func FundingProgramme(v string) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldFundingProgramme, v))
 }
 
 // Created applies equality check predicate on the "created" field. It's identical to CreatedEQ.
@@ -97,26 +107,6 @@ func Created(v time.Time) predicate.Project {
 // Modified applies equality check predicate on the "modified" field. It's identical to ModifiedEQ.
 func Modified(v time.Time) predicate.Project {
 	return predicate.Project(sql.FieldEQ(FieldModified, v))
-}
-
-// IdentifierIsNil applies the IsNil predicate on the "identifier" field.
-func IdentifierIsNil() predicate.Project {
-	return predicate.Project(sql.FieldIsNull(FieldIdentifier))
-}
-
-// IdentifierNotNil applies the NotNil predicate on the "identifier" field.
-func IdentifierNotNil() predicate.Project {
-	return predicate.Project(sql.FieldNotNull(FieldIdentifier))
-}
-
-// IsFundedByIsNil applies the IsNil predicate on the "is_funded_by" field.
-func IsFundedByIsNil() predicate.Project {
-	return predicate.Project(sql.FieldIsNull(FieldIsFundedBy))
-}
-
-// IsFundedByNotNil applies the NotNil predicate on the "is_funded_by" field.
-func IsFundedByNotNil() predicate.Project {
-	return predicate.Project(sql.FieldNotNull(FieldIsFundedBy))
 }
 
 // NameEQ applies the EQ predicate on the "name" field.
@@ -172,6 +162,16 @@ func NameHasPrefix(v string) predicate.Project {
 // NameHasSuffix applies the HasSuffix predicate on the "name" field.
 func NameHasSuffix(v string) predicate.Project {
 	return predicate.Project(sql.FieldHasSuffix(FieldName, v))
+}
+
+// NameIsNil applies the IsNil predicate on the "name" field.
+func NameIsNil() predicate.Project {
+	return predicate.Project(sql.FieldIsNull(FieldName))
+}
+
+// NameNotNil applies the NotNil predicate on the "name" field.
+func NameNotNil() predicate.Project {
+	return predicate.Project(sql.FieldNotNull(FieldName))
 }
 
 // NameEqualFold applies the EqualFold predicate on the "name" field.
@@ -239,6 +239,16 @@ func DescriptionHasSuffix(v string) predicate.Project {
 	return predicate.Project(sql.FieldHasSuffix(FieldDescription, v))
 }
 
+// DescriptionIsNil applies the IsNil predicate on the "description" field.
+func DescriptionIsNil() predicate.Project {
+	return predicate.Project(sql.FieldIsNull(FieldDescription))
+}
+
+// DescriptionNotNil applies the NotNil predicate on the "description" field.
+func DescriptionNotNil() predicate.Project {
+	return predicate.Project(sql.FieldNotNull(FieldDescription))
+}
+
 // DescriptionEqualFold applies the EqualFold predicate on the "description" field.
 func DescriptionEqualFold(v string) predicate.Project {
 	return predicate.Project(sql.FieldEqualFold(FieldDescription, v))
@@ -302,6 +312,16 @@ func FoundingDateHasPrefix(v string) predicate.Project {
 // FoundingDateHasSuffix applies the HasSuffix predicate on the "founding_date" field.
 func FoundingDateHasSuffix(v string) predicate.Project {
 	return predicate.Project(sql.FieldHasSuffix(FieldFoundingDate, v))
+}
+
+// FoundingDateIsNil applies the IsNil predicate on the "founding_date" field.
+func FoundingDateIsNil() predicate.Project {
+	return predicate.Project(sql.FieldIsNull(FieldFoundingDate))
+}
+
+// FoundingDateNotNil applies the NotNil predicate on the "founding_date" field.
+func FoundingDateNotNil() predicate.Project {
+	return predicate.Project(sql.FieldNotNull(FieldFoundingDate))
 }
 
 // FoundingDateEqualFold applies the EqualFold predicate on the "founding_date" field.
@@ -369,6 +389,16 @@ func DissolutionDateHasSuffix(v string) predicate.Project {
 	return predicate.Project(sql.FieldHasSuffix(FieldDissolutionDate, v))
 }
 
+// DissolutionDateIsNil applies the IsNil predicate on the "dissolution_date" field.
+func DissolutionDateIsNil() predicate.Project {
+	return predicate.Project(sql.FieldIsNull(FieldDissolutionDate))
+}
+
+// DissolutionDateNotNil applies the NotNil predicate on the "dissolution_date" field.
+func DissolutionDateNotNil() predicate.Project {
+	return predicate.Project(sql.FieldNotNull(FieldDissolutionDate))
+}
+
 // DissolutionDateEqualFold applies the EqualFold predicate on the "dissolution_date" field.
 func DissolutionDateEqualFold(v string) predicate.Project {
 	return predicate.Project(sql.FieldEqualFold(FieldDissolutionDate, v))
@@ -379,69 +409,229 @@ func DissolutionDateContainsFold(v string) predicate.Project {
 	return predicate.Project(sql.FieldContainsFold(FieldDissolutionDate, v))
 }
 
-// HasAcronymEQ applies the EQ predicate on the "has_acronym" field.
-func HasAcronymEQ(v string) predicate.Project {
-	return predicate.Project(sql.FieldEQ(FieldHasAcronym, v))
+// AcronymEQ applies the EQ predicate on the "acronym" field.
+func AcronymEQ(v string) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldAcronym, v))
 }
 
-// HasAcronymNEQ applies the NEQ predicate on the "has_acronym" field.
-func HasAcronymNEQ(v string) predicate.Project {
-	return predicate.Project(sql.FieldNEQ(FieldHasAcronym, v))
+// AcronymNEQ applies the NEQ predicate on the "acronym" field.
+func AcronymNEQ(v string) predicate.Project {
+	return predicate.Project(sql.FieldNEQ(FieldAcronym, v))
 }
 
-// HasAcronymIn applies the In predicate on the "has_acronym" field.
-func HasAcronymIn(vs ...string) predicate.Project {
-	return predicate.Project(sql.FieldIn(FieldHasAcronym, vs...))
+// AcronymIn applies the In predicate on the "acronym" field.
+func AcronymIn(vs ...string) predicate.Project {
+	return predicate.Project(sql.FieldIn(FieldAcronym, vs...))
 }
 
-// HasAcronymNotIn applies the NotIn predicate on the "has_acronym" field.
-func HasAcronymNotIn(vs ...string) predicate.Project {
-	return predicate.Project(sql.FieldNotIn(FieldHasAcronym, vs...))
+// AcronymNotIn applies the NotIn predicate on the "acronym" field.
+func AcronymNotIn(vs ...string) predicate.Project {
+	return predicate.Project(sql.FieldNotIn(FieldAcronym, vs...))
 }
 
-// HasAcronymGT applies the GT predicate on the "has_acronym" field.
-func HasAcronymGT(v string) predicate.Project {
-	return predicate.Project(sql.FieldGT(FieldHasAcronym, v))
+// AcronymGT applies the GT predicate on the "acronym" field.
+func AcronymGT(v string) predicate.Project {
+	return predicate.Project(sql.FieldGT(FieldAcronym, v))
 }
 
-// HasAcronymGTE applies the GTE predicate on the "has_acronym" field.
-func HasAcronymGTE(v string) predicate.Project {
-	return predicate.Project(sql.FieldGTE(FieldHasAcronym, v))
+// AcronymGTE applies the GTE predicate on the "acronym" field.
+func AcronymGTE(v string) predicate.Project {
+	return predicate.Project(sql.FieldGTE(FieldAcronym, v))
 }
 
-// HasAcronymLT applies the LT predicate on the "has_acronym" field.
-func HasAcronymLT(v string) predicate.Project {
-	return predicate.Project(sql.FieldLT(FieldHasAcronym, v))
+// AcronymLT applies the LT predicate on the "acronym" field.
+func AcronymLT(v string) predicate.Project {
+	return predicate.Project(sql.FieldLT(FieldAcronym, v))
 }
 
-// HasAcronymLTE applies the LTE predicate on the "has_acronym" field.
-func HasAcronymLTE(v string) predicate.Project {
-	return predicate.Project(sql.FieldLTE(FieldHasAcronym, v))
+// AcronymLTE applies the LTE predicate on the "acronym" field.
+func AcronymLTE(v string) predicate.Project {
+	return predicate.Project(sql.FieldLTE(FieldAcronym, v))
 }
 
-// HasAcronymContains applies the Contains predicate on the "has_acronym" field.
-func HasAcronymContains(v string) predicate.Project {
-	return predicate.Project(sql.FieldContains(FieldHasAcronym, v))
+// AcronymContains applies the Contains predicate on the "acronym" field.
+func AcronymContains(v string) predicate.Project {
+	return predicate.Project(sql.FieldContains(FieldAcronym, v))
 }
 
-// HasAcronymHasPrefix applies the HasPrefix predicate on the "has_acronym" field.
-func HasAcronymHasPrefix(v string) predicate.Project {
-	return predicate.Project(sql.FieldHasPrefix(FieldHasAcronym, v))
+// AcronymHasPrefix applies the HasPrefix predicate on the "acronym" field.
+func AcronymHasPrefix(v string) predicate.Project {
+	return predicate.Project(sql.FieldHasPrefix(FieldAcronym, v))
 }
 
-// HasAcronymHasSuffix applies the HasSuffix predicate on the "has_acronym" field.
-func HasAcronymHasSuffix(v string) predicate.Project {
-	return predicate.Project(sql.FieldHasSuffix(FieldHasAcronym, v))
+// AcronymHasSuffix applies the HasSuffix predicate on the "acronym" field.
+func AcronymHasSuffix(v string) predicate.Project {
+	return predicate.Project(sql.FieldHasSuffix(FieldAcronym, v))
 }
 
-// HasAcronymEqualFold applies the EqualFold predicate on the "has_acronym" field.
-func HasAcronymEqualFold(v string) predicate.Project {
-	return predicate.Project(sql.FieldEqualFold(FieldHasAcronym, v))
+// AcronymIsNil applies the IsNil predicate on the "acronym" field.
+func AcronymIsNil() predicate.Project {
+	return predicate.Project(sql.FieldIsNull(FieldAcronym))
 }
 
-// HasAcronymContainsFold applies the ContainsFold predicate on the "has_acronym" field.
-func HasAcronymContainsFold(v string) predicate.Project {
-	return predicate.Project(sql.FieldContainsFold(FieldHasAcronym, v))
+// AcronymNotNil applies the NotNil predicate on the "acronym" field.
+func AcronymNotNil() predicate.Project {
+	return predicate.Project(sql.FieldNotNull(FieldAcronym))
+}
+
+// AcronymEqualFold applies the EqualFold predicate on the "acronym" field.
+func AcronymEqualFold(v string) predicate.Project {
+	return predicate.Project(sql.FieldEqualFold(FieldAcronym, v))
+}
+
+// AcronymContainsFold applies the ContainsFold predicate on the "acronym" field.
+func AcronymContainsFold(v string) predicate.Project {
+	return predicate.Project(sql.FieldContainsFold(FieldAcronym, v))
+}
+
+// GrantEQ applies the EQ predicate on the "grant" field.
+func GrantEQ(v string) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldGrant, v))
+}
+
+// GrantNEQ applies the NEQ predicate on the "grant" field.
+func GrantNEQ(v string) predicate.Project {
+	return predicate.Project(sql.FieldNEQ(FieldGrant, v))
+}
+
+// GrantIn applies the In predicate on the "grant" field.
+func GrantIn(vs ...string) predicate.Project {
+	return predicate.Project(sql.FieldIn(FieldGrant, vs...))
+}
+
+// GrantNotIn applies the NotIn predicate on the "grant" field.
+func GrantNotIn(vs ...string) predicate.Project {
+	return predicate.Project(sql.FieldNotIn(FieldGrant, vs...))
+}
+
+// GrantGT applies the GT predicate on the "grant" field.
+func GrantGT(v string) predicate.Project {
+	return predicate.Project(sql.FieldGT(FieldGrant, v))
+}
+
+// GrantGTE applies the GTE predicate on the "grant" field.
+func GrantGTE(v string) predicate.Project {
+	return predicate.Project(sql.FieldGTE(FieldGrant, v))
+}
+
+// GrantLT applies the LT predicate on the "grant" field.
+func GrantLT(v string) predicate.Project {
+	return predicate.Project(sql.FieldLT(FieldGrant, v))
+}
+
+// GrantLTE applies the LTE predicate on the "grant" field.
+func GrantLTE(v string) predicate.Project {
+	return predicate.Project(sql.FieldLTE(FieldGrant, v))
+}
+
+// GrantContains applies the Contains predicate on the "grant" field.
+func GrantContains(v string) predicate.Project {
+	return predicate.Project(sql.FieldContains(FieldGrant, v))
+}
+
+// GrantHasPrefix applies the HasPrefix predicate on the "grant" field.
+func GrantHasPrefix(v string) predicate.Project {
+	return predicate.Project(sql.FieldHasPrefix(FieldGrant, v))
+}
+
+// GrantHasSuffix applies the HasSuffix predicate on the "grant" field.
+func GrantHasSuffix(v string) predicate.Project {
+	return predicate.Project(sql.FieldHasSuffix(FieldGrant, v))
+}
+
+// GrantIsNil applies the IsNil predicate on the "grant" field.
+func GrantIsNil() predicate.Project {
+	return predicate.Project(sql.FieldIsNull(FieldGrant))
+}
+
+// GrantNotNil applies the NotNil predicate on the "grant" field.
+func GrantNotNil() predicate.Project {
+	return predicate.Project(sql.FieldNotNull(FieldGrant))
+}
+
+// GrantEqualFold applies the EqualFold predicate on the "grant" field.
+func GrantEqualFold(v string) predicate.Project {
+	return predicate.Project(sql.FieldEqualFold(FieldGrant, v))
+}
+
+// GrantContainsFold applies the ContainsFold predicate on the "grant" field.
+func GrantContainsFold(v string) predicate.Project {
+	return predicate.Project(sql.FieldContainsFold(FieldGrant, v))
+}
+
+// FundingProgrammeEQ applies the EQ predicate on the "funding_programme" field.
+func FundingProgrammeEQ(v string) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldFundingProgramme, v))
+}
+
+// FundingProgrammeNEQ applies the NEQ predicate on the "funding_programme" field.
+func FundingProgrammeNEQ(v string) predicate.Project {
+	return predicate.Project(sql.FieldNEQ(FieldFundingProgramme, v))
+}
+
+// FundingProgrammeIn applies the In predicate on the "funding_programme" field.
+func FundingProgrammeIn(vs ...string) predicate.Project {
+	return predicate.Project(sql.FieldIn(FieldFundingProgramme, vs...))
+}
+
+// FundingProgrammeNotIn applies the NotIn predicate on the "funding_programme" field.
+func FundingProgrammeNotIn(vs ...string) predicate.Project {
+	return predicate.Project(sql.FieldNotIn(FieldFundingProgramme, vs...))
+}
+
+// FundingProgrammeGT applies the GT predicate on the "funding_programme" field.
+func FundingProgrammeGT(v string) predicate.Project {
+	return predicate.Project(sql.FieldGT(FieldFundingProgramme, v))
+}
+
+// FundingProgrammeGTE applies the GTE predicate on the "funding_programme" field.
+func FundingProgrammeGTE(v string) predicate.Project {
+	return predicate.Project(sql.FieldGTE(FieldFundingProgramme, v))
+}
+
+// FundingProgrammeLT applies the LT predicate on the "funding_programme" field.
+func FundingProgrammeLT(v string) predicate.Project {
+	return predicate.Project(sql.FieldLT(FieldFundingProgramme, v))
+}
+
+// FundingProgrammeLTE applies the LTE predicate on the "funding_programme" field.
+func FundingProgrammeLTE(v string) predicate.Project {
+	return predicate.Project(sql.FieldLTE(FieldFundingProgramme, v))
+}
+
+// FundingProgrammeContains applies the Contains predicate on the "funding_programme" field.
+func FundingProgrammeContains(v string) predicate.Project {
+	return predicate.Project(sql.FieldContains(FieldFundingProgramme, v))
+}
+
+// FundingProgrammeHasPrefix applies the HasPrefix predicate on the "funding_programme" field.
+func FundingProgrammeHasPrefix(v string) predicate.Project {
+	return predicate.Project(sql.FieldHasPrefix(FieldFundingProgramme, v))
+}
+
+// FundingProgrammeHasSuffix applies the HasSuffix predicate on the "funding_programme" field.
+func FundingProgrammeHasSuffix(v string) predicate.Project {
+	return predicate.Project(sql.FieldHasSuffix(FieldFundingProgramme, v))
+}
+
+// FundingProgrammeIsNil applies the IsNil predicate on the "funding_programme" field.
+func FundingProgrammeIsNil() predicate.Project {
+	return predicate.Project(sql.FieldIsNull(FieldFundingProgramme))
+}
+
+// FundingProgrammeNotNil applies the NotNil predicate on the "funding_programme" field.
+func FundingProgrammeNotNil() predicate.Project {
+	return predicate.Project(sql.FieldNotNull(FieldFundingProgramme))
+}
+
+// FundingProgrammeEqualFold applies the EqualFold predicate on the "funding_programme" field.
+func FundingProgrammeEqualFold(v string) predicate.Project {
+	return predicate.Project(sql.FieldEqualFold(FieldFundingProgramme, v))
+}
+
+// FundingProgrammeContainsFold applies the ContainsFold predicate on the "funding_programme" field.
+func FundingProgrammeContainsFold(v string) predicate.Project {
+	return predicate.Project(sql.FieldContainsFold(FieldFundingProgramme, v))
 }
 
 // CreatedEQ applies the EQ predicate on the "created" field.

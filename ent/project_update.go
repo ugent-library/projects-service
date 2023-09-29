@@ -6,7 +6,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -42,35 +41,23 @@ func (pu *ProjectUpdate) AppendIdentifier(s []schema.Identifier) *ProjectUpdate 
 	return pu
 }
 
-// ClearIdentifier clears the value of the "identifier" field.
-func (pu *ProjectUpdate) ClearIdentifier() *ProjectUpdate {
-	pu.mutation.ClearIdentifier()
+// SetName sets the "name" field.
+func (pu *ProjectUpdate) SetName(s string) *ProjectUpdate {
+	pu.mutation.SetName(s)
 	return pu
 }
 
-// SetIsFundedBy sets the "is_funded_by" field.
-func (pu *ProjectUpdate) SetIsFundedBy(s schema.Grant) *ProjectUpdate {
-	pu.mutation.SetIsFundedBy(s)
-	return pu
-}
-
-// SetNillableIsFundedBy sets the "is_funded_by" field if the given value is not nil.
-func (pu *ProjectUpdate) SetNillableIsFundedBy(s *schema.Grant) *ProjectUpdate {
+// SetNillableName sets the "name" field if the given value is not nil.
+func (pu *ProjectUpdate) SetNillableName(s *string) *ProjectUpdate {
 	if s != nil {
-		pu.SetIsFundedBy(*s)
+		pu.SetName(*s)
 	}
 	return pu
 }
 
-// ClearIsFundedBy clears the value of the "is_funded_by" field.
-func (pu *ProjectUpdate) ClearIsFundedBy() *ProjectUpdate {
-	pu.mutation.ClearIsFundedBy()
-	return pu
-}
-
-// SetName sets the "name" field.
-func (pu *ProjectUpdate) SetName(s string) *ProjectUpdate {
-	pu.mutation.SetName(s)
+// ClearName clears the value of the "name" field.
+func (pu *ProjectUpdate) ClearName() *ProjectUpdate {
+	pu.mutation.ClearName()
 	return pu
 }
 
@@ -80,9 +67,37 @@ func (pu *ProjectUpdate) SetDescription(s string) *ProjectUpdate {
 	return pu
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (pu *ProjectUpdate) SetNillableDescription(s *string) *ProjectUpdate {
+	if s != nil {
+		pu.SetDescription(*s)
+	}
+	return pu
+}
+
+// ClearDescription clears the value of the "description" field.
+func (pu *ProjectUpdate) ClearDescription() *ProjectUpdate {
+	pu.mutation.ClearDescription()
+	return pu
+}
+
 // SetFoundingDate sets the "founding_date" field.
 func (pu *ProjectUpdate) SetFoundingDate(s string) *ProjectUpdate {
 	pu.mutation.SetFoundingDate(s)
+	return pu
+}
+
+// SetNillableFoundingDate sets the "founding_date" field if the given value is not nil.
+func (pu *ProjectUpdate) SetNillableFoundingDate(s *string) *ProjectUpdate {
+	if s != nil {
+		pu.SetFoundingDate(*s)
+	}
+	return pu
+}
+
+// ClearFoundingDate clears the value of the "founding_date" field.
+func (pu *ProjectUpdate) ClearFoundingDate() *ProjectUpdate {
+	pu.mutation.ClearFoundingDate()
 	return pu
 }
 
@@ -92,15 +107,77 @@ func (pu *ProjectUpdate) SetDissolutionDate(s string) *ProjectUpdate {
 	return pu
 }
 
-// SetHasAcronym sets the "has_acronym" field.
-func (pu *ProjectUpdate) SetHasAcronym(s string) *ProjectUpdate {
-	pu.mutation.SetHasAcronym(s)
+// SetNillableDissolutionDate sets the "dissolution_date" field if the given value is not nil.
+func (pu *ProjectUpdate) SetNillableDissolutionDate(s *string) *ProjectUpdate {
+	if s != nil {
+		pu.SetDissolutionDate(*s)
+	}
 	return pu
 }
 
-// SetModified sets the "modified" field.
-func (pu *ProjectUpdate) SetModified(t time.Time) *ProjectUpdate {
-	pu.mutation.SetModified(t)
+// ClearDissolutionDate clears the value of the "dissolution_date" field.
+func (pu *ProjectUpdate) ClearDissolutionDate() *ProjectUpdate {
+	pu.mutation.ClearDissolutionDate()
+	return pu
+}
+
+// SetAcronym sets the "acronym" field.
+func (pu *ProjectUpdate) SetAcronym(s string) *ProjectUpdate {
+	pu.mutation.SetAcronym(s)
+	return pu
+}
+
+// SetNillableAcronym sets the "acronym" field if the given value is not nil.
+func (pu *ProjectUpdate) SetNillableAcronym(s *string) *ProjectUpdate {
+	if s != nil {
+		pu.SetAcronym(*s)
+	}
+	return pu
+}
+
+// ClearAcronym clears the value of the "acronym" field.
+func (pu *ProjectUpdate) ClearAcronym() *ProjectUpdate {
+	pu.mutation.ClearAcronym()
+	return pu
+}
+
+// SetGrant sets the "grant" field.
+func (pu *ProjectUpdate) SetGrant(s string) *ProjectUpdate {
+	pu.mutation.SetGrant(s)
+	return pu
+}
+
+// SetNillableGrant sets the "grant" field if the given value is not nil.
+func (pu *ProjectUpdate) SetNillableGrant(s *string) *ProjectUpdate {
+	if s != nil {
+		pu.SetGrant(*s)
+	}
+	return pu
+}
+
+// ClearGrant clears the value of the "grant" field.
+func (pu *ProjectUpdate) ClearGrant() *ProjectUpdate {
+	pu.mutation.ClearGrant()
+	return pu
+}
+
+// SetFundingProgramme sets the "funding_programme" field.
+func (pu *ProjectUpdate) SetFundingProgramme(s string) *ProjectUpdate {
+	pu.mutation.SetFundingProgramme(s)
+	return pu
+}
+
+// SetNillableFundingProgramme sets the "funding_programme" field if the given value is not nil.
+func (pu *ProjectUpdate) SetNillableFundingProgramme(s *string) *ProjectUpdate {
+	if s != nil {
+		pu.SetFundingProgramme(*s)
+	}
+	return pu
+}
+
+// ClearFundingProgramme clears the value of the "funding_programme" field.
+func (pu *ProjectUpdate) ClearFundingProgramme() *ProjectUpdate {
+	pu.mutation.ClearFundingProgramme()
 	return pu
 }
 
@@ -162,29 +239,47 @@ func (pu *ProjectUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			sqljson.Append(u, project.FieldIdentifier, value)
 		})
 	}
-	if pu.mutation.IdentifierCleared() {
-		_spec.ClearField(project.FieldIdentifier, field.TypeJSON)
-	}
-	if value, ok := pu.mutation.IsFundedBy(); ok {
-		_spec.SetField(project.FieldIsFundedBy, field.TypeJSON, value)
-	}
-	if pu.mutation.IsFundedByCleared() {
-		_spec.ClearField(project.FieldIsFundedBy, field.TypeJSON)
-	}
 	if value, ok := pu.mutation.Name(); ok {
 		_spec.SetField(project.FieldName, field.TypeString, value)
+	}
+	if pu.mutation.NameCleared() {
+		_spec.ClearField(project.FieldName, field.TypeString)
 	}
 	if value, ok := pu.mutation.Description(); ok {
 		_spec.SetField(project.FieldDescription, field.TypeString, value)
 	}
+	if pu.mutation.DescriptionCleared() {
+		_spec.ClearField(project.FieldDescription, field.TypeString)
+	}
 	if value, ok := pu.mutation.FoundingDate(); ok {
 		_spec.SetField(project.FieldFoundingDate, field.TypeString, value)
+	}
+	if pu.mutation.FoundingDateCleared() {
+		_spec.ClearField(project.FieldFoundingDate, field.TypeString)
 	}
 	if value, ok := pu.mutation.DissolutionDate(); ok {
 		_spec.SetField(project.FieldDissolutionDate, field.TypeString, value)
 	}
-	if value, ok := pu.mutation.HasAcronym(); ok {
-		_spec.SetField(project.FieldHasAcronym, field.TypeString, value)
+	if pu.mutation.DissolutionDateCleared() {
+		_spec.ClearField(project.FieldDissolutionDate, field.TypeString)
+	}
+	if value, ok := pu.mutation.Acronym(); ok {
+		_spec.SetField(project.FieldAcronym, field.TypeString, value)
+	}
+	if pu.mutation.AcronymCleared() {
+		_spec.ClearField(project.FieldAcronym, field.TypeString)
+	}
+	if value, ok := pu.mutation.Grant(); ok {
+		_spec.SetField(project.FieldGrant, field.TypeString, value)
+	}
+	if pu.mutation.GrantCleared() {
+		_spec.ClearField(project.FieldGrant, field.TypeString)
+	}
+	if value, ok := pu.mutation.FundingProgramme(); ok {
+		_spec.SetField(project.FieldFundingProgramme, field.TypeString, value)
+	}
+	if pu.mutation.FundingProgrammeCleared() {
+		_spec.ClearField(project.FieldFundingProgramme, field.TypeString)
 	}
 	if value, ok := pu.mutation.Modified(); ok {
 		_spec.SetField(project.FieldModified, field.TypeTime, value)
@@ -221,35 +316,23 @@ func (puo *ProjectUpdateOne) AppendIdentifier(s []schema.Identifier) *ProjectUpd
 	return puo
 }
 
-// ClearIdentifier clears the value of the "identifier" field.
-func (puo *ProjectUpdateOne) ClearIdentifier() *ProjectUpdateOne {
-	puo.mutation.ClearIdentifier()
+// SetName sets the "name" field.
+func (puo *ProjectUpdateOne) SetName(s string) *ProjectUpdateOne {
+	puo.mutation.SetName(s)
 	return puo
 }
 
-// SetIsFundedBy sets the "is_funded_by" field.
-func (puo *ProjectUpdateOne) SetIsFundedBy(s schema.Grant) *ProjectUpdateOne {
-	puo.mutation.SetIsFundedBy(s)
-	return puo
-}
-
-// SetNillableIsFundedBy sets the "is_funded_by" field if the given value is not nil.
-func (puo *ProjectUpdateOne) SetNillableIsFundedBy(s *schema.Grant) *ProjectUpdateOne {
+// SetNillableName sets the "name" field if the given value is not nil.
+func (puo *ProjectUpdateOne) SetNillableName(s *string) *ProjectUpdateOne {
 	if s != nil {
-		puo.SetIsFundedBy(*s)
+		puo.SetName(*s)
 	}
 	return puo
 }
 
-// ClearIsFundedBy clears the value of the "is_funded_by" field.
-func (puo *ProjectUpdateOne) ClearIsFundedBy() *ProjectUpdateOne {
-	puo.mutation.ClearIsFundedBy()
-	return puo
-}
-
-// SetName sets the "name" field.
-func (puo *ProjectUpdateOne) SetName(s string) *ProjectUpdateOne {
-	puo.mutation.SetName(s)
+// ClearName clears the value of the "name" field.
+func (puo *ProjectUpdateOne) ClearName() *ProjectUpdateOne {
+	puo.mutation.ClearName()
 	return puo
 }
 
@@ -259,9 +342,37 @@ func (puo *ProjectUpdateOne) SetDescription(s string) *ProjectUpdateOne {
 	return puo
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (puo *ProjectUpdateOne) SetNillableDescription(s *string) *ProjectUpdateOne {
+	if s != nil {
+		puo.SetDescription(*s)
+	}
+	return puo
+}
+
+// ClearDescription clears the value of the "description" field.
+func (puo *ProjectUpdateOne) ClearDescription() *ProjectUpdateOne {
+	puo.mutation.ClearDescription()
+	return puo
+}
+
 // SetFoundingDate sets the "founding_date" field.
 func (puo *ProjectUpdateOne) SetFoundingDate(s string) *ProjectUpdateOne {
 	puo.mutation.SetFoundingDate(s)
+	return puo
+}
+
+// SetNillableFoundingDate sets the "founding_date" field if the given value is not nil.
+func (puo *ProjectUpdateOne) SetNillableFoundingDate(s *string) *ProjectUpdateOne {
+	if s != nil {
+		puo.SetFoundingDate(*s)
+	}
+	return puo
+}
+
+// ClearFoundingDate clears the value of the "founding_date" field.
+func (puo *ProjectUpdateOne) ClearFoundingDate() *ProjectUpdateOne {
+	puo.mutation.ClearFoundingDate()
 	return puo
 }
 
@@ -271,15 +382,77 @@ func (puo *ProjectUpdateOne) SetDissolutionDate(s string) *ProjectUpdateOne {
 	return puo
 }
 
-// SetHasAcronym sets the "has_acronym" field.
-func (puo *ProjectUpdateOne) SetHasAcronym(s string) *ProjectUpdateOne {
-	puo.mutation.SetHasAcronym(s)
+// SetNillableDissolutionDate sets the "dissolution_date" field if the given value is not nil.
+func (puo *ProjectUpdateOne) SetNillableDissolutionDate(s *string) *ProjectUpdateOne {
+	if s != nil {
+		puo.SetDissolutionDate(*s)
+	}
 	return puo
 }
 
-// SetModified sets the "modified" field.
-func (puo *ProjectUpdateOne) SetModified(t time.Time) *ProjectUpdateOne {
-	puo.mutation.SetModified(t)
+// ClearDissolutionDate clears the value of the "dissolution_date" field.
+func (puo *ProjectUpdateOne) ClearDissolutionDate() *ProjectUpdateOne {
+	puo.mutation.ClearDissolutionDate()
+	return puo
+}
+
+// SetAcronym sets the "acronym" field.
+func (puo *ProjectUpdateOne) SetAcronym(s string) *ProjectUpdateOne {
+	puo.mutation.SetAcronym(s)
+	return puo
+}
+
+// SetNillableAcronym sets the "acronym" field if the given value is not nil.
+func (puo *ProjectUpdateOne) SetNillableAcronym(s *string) *ProjectUpdateOne {
+	if s != nil {
+		puo.SetAcronym(*s)
+	}
+	return puo
+}
+
+// ClearAcronym clears the value of the "acronym" field.
+func (puo *ProjectUpdateOne) ClearAcronym() *ProjectUpdateOne {
+	puo.mutation.ClearAcronym()
+	return puo
+}
+
+// SetGrant sets the "grant" field.
+func (puo *ProjectUpdateOne) SetGrant(s string) *ProjectUpdateOne {
+	puo.mutation.SetGrant(s)
+	return puo
+}
+
+// SetNillableGrant sets the "grant" field if the given value is not nil.
+func (puo *ProjectUpdateOne) SetNillableGrant(s *string) *ProjectUpdateOne {
+	if s != nil {
+		puo.SetGrant(*s)
+	}
+	return puo
+}
+
+// ClearGrant clears the value of the "grant" field.
+func (puo *ProjectUpdateOne) ClearGrant() *ProjectUpdateOne {
+	puo.mutation.ClearGrant()
+	return puo
+}
+
+// SetFundingProgramme sets the "funding_programme" field.
+func (puo *ProjectUpdateOne) SetFundingProgramme(s string) *ProjectUpdateOne {
+	puo.mutation.SetFundingProgramme(s)
+	return puo
+}
+
+// SetNillableFundingProgramme sets the "funding_programme" field if the given value is not nil.
+func (puo *ProjectUpdateOne) SetNillableFundingProgramme(s *string) *ProjectUpdateOne {
+	if s != nil {
+		puo.SetFundingProgramme(*s)
+	}
+	return puo
+}
+
+// ClearFundingProgramme clears the value of the "funding_programme" field.
+func (puo *ProjectUpdateOne) ClearFundingProgramme() *ProjectUpdateOne {
+	puo.mutation.ClearFundingProgramme()
 	return puo
 }
 
@@ -371,29 +544,47 @@ func (puo *ProjectUpdateOne) sqlSave(ctx context.Context) (_node *Project, err e
 			sqljson.Append(u, project.FieldIdentifier, value)
 		})
 	}
-	if puo.mutation.IdentifierCleared() {
-		_spec.ClearField(project.FieldIdentifier, field.TypeJSON)
-	}
-	if value, ok := puo.mutation.IsFundedBy(); ok {
-		_spec.SetField(project.FieldIsFundedBy, field.TypeJSON, value)
-	}
-	if puo.mutation.IsFundedByCleared() {
-		_spec.ClearField(project.FieldIsFundedBy, field.TypeJSON)
-	}
 	if value, ok := puo.mutation.Name(); ok {
 		_spec.SetField(project.FieldName, field.TypeString, value)
+	}
+	if puo.mutation.NameCleared() {
+		_spec.ClearField(project.FieldName, field.TypeString)
 	}
 	if value, ok := puo.mutation.Description(); ok {
 		_spec.SetField(project.FieldDescription, field.TypeString, value)
 	}
+	if puo.mutation.DescriptionCleared() {
+		_spec.ClearField(project.FieldDescription, field.TypeString)
+	}
 	if value, ok := puo.mutation.FoundingDate(); ok {
 		_spec.SetField(project.FieldFoundingDate, field.TypeString, value)
+	}
+	if puo.mutation.FoundingDateCleared() {
+		_spec.ClearField(project.FieldFoundingDate, field.TypeString)
 	}
 	if value, ok := puo.mutation.DissolutionDate(); ok {
 		_spec.SetField(project.FieldDissolutionDate, field.TypeString, value)
 	}
-	if value, ok := puo.mutation.HasAcronym(); ok {
-		_spec.SetField(project.FieldHasAcronym, field.TypeString, value)
+	if puo.mutation.DissolutionDateCleared() {
+		_spec.ClearField(project.FieldDissolutionDate, field.TypeString)
+	}
+	if value, ok := puo.mutation.Acronym(); ok {
+		_spec.SetField(project.FieldAcronym, field.TypeString, value)
+	}
+	if puo.mutation.AcronymCleared() {
+		_spec.ClearField(project.FieldAcronym, field.TypeString)
+	}
+	if value, ok := puo.mutation.Grant(); ok {
+		_spec.SetField(project.FieldGrant, field.TypeString, value)
+	}
+	if puo.mutation.GrantCleared() {
+		_spec.ClearField(project.FieldGrant, field.TypeString)
+	}
+	if value, ok := puo.mutation.FundingProgramme(); ok {
+		_spec.SetField(project.FieldFundingProgramme, field.TypeString, value)
+	}
+	if puo.mutation.FundingProgrammeCleared() {
+		_spec.ClearField(project.FieldFundingProgramme, field.TypeString)
 	}
 	if value, ok := puo.mutation.Modified(); ok {
 		_spec.SetField(project.FieldModified, field.TypeTime, value)

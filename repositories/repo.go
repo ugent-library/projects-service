@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"log"
 
 	"entgo.io/ent/dialect"
 	sqldialect "entgo.io/ent/dialect/sql"
@@ -17,6 +18,7 @@ import (
 )
 
 var ErrNotFound = errors.New("not found")
+var ErrConstraint = errors.New("something went wrong")
 
 type Repo struct {
 	client *ent.Client
@@ -60,26 +62,13 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 	}
 
 	pc := r.client.Project.Create().
-		SetName(p.Name).
-		SetDescription(p.Description).
 		SetIdentifier(sids).
-		SetHasAcronym(p.HasAcronym).
+		SetDescription(p.Description).
 		SetFoundingDate(p.FoundingDate).
-		SetDissolutionDate(p.DissolutionDate)
-
-	if p.IsFundedBy != nil {
-		g := schema.Grant{
-			Identifier: p.IsFundedBy.Identifier,
-		}
-
-		if p.IsFundedBy.IsAwardedBy != nil {
-			g.IsAwardedBy = schema.FundingProgramme{
-				Name: p.IsFundedBy.IsAwardedBy.Name,
-			}
-		}
-
-		pc.SetIsFundedBy(g)
-	}
+		SetDissolutionDate(p.DissolutionDate).
+		SetAcronym(p.Acronym).
+		SetGrant(p.Grant).
+		SetFundingProgramme(p.FundingProgramme)
 
 	_, err := pc.Save(ctx)
 
@@ -89,10 +78,14 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 func (r *Repo) GetProject(ctx context.Context, id string) (*models.Project, error) {
 	row, err := r.client.Project.Query().
 		Where(project.IDEQ(id)).
-		First(ctx)
+		Only(ctx)
 
 	if ent.IsNotFound(err) {
 		return nil, ErrNotFound
+	}
+
+	if ent.IsConstraintError(err) {
+		return nil, ErrConstraint
 	}
 
 	if err != nil {
@@ -108,15 +101,24 @@ func (r *Repo) GetProject(ctx context.Context, id string) (*models.Project, erro
 	}
 
 	p := &models.Project{
-		ID:              row.ID,
-		Name:            row.Name,
-		Description:     row.Description,
-		Identifier:      ids,
-		FoundingDate:    row.FoundingDate,
-		DissolutionDate: row.DissolutionDate,
-		DateCreated:     &row.Created,
-		DateModified:    &row.Modified,
+		ID:               row.ID,
+		Name:             row.Name,
+		Description:      row.Description,
+		Identifier:       ids,
+		FoundingDate:     row.FoundingDate,
+		DissolutionDate:  row.DissolutionDate,
+		Grant:            row.Grant,
+		FundingProgramme: row.FundingProgramme,
+		Acronym:          row.Acronym,
+		DateCreated:      &row.Created,
+		DateModified:     &row.Modified,
 	}
+
+	log.Printf("%+v", row)
 
 	return p, nil
 }
+
+// func (r *Repo) SuggestProjects(ctx context.Context, id string) (*models.Project, error) {
+
+// }

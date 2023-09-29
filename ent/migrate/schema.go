@@ -11,13 +11,14 @@ var (
 	// ProjectsColumns holds the columns for the "projects" table.
 	ProjectsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
-		{Name: "identifier", Type: field.TypeJSON, Nullable: true},
-		{Name: "is_funded_by", Type: field.TypeJSON, Nullable: true},
-		{Name: "name", Type: field.TypeString},
-		{Name: "description", Type: field.TypeString, Size: 2147483647},
-		{Name: "founding_date", Type: field.TypeString},
-		{Name: "dissolution_date", Type: field.TypeString},
-		{Name: "has_acronym", Type: field.TypeString},
+		{Name: "identifier", Type: field.TypeJSON},
+		{Name: "name", Type: field.TypeString, Nullable: true},
+		{Name: "description", Type: field.TypeString, Nullable: true, Size: 2147483647},
+		{Name: "founding_date", Type: field.TypeString, Nullable: true},
+		{Name: "dissolution_date", Type: field.TypeString, Nullable: true},
+		{Name: "acronym", Type: field.TypeString, Nullable: true},
+		{Name: "grant", Type: field.TypeString, Nullable: true},
+		{Name: "funding_programme", Type: field.TypeString, Nullable: true},
 		{Name: "created", Type: field.TypeTime},
 		{Name: "modified", Type: field.TypeTime},
 	}

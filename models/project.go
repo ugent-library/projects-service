@@ -7,24 +7,16 @@ type Identifier struct {
 	Value      string
 }
 
-type Grant struct {
-	Identifier  string
-	IsAwardedBy *FundingProgramme
-}
-
-type FundingProgramme struct {
-	Name string
-}
-
 type Project struct {
-	ID              string
-	Identifier      []*Identifier
-	HasAcronym      string
-	IsFundedBy      *Grant
-	Name            string
-	Description     string
-	FoundingDate    string
-	DissolutionDate string
-	DateCreated     *time.Time
-	DateModified    *time.Time
+	ID               string
+	Identifier       []*Identifier
+	Name             string
+	Description      string
+	FoundingDate     string
+	DissolutionDate  string
+	Grant            string
+	FundingProgramme string
+	Acronym          string
+	DateCreated      *time.Time
+	DateModified     *time.Time
 }
