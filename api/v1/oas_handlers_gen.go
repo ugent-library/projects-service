@@ -127,12 +127,13 @@ func (s *Server) handleAddProjectRequest(args [0]string, argsEscaped bool, w htt
 	var response *AddProjectOK
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
-			Context:       ctx,
-			OperationName: "AddProject",
-			OperationID:   "addProject",
-			Body:          request,
-			Params:        middleware.Parameters{},
-			Raw:           r,
+			Context:          ctx,
+			OperationName:    "AddProject",
+			OperationSummary: "Add a single project",
+			OperationID:      "addProject",
+			Body:             request,
+			Params:           middleware.Parameters{},
+			Raw:              r,
 		}
 
 		type (
@@ -289,12 +290,13 @@ func (s *Server) handleGetProjectRequest(args [0]string, argsEscaped bool, w htt
 	var response *GetProjectResponse
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
-			Context:       ctx,
-			OperationName: "GetProject",
-			OperationID:   "getProject",
-			Body:          request,
-			Params:        middleware.Parameters{},
-			Raw:           r,
+			Context:          ctx,
+			OperationName:    "GetProject",
+			OperationSummary: "Get a single project",
+			OperationID:      "getProject",
+			Body:             request,
+			Params:           middleware.Parameters{},
+			Raw:              r,
 		}
 
 		type (

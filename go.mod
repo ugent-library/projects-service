@@ -11,16 +11,16 @@ require (
 	github.com/jackc/pgx/v5 v5.4.2
 	github.com/joho/godotenv v1.5.1
 	github.com/nats-io/nats.go v1.28.0
-	github.com/ogen-go/ogen v0.74.0
+	github.com/ogen-go/ogen v0.76.0
 	github.com/oklog/ulid/v2 v2.1.0
 	github.com/ory/graceful v0.1.3
 	github.com/spf13/cobra v1.7.0
 	github.com/ugent-library/zaphttp v0.0.0-20230513174723-52c27d21c5ce
-	go.opentelemetry.io/otel v1.17.0
-	go.opentelemetry.io/otel/metric v1.17.0
-	go.opentelemetry.io/otel/trace v1.17.0
+	go.opentelemetry.io/otel v1.19.0
+	go.opentelemetry.io/otel/metric v1.19.0
+	go.opentelemetry.io/otel/trace v1.19.0
 	go.uber.org/multierr v1.11.0
-	go.uber.org/zap v1.25.0
+	go.uber.org/zap v1.26.0
 )
 
 require (

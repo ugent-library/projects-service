@@ -35,40 +35,28 @@ func (s *AddProjectRequest) encodeFields(e *jx.Encoder) {
 		e.ArrEnd()
 	}
 	{
-		if s.IsFundedBy.Set {
-			e.FieldStart("isFundedBy")
-			s.IsFundedBy.Encode(e)
-		}
+		e.FieldStart("isFundedBy")
+		s.IsFundedBy.Encode(e)
 	}
 	{
-		if s.HasAcronym.Set {
-			e.FieldStart("hasAcronym")
-			s.HasAcronym.Encode(e)
-		}
+		e.FieldStart("hasAcronym")
+		s.HasAcronym.Encode(e)
 	}
 	{
-		if s.Name.Set {
-			e.FieldStart("name")
-			s.Name.Encode(e)
-		}
+		e.FieldStart("name")
+		s.Name.Encode(e)
 	}
 	{
-		if s.Description.Set {
-			e.FieldStart("description")
-			s.Description.Encode(e)
-		}
+		e.FieldStart("description")
+		s.Description.Encode(e)
 	}
 	{
-		if s.FoundingDate.Set {
-			e.FieldStart("foundingDate")
-			s.FoundingDate.Encode(e)
-		}
+		e.FieldStart("foundingDate")
+		s.FoundingDate.Encode(e)
 	}
 	{
-		if s.DissolutionDate.Set {
-			e.FieldStart("dissolutionDate")
-			s.DissolutionDate.Encode(e)
-		}
+		e.FieldStart("dissolutionDate")
+		s.DissolutionDate.Encode(e)
 	}
 }
 
@@ -123,8 +111,8 @@ func (s *AddProjectRequest) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"identifier\"")
 			}
 		case "isFundedBy":
+			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
-				s.IsFundedBy.Reset()
 				if err := s.IsFundedBy.Decode(d); err != nil {
 					return err
 				}
@@ -133,8 +121,8 @@ func (s *AddProjectRequest) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"isFundedBy\"")
 			}
 		case "hasAcronym":
+			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
-				s.HasAcronym.Reset()
 				if err := s.HasAcronym.Decode(d); err != nil {
 					return err
 				}
@@ -143,8 +131,8 @@ func (s *AddProjectRequest) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"hasAcronym\"")
 			}
 		case "name":
+			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
-				s.Name.Reset()
 				if err := s.Name.Decode(d); err != nil {
 					return err
 				}
@@ -153,8 +141,8 @@ func (s *AddProjectRequest) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"name\"")
 			}
 		case "description":
+			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
-				s.Description.Reset()
 				if err := s.Description.Decode(d); err != nil {
 					return err
 				}
@@ -163,8 +151,8 @@ func (s *AddProjectRequest) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"description\"")
 			}
 		case "foundingDate":
+			requiredBitSet[0] |= 1 << 6
 			if err := func() error {
-				s.FoundingDate.Reset()
 				if err := s.FoundingDate.Decode(d); err != nil {
 					return err
 				}
@@ -173,8 +161,8 @@ func (s *AddProjectRequest) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"foundingDate\"")
 			}
 		case "dissolutionDate":
+			requiredBitSet[0] |= 1 << 7
 			if err := func() error {
-				s.DissolutionDate.Reset()
 				if err := s.DissolutionDate.Decode(d); err != nil {
 					return err
 				}
@@ -192,7 +180,7 @@ func (s *AddProjectRequest) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000011,
+		0b11111111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -386,10 +374,8 @@ func (s *AddProjectRequestIsFundedBy) encodeFields(e *jx.Encoder) {
 		e.Str(s.Identifier)
 	}
 	{
-		if s.IsAwardedBy.Set {
-			e.FieldStart("isAwardedBy")
-			s.IsAwardedBy.Encode(e)
-		}
+		e.FieldStart("isAwardedBy")
+		s.IsAwardedBy.Encode(e)
 	}
 }
 
@@ -433,8 +419,8 @@ func (s *AddProjectRequestIsFundedBy) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"identifier\"")
 			}
 		case "isAwardedBy":
+			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
-				s.IsAwardedBy.Reset()
 				if err := s.IsAwardedBy.Decode(d); err != nil {
 					return err
 				}
@@ -452,7 +438,7 @@ func (s *AddProjectRequestIsFundedBy) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000011,
+		0b00000111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -848,40 +834,28 @@ func (s *GetProjectResponse) encodeFields(e *jx.Encoder) {
 		e.ArrEnd()
 	}
 	{
-		if s.IsFundedBy.Set {
-			e.FieldStart("isFundedBy")
-			s.IsFundedBy.Encode(e)
-		}
+		e.FieldStart("isFundedBy")
+		s.IsFundedBy.Encode(e)
 	}
 	{
-		if s.HasAcronym.Set {
-			e.FieldStart("hasAcronym")
-			s.HasAcronym.Encode(e)
-		}
+		e.FieldStart("hasAcronym")
+		s.HasAcronym.Encode(e)
 	}
 	{
-		if s.Name.Set {
-			e.FieldStart("name")
-			s.Name.Encode(e)
-		}
+		e.FieldStart("name")
+		s.Name.Encode(e)
 	}
 	{
-		if s.Description.Set {
-			e.FieldStart("description")
-			s.Description.Encode(e)
-		}
+		e.FieldStart("description")
+		s.Description.Encode(e)
 	}
 	{
-		if s.FoundingDate.Set {
-			e.FieldStart("foundingDate")
-			s.FoundingDate.Encode(e)
-		}
+		e.FieldStart("foundingDate")
+		s.FoundingDate.Encode(e)
 	}
 	{
-		if s.DissolutionDate.Set {
-			e.FieldStart("dissolutionDate")
-			s.DissolutionDate.Encode(e)
-		}
+		e.FieldStart("dissolutionDate")
+		s.DissolutionDate.Encode(e)
 	}
 	{
 		e.FieldStart("created")
@@ -957,8 +931,8 @@ func (s *GetProjectResponse) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"identifier\"")
 			}
 		case "isFundedBy":
+			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
-				s.IsFundedBy.Reset()
 				if err := s.IsFundedBy.Decode(d); err != nil {
 					return err
 				}
@@ -967,8 +941,8 @@ func (s *GetProjectResponse) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"isFundedBy\"")
 			}
 		case "hasAcronym":
+			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
-				s.HasAcronym.Reset()
 				if err := s.HasAcronym.Decode(d); err != nil {
 					return err
 				}
@@ -977,8 +951,8 @@ func (s *GetProjectResponse) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"hasAcronym\"")
 			}
 		case "name":
+			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
-				s.Name.Reset()
 				if err := s.Name.Decode(d); err != nil {
 					return err
 				}
@@ -987,8 +961,8 @@ func (s *GetProjectResponse) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"name\"")
 			}
 		case "description":
+			requiredBitSet[0] |= 1 << 6
 			if err := func() error {
-				s.Description.Reset()
 				if err := s.Description.Decode(d); err != nil {
 					return err
 				}
@@ -997,8 +971,8 @@ func (s *GetProjectResponse) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"description\"")
 			}
 		case "foundingDate":
+			requiredBitSet[0] |= 1 << 7
 			if err := func() error {
-				s.FoundingDate.Reset()
 				if err := s.FoundingDate.Decode(d); err != nil {
 					return err
 				}
@@ -1007,8 +981,8 @@ func (s *GetProjectResponse) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"foundingDate\"")
 			}
 		case "dissolutionDate":
+			requiredBitSet[1] |= 1 << 0
 			if err := func() error {
-				s.DissolutionDate.Reset()
 				if err := s.DissolutionDate.Decode(d); err != nil {
 					return err
 				}
@@ -1050,8 +1024,8 @@ func (s *GetProjectResponse) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [2]uint8{
-		0b00000110,
-		0b00000110,
+		0b11111110,
+		0b00000111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -1245,10 +1219,8 @@ func (s *GetProjectResponseIsFundedBy) encodeFields(e *jx.Encoder) {
 		e.Str(s.Identifier)
 	}
 	{
-		if s.IsAwardedBy.Set {
-			e.FieldStart("isAwardedBy")
-			s.IsAwardedBy.Encode(e)
-		}
+		e.FieldStart("isAwardedBy")
+		s.IsAwardedBy.Encode(e)
 	}
 }
 
@@ -1292,8 +1264,8 @@ func (s *GetProjectResponseIsFundedBy) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"identifier\"")
 			}
 		case "isAwardedBy":
+			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
-				s.IsAwardedBy.Reset()
 				if err := s.IsAwardedBy.Decode(d); err != nil {
 					return err
 				}
@@ -1311,7 +1283,7 @@ func (s *GetProjectResponseIsFundedBy) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000011,
+		0b00000111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -1471,19 +1443,30 @@ func (s *GetProjectResponseIsFundedByIsAwardedBy) UnmarshalJSON(data []byte) err
 }
 
 // Encode encodes AddProjectRequestIsFundedBy as json.
-func (o OptAddProjectRequestIsFundedBy) Encode(e *jx.Encoder) {
-	if !o.Set {
+func (o NilAddProjectRequestIsFundedBy) Encode(e *jx.Encoder) {
+	if o.Null {
+		e.Null()
 		return
 	}
 	o.Value.Encode(e)
 }
 
 // Decode decodes AddProjectRequestIsFundedBy from json.
-func (o *OptAddProjectRequestIsFundedBy) Decode(d *jx.Decoder) error {
+func (o *NilAddProjectRequestIsFundedBy) Decode(d *jx.Decoder) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptAddProjectRequestIsFundedBy to nil")
+		return errors.New("invalid: unable to decode NilAddProjectRequestIsFundedBy to nil")
 	}
-	o.Set = true
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v AddProjectRequestIsFundedBy
+		o.Value = v
+		o.Null = true
+		return nil
+	}
+	o.Null = false
 	if err := o.Value.Decode(d); err != nil {
 		return err
 	}
@@ -1491,32 +1474,43 @@ func (o *OptAddProjectRequestIsFundedBy) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptAddProjectRequestIsFundedBy) MarshalJSON() ([]byte, error) {
+func (s NilAddProjectRequestIsFundedBy) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptAddProjectRequestIsFundedBy) UnmarshalJSON(data []byte) error {
+func (s *NilAddProjectRequestIsFundedBy) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
 // Encode encodes AddProjectRequestIsFundedByIsAwardedBy as json.
-func (o OptAddProjectRequestIsFundedByIsAwardedBy) Encode(e *jx.Encoder) {
-	if !o.Set {
+func (o NilAddProjectRequestIsFundedByIsAwardedBy) Encode(e *jx.Encoder) {
+	if o.Null {
+		e.Null()
 		return
 	}
 	o.Value.Encode(e)
 }
 
 // Decode decodes AddProjectRequestIsFundedByIsAwardedBy from json.
-func (o *OptAddProjectRequestIsFundedByIsAwardedBy) Decode(d *jx.Decoder) error {
+func (o *NilAddProjectRequestIsFundedByIsAwardedBy) Decode(d *jx.Decoder) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptAddProjectRequestIsFundedByIsAwardedBy to nil")
+		return errors.New("invalid: unable to decode NilAddProjectRequestIsFundedByIsAwardedBy to nil")
 	}
-	o.Set = true
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v AddProjectRequestIsFundedByIsAwardedBy
+		o.Value = v
+		o.Null = true
+		return nil
+	}
+	o.Null = false
 	if err := o.Value.Decode(d); err != nil {
 		return err
 	}
@@ -1524,32 +1518,43 @@ func (o *OptAddProjectRequestIsFundedByIsAwardedBy) Decode(d *jx.Decoder) error 
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptAddProjectRequestIsFundedByIsAwardedBy) MarshalJSON() ([]byte, error) {
+func (s NilAddProjectRequestIsFundedByIsAwardedBy) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptAddProjectRequestIsFundedByIsAwardedBy) UnmarshalJSON(data []byte) error {
+func (s *NilAddProjectRequestIsFundedByIsAwardedBy) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
 // Encode encodes GetProjectResponseIsFundedBy as json.
-func (o OptGetProjectResponseIsFundedBy) Encode(e *jx.Encoder) {
-	if !o.Set {
+func (o NilGetProjectResponseIsFundedBy) Encode(e *jx.Encoder) {
+	if o.Null {
+		e.Null()
 		return
 	}
 	o.Value.Encode(e)
 }
 
 // Decode decodes GetProjectResponseIsFundedBy from json.
-func (o *OptGetProjectResponseIsFundedBy) Decode(d *jx.Decoder) error {
+func (o *NilGetProjectResponseIsFundedBy) Decode(d *jx.Decoder) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptGetProjectResponseIsFundedBy to nil")
+		return errors.New("invalid: unable to decode NilGetProjectResponseIsFundedBy to nil")
 	}
-	o.Set = true
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v GetProjectResponseIsFundedBy
+		o.Value = v
+		o.Null = true
+		return nil
+	}
+	o.Null = false
 	if err := o.Value.Decode(d); err != nil {
 		return err
 	}
@@ -1557,32 +1562,43 @@ func (o *OptGetProjectResponseIsFundedBy) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptGetProjectResponseIsFundedBy) MarshalJSON() ([]byte, error) {
+func (s NilGetProjectResponseIsFundedBy) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptGetProjectResponseIsFundedBy) UnmarshalJSON(data []byte) error {
+func (s *NilGetProjectResponseIsFundedBy) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
 // Encode encodes GetProjectResponseIsFundedByIsAwardedBy as json.
-func (o OptGetProjectResponseIsFundedByIsAwardedBy) Encode(e *jx.Encoder) {
-	if !o.Set {
+func (o NilGetProjectResponseIsFundedByIsAwardedBy) Encode(e *jx.Encoder) {
+	if o.Null {
+		e.Null()
 		return
 	}
 	o.Value.Encode(e)
 }
 
 // Decode decodes GetProjectResponseIsFundedByIsAwardedBy from json.
-func (o *OptGetProjectResponseIsFundedByIsAwardedBy) Decode(d *jx.Decoder) error {
+func (o *NilGetProjectResponseIsFundedByIsAwardedBy) Decode(d *jx.Decoder) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptGetProjectResponseIsFundedByIsAwardedBy to nil")
+		return errors.New("invalid: unable to decode NilGetProjectResponseIsFundedByIsAwardedBy to nil")
 	}
-	o.Set = true
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v GetProjectResponseIsFundedByIsAwardedBy
+		o.Value = v
+		o.Null = true
+		return nil
+	}
+	o.Null = false
 	if err := o.Value.Decode(d); err != nil {
 		return err
 	}
@@ -1590,14 +1606,60 @@ func (o *OptGetProjectResponseIsFundedByIsAwardedBy) Decode(d *jx.Decoder) error
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptGetProjectResponseIsFundedByIsAwardedBy) MarshalJSON() ([]byte, error) {
+func (s NilGetProjectResponseIsFundedByIsAwardedBy) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptGetProjectResponseIsFundedByIsAwardedBy) UnmarshalJSON(data []byte) error {
+func (s *NilGetProjectResponseIsFundedByIsAwardedBy) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes string as json.
+func (o NilString) Encode(e *jx.Encoder) {
+	if o.Null {
+		e.Null()
+		return
+	}
+	e.Str(string(o.Value))
+}
+
+// Decode decodes string from json.
+func (o *NilString) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode NilString to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v string
+		o.Value = v
+		o.Null = true
+		return nil
+	}
+	o.Null = false
+	v, err := d.Str()
+	if err != nil {
+		return err
+	}
+	o.Value = string(v)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s NilString) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *NilString) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

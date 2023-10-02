@@ -18,12 +18,12 @@ type AddProjectOK struct{}
 type AddProjectRequest struct {
 	Type            string                            `json:"type"`
 	Identifier      []AddProjectRequestIdentifierItem `json:"identifier"`
-	IsFundedBy      OptAddProjectRequestIsFundedBy    `json:"isFundedBy"`
-	HasAcronym      OptString                         `json:"hasAcronym"`
-	Name            OptString                         `json:"name"`
-	Description     OptString                         `json:"description"`
-	FoundingDate    OptString                         `json:"foundingDate"`
-	DissolutionDate OptString                         `json:"dissolutionDate"`
+	IsFundedBy      NilAddProjectRequestIsFundedBy    `json:"isFundedBy"`
+	HasAcronym      NilString                         `json:"hasAcronym"`
+	Name            NilString                         `json:"name"`
+	Description     NilString                         `json:"description"`
+	FoundingDate    NilString                         `json:"foundingDate"`
+	DissolutionDate NilString                         `json:"dissolutionDate"`
 }
 
 // GetType returns the value of Type.
@@ -37,32 +37,32 @@ func (s *AddProjectRequest) GetIdentifier() []AddProjectRequestIdentifierItem {
 }
 
 // GetIsFundedBy returns the value of IsFundedBy.
-func (s *AddProjectRequest) GetIsFundedBy() OptAddProjectRequestIsFundedBy {
+func (s *AddProjectRequest) GetIsFundedBy() NilAddProjectRequestIsFundedBy {
 	return s.IsFundedBy
 }
 
 // GetHasAcronym returns the value of HasAcronym.
-func (s *AddProjectRequest) GetHasAcronym() OptString {
+func (s *AddProjectRequest) GetHasAcronym() NilString {
 	return s.HasAcronym
 }
 
 // GetName returns the value of Name.
-func (s *AddProjectRequest) GetName() OptString {
+func (s *AddProjectRequest) GetName() NilString {
 	return s.Name
 }
 
 // GetDescription returns the value of Description.
-func (s *AddProjectRequest) GetDescription() OptString {
+func (s *AddProjectRequest) GetDescription() NilString {
 	return s.Description
 }
 
 // GetFoundingDate returns the value of FoundingDate.
-func (s *AddProjectRequest) GetFoundingDate() OptString {
+func (s *AddProjectRequest) GetFoundingDate() NilString {
 	return s.FoundingDate
 }
 
 // GetDissolutionDate returns the value of DissolutionDate.
-func (s *AddProjectRequest) GetDissolutionDate() OptString {
+func (s *AddProjectRequest) GetDissolutionDate() NilString {
 	return s.DissolutionDate
 }
 
@@ -77,32 +77,32 @@ func (s *AddProjectRequest) SetIdentifier(val []AddProjectRequestIdentifierItem)
 }
 
 // SetIsFundedBy sets the value of IsFundedBy.
-func (s *AddProjectRequest) SetIsFundedBy(val OptAddProjectRequestIsFundedBy) {
+func (s *AddProjectRequest) SetIsFundedBy(val NilAddProjectRequestIsFundedBy) {
 	s.IsFundedBy = val
 }
 
 // SetHasAcronym sets the value of HasAcronym.
-func (s *AddProjectRequest) SetHasAcronym(val OptString) {
+func (s *AddProjectRequest) SetHasAcronym(val NilString) {
 	s.HasAcronym = val
 }
 
 // SetName sets the value of Name.
-func (s *AddProjectRequest) SetName(val OptString) {
+func (s *AddProjectRequest) SetName(val NilString) {
 	s.Name = val
 }
 
 // SetDescription sets the value of Description.
-func (s *AddProjectRequest) SetDescription(val OptString) {
+func (s *AddProjectRequest) SetDescription(val NilString) {
 	s.Description = val
 }
 
 // SetFoundingDate sets the value of FoundingDate.
-func (s *AddProjectRequest) SetFoundingDate(val OptString) {
+func (s *AddProjectRequest) SetFoundingDate(val NilString) {
 	s.FoundingDate = val
 }
 
 // SetDissolutionDate sets the value of DissolutionDate.
-func (s *AddProjectRequest) SetDissolutionDate(val OptString) {
+func (s *AddProjectRequest) SetDissolutionDate(val NilString) {
 	s.DissolutionDate = val
 }
 
@@ -145,7 +145,7 @@ func (s *AddProjectRequestIdentifierItem) SetValue(val string) {
 type AddProjectRequestIsFundedBy struct {
 	Type        string                                    `json:"type"`
 	Identifier  string                                    `json:"identifier"`
-	IsAwardedBy OptAddProjectRequestIsFundedByIsAwardedBy `json:"isAwardedBy"`
+	IsAwardedBy NilAddProjectRequestIsFundedByIsAwardedBy `json:"isAwardedBy"`
 }
 
 // GetType returns the value of Type.
@@ -159,7 +159,7 @@ func (s *AddProjectRequestIsFundedBy) GetIdentifier() string {
 }
 
 // GetIsAwardedBy returns the value of IsAwardedBy.
-func (s *AddProjectRequestIsFundedBy) GetIsAwardedBy() OptAddProjectRequestIsFundedByIsAwardedBy {
+func (s *AddProjectRequestIsFundedBy) GetIsAwardedBy() NilAddProjectRequestIsFundedByIsAwardedBy {
 	return s.IsAwardedBy
 }
 
@@ -174,7 +174,7 @@ func (s *AddProjectRequestIsFundedBy) SetIdentifier(val string) {
 }
 
 // SetIsAwardedBy sets the value of IsAwardedBy.
-func (s *AddProjectRequestIsFundedBy) SetIsAwardedBy(val OptAddProjectRequestIsFundedByIsAwardedBy) {
+func (s *AddProjectRequestIsFundedBy) SetIsAwardedBy(val NilAddProjectRequestIsFundedByIsAwardedBy) {
 	s.IsAwardedBy = val
 }
 
@@ -289,12 +289,12 @@ type GetProjectResponse struct {
 	ID              OptString                          `json:"id"`
 	Type            string                             `json:"type"`
 	Identifier      []GetProjectResponseIdentifierItem `json:"identifier"`
-	IsFundedBy      OptGetProjectResponseIsFundedBy    `json:"isFundedBy"`
-	HasAcronym      OptString                          `json:"hasAcronym"`
-	Name            OptString                          `json:"name"`
-	Description     OptString                          `json:"description"`
-	FoundingDate    OptString                          `json:"foundingDate"`
-	DissolutionDate OptString                          `json:"dissolutionDate"`
+	IsFundedBy      NilGetProjectResponseIsFundedBy    `json:"isFundedBy"`
+	HasAcronym      NilString                          `json:"hasAcronym"`
+	Name            NilString                          `json:"name"`
+	Description     NilString                          `json:"description"`
+	FoundingDate    NilString                          `json:"foundingDate"`
+	DissolutionDate NilString                          `json:"dissolutionDate"`
 	Created         time.Time                          `json:"created"`
 	Modified        time.Time                          `json:"modified"`
 }
@@ -315,32 +315,32 @@ func (s *GetProjectResponse) GetIdentifier() []GetProjectResponseIdentifierItem 
 }
 
 // GetIsFundedBy returns the value of IsFundedBy.
-func (s *GetProjectResponse) GetIsFundedBy() OptGetProjectResponseIsFundedBy {
+func (s *GetProjectResponse) GetIsFundedBy() NilGetProjectResponseIsFundedBy {
 	return s.IsFundedBy
 }
 
 // GetHasAcronym returns the value of HasAcronym.
-func (s *GetProjectResponse) GetHasAcronym() OptString {
+func (s *GetProjectResponse) GetHasAcronym() NilString {
 	return s.HasAcronym
 }
 
 // GetName returns the value of Name.
-func (s *GetProjectResponse) GetName() OptString {
+func (s *GetProjectResponse) GetName() NilString {
 	return s.Name
 }
 
 // GetDescription returns the value of Description.
-func (s *GetProjectResponse) GetDescription() OptString {
+func (s *GetProjectResponse) GetDescription() NilString {
 	return s.Description
 }
 
 // GetFoundingDate returns the value of FoundingDate.
-func (s *GetProjectResponse) GetFoundingDate() OptString {
+func (s *GetProjectResponse) GetFoundingDate() NilString {
 	return s.FoundingDate
 }
 
 // GetDissolutionDate returns the value of DissolutionDate.
-func (s *GetProjectResponse) GetDissolutionDate() OptString {
+func (s *GetProjectResponse) GetDissolutionDate() NilString {
 	return s.DissolutionDate
 }
 
@@ -370,32 +370,32 @@ func (s *GetProjectResponse) SetIdentifier(val []GetProjectResponseIdentifierIte
 }
 
 // SetIsFundedBy sets the value of IsFundedBy.
-func (s *GetProjectResponse) SetIsFundedBy(val OptGetProjectResponseIsFundedBy) {
+func (s *GetProjectResponse) SetIsFundedBy(val NilGetProjectResponseIsFundedBy) {
 	s.IsFundedBy = val
 }
 
 // SetHasAcronym sets the value of HasAcronym.
-func (s *GetProjectResponse) SetHasAcronym(val OptString) {
+func (s *GetProjectResponse) SetHasAcronym(val NilString) {
 	s.HasAcronym = val
 }
 
 // SetName sets the value of Name.
-func (s *GetProjectResponse) SetName(val OptString) {
+func (s *GetProjectResponse) SetName(val NilString) {
 	s.Name = val
 }
 
 // SetDescription sets the value of Description.
-func (s *GetProjectResponse) SetDescription(val OptString) {
+func (s *GetProjectResponse) SetDescription(val NilString) {
 	s.Description = val
 }
 
 // SetFoundingDate sets the value of FoundingDate.
-func (s *GetProjectResponse) SetFoundingDate(val OptString) {
+func (s *GetProjectResponse) SetFoundingDate(val NilString) {
 	s.FoundingDate = val
 }
 
 // SetDissolutionDate sets the value of DissolutionDate.
-func (s *GetProjectResponse) SetDissolutionDate(val OptString) {
+func (s *GetProjectResponse) SetDissolutionDate(val NilString) {
 	s.DissolutionDate = val
 }
 
@@ -448,7 +448,7 @@ func (s *GetProjectResponseIdentifierItem) SetValue(val string) {
 type GetProjectResponseIsFundedBy struct {
 	Type        string                                     `json:"type"`
 	Identifier  string                                     `json:"identifier"`
-	IsAwardedBy OptGetProjectResponseIsFundedByIsAwardedBy `json:"isAwardedBy"`
+	IsAwardedBy NilGetProjectResponseIsFundedByIsAwardedBy `json:"isAwardedBy"`
 }
 
 // GetType returns the value of Type.
@@ -462,7 +462,7 @@ func (s *GetProjectResponseIsFundedBy) GetIdentifier() string {
 }
 
 // GetIsAwardedBy returns the value of IsAwardedBy.
-func (s *GetProjectResponseIsFundedBy) GetIsAwardedBy() OptGetProjectResponseIsFundedByIsAwardedBy {
+func (s *GetProjectResponseIsFundedBy) GetIsAwardedBy() NilGetProjectResponseIsFundedByIsAwardedBy {
 	return s.IsAwardedBy
 }
 
@@ -477,7 +477,7 @@ func (s *GetProjectResponseIsFundedBy) SetIdentifier(val string) {
 }
 
 // SetIsAwardedBy sets the value of IsAwardedBy.
-func (s *GetProjectResponseIsFundedBy) SetIsAwardedBy(val OptGetProjectResponseIsFundedByIsAwardedBy) {
+func (s *GetProjectResponseIsFundedBy) SetIsAwardedBy(val NilGetProjectResponseIsFundedByIsAwardedBy) {
 	s.IsAwardedBy = val
 }
 
@@ -506,184 +506,225 @@ func (s *GetProjectResponseIsFundedByIsAwardedBy) SetName(val string) {
 	s.Name = val
 }
 
-// NewOptAddProjectRequestIsFundedBy returns new OptAddProjectRequestIsFundedBy with value set to v.
-func NewOptAddProjectRequestIsFundedBy(v AddProjectRequestIsFundedBy) OptAddProjectRequestIsFundedBy {
-	return OptAddProjectRequestIsFundedBy{
+// NewNilAddProjectRequestIsFundedBy returns new NilAddProjectRequestIsFundedBy with value set to v.
+func NewNilAddProjectRequestIsFundedBy(v AddProjectRequestIsFundedBy) NilAddProjectRequestIsFundedBy {
+	return NilAddProjectRequestIsFundedBy{
 		Value: v,
-		Set:   true,
 	}
 }
 
-// OptAddProjectRequestIsFundedBy is optional AddProjectRequestIsFundedBy.
-type OptAddProjectRequestIsFundedBy struct {
+// NilAddProjectRequestIsFundedBy is nullable AddProjectRequestIsFundedBy.
+type NilAddProjectRequestIsFundedBy struct {
 	Value AddProjectRequestIsFundedBy
-	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptAddProjectRequestIsFundedBy was set.
-func (o OptAddProjectRequestIsFundedBy) IsSet() bool { return o.Set }
+// SetTo sets value to v.
+func (o *NilAddProjectRequestIsFundedBy) SetTo(v AddProjectRequestIsFundedBy) {
+	o.Null = false
+	o.Value = v
+}
 
-// Reset unsets value.
-func (o *OptAddProjectRequestIsFundedBy) Reset() {
+// IsSet returns true if value is Null.
+func (o NilAddProjectRequestIsFundedBy) IsNull() bool { return o.Null }
+
+// SetNull sets value to null.
+func (o *NilAddProjectRequestIsFundedBy) SetToNull() {
+	o.Null = true
 	var v AddProjectRequestIsFundedBy
 	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptAddProjectRequestIsFundedBy) SetTo(v AddProjectRequestIsFundedBy) {
-	o.Set = true
-	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptAddProjectRequestIsFundedBy) Get() (v AddProjectRequestIsFundedBy, ok bool) {
-	if !o.Set {
+func (o NilAddProjectRequestIsFundedBy) Get() (v AddProjectRequestIsFundedBy, ok bool) {
+	if o.Null {
 		return v, false
 	}
 	return o.Value, true
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptAddProjectRequestIsFundedBy) Or(d AddProjectRequestIsFundedBy) AddProjectRequestIsFundedBy {
+func (o NilAddProjectRequestIsFundedBy) Or(d AddProjectRequestIsFundedBy) AddProjectRequestIsFundedBy {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
 }
 
-// NewOptAddProjectRequestIsFundedByIsAwardedBy returns new OptAddProjectRequestIsFundedByIsAwardedBy with value set to v.
-func NewOptAddProjectRequestIsFundedByIsAwardedBy(v AddProjectRequestIsFundedByIsAwardedBy) OptAddProjectRequestIsFundedByIsAwardedBy {
-	return OptAddProjectRequestIsFundedByIsAwardedBy{
+// NewNilAddProjectRequestIsFundedByIsAwardedBy returns new NilAddProjectRequestIsFundedByIsAwardedBy with value set to v.
+func NewNilAddProjectRequestIsFundedByIsAwardedBy(v AddProjectRequestIsFundedByIsAwardedBy) NilAddProjectRequestIsFundedByIsAwardedBy {
+	return NilAddProjectRequestIsFundedByIsAwardedBy{
 		Value: v,
-		Set:   true,
 	}
 }
 
-// OptAddProjectRequestIsFundedByIsAwardedBy is optional AddProjectRequestIsFundedByIsAwardedBy.
-type OptAddProjectRequestIsFundedByIsAwardedBy struct {
+// NilAddProjectRequestIsFundedByIsAwardedBy is nullable AddProjectRequestIsFundedByIsAwardedBy.
+type NilAddProjectRequestIsFundedByIsAwardedBy struct {
 	Value AddProjectRequestIsFundedByIsAwardedBy
-	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptAddProjectRequestIsFundedByIsAwardedBy was set.
-func (o OptAddProjectRequestIsFundedByIsAwardedBy) IsSet() bool { return o.Set }
+// SetTo sets value to v.
+func (o *NilAddProjectRequestIsFundedByIsAwardedBy) SetTo(v AddProjectRequestIsFundedByIsAwardedBy) {
+	o.Null = false
+	o.Value = v
+}
 
-// Reset unsets value.
-func (o *OptAddProjectRequestIsFundedByIsAwardedBy) Reset() {
+// IsSet returns true if value is Null.
+func (o NilAddProjectRequestIsFundedByIsAwardedBy) IsNull() bool { return o.Null }
+
+// SetNull sets value to null.
+func (o *NilAddProjectRequestIsFundedByIsAwardedBy) SetToNull() {
+	o.Null = true
 	var v AddProjectRequestIsFundedByIsAwardedBy
 	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptAddProjectRequestIsFundedByIsAwardedBy) SetTo(v AddProjectRequestIsFundedByIsAwardedBy) {
-	o.Set = true
-	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptAddProjectRequestIsFundedByIsAwardedBy) Get() (v AddProjectRequestIsFundedByIsAwardedBy, ok bool) {
-	if !o.Set {
+func (o NilAddProjectRequestIsFundedByIsAwardedBy) Get() (v AddProjectRequestIsFundedByIsAwardedBy, ok bool) {
+	if o.Null {
 		return v, false
 	}
 	return o.Value, true
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptAddProjectRequestIsFundedByIsAwardedBy) Or(d AddProjectRequestIsFundedByIsAwardedBy) AddProjectRequestIsFundedByIsAwardedBy {
+func (o NilAddProjectRequestIsFundedByIsAwardedBy) Or(d AddProjectRequestIsFundedByIsAwardedBy) AddProjectRequestIsFundedByIsAwardedBy {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
 }
 
-// NewOptGetProjectResponseIsFundedBy returns new OptGetProjectResponseIsFundedBy with value set to v.
-func NewOptGetProjectResponseIsFundedBy(v GetProjectResponseIsFundedBy) OptGetProjectResponseIsFundedBy {
-	return OptGetProjectResponseIsFundedBy{
+// NewNilGetProjectResponseIsFundedBy returns new NilGetProjectResponseIsFundedBy with value set to v.
+func NewNilGetProjectResponseIsFundedBy(v GetProjectResponseIsFundedBy) NilGetProjectResponseIsFundedBy {
+	return NilGetProjectResponseIsFundedBy{
 		Value: v,
-		Set:   true,
 	}
 }
 
-// OptGetProjectResponseIsFundedBy is optional GetProjectResponseIsFundedBy.
-type OptGetProjectResponseIsFundedBy struct {
+// NilGetProjectResponseIsFundedBy is nullable GetProjectResponseIsFundedBy.
+type NilGetProjectResponseIsFundedBy struct {
 	Value GetProjectResponseIsFundedBy
-	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptGetProjectResponseIsFundedBy was set.
-func (o OptGetProjectResponseIsFundedBy) IsSet() bool { return o.Set }
+// SetTo sets value to v.
+func (o *NilGetProjectResponseIsFundedBy) SetTo(v GetProjectResponseIsFundedBy) {
+	o.Null = false
+	o.Value = v
+}
 
-// Reset unsets value.
-func (o *OptGetProjectResponseIsFundedBy) Reset() {
+// IsSet returns true if value is Null.
+func (o NilGetProjectResponseIsFundedBy) IsNull() bool { return o.Null }
+
+// SetNull sets value to null.
+func (o *NilGetProjectResponseIsFundedBy) SetToNull() {
+	o.Null = true
 	var v GetProjectResponseIsFundedBy
 	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptGetProjectResponseIsFundedBy) SetTo(v GetProjectResponseIsFundedBy) {
-	o.Set = true
-	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptGetProjectResponseIsFundedBy) Get() (v GetProjectResponseIsFundedBy, ok bool) {
-	if !o.Set {
+func (o NilGetProjectResponseIsFundedBy) Get() (v GetProjectResponseIsFundedBy, ok bool) {
+	if o.Null {
 		return v, false
 	}
 	return o.Value, true
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptGetProjectResponseIsFundedBy) Or(d GetProjectResponseIsFundedBy) GetProjectResponseIsFundedBy {
+func (o NilGetProjectResponseIsFundedBy) Or(d GetProjectResponseIsFundedBy) GetProjectResponseIsFundedBy {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
 }
 
-// NewOptGetProjectResponseIsFundedByIsAwardedBy returns new OptGetProjectResponseIsFundedByIsAwardedBy with value set to v.
-func NewOptGetProjectResponseIsFundedByIsAwardedBy(v GetProjectResponseIsFundedByIsAwardedBy) OptGetProjectResponseIsFundedByIsAwardedBy {
-	return OptGetProjectResponseIsFundedByIsAwardedBy{
+// NewNilGetProjectResponseIsFundedByIsAwardedBy returns new NilGetProjectResponseIsFundedByIsAwardedBy with value set to v.
+func NewNilGetProjectResponseIsFundedByIsAwardedBy(v GetProjectResponseIsFundedByIsAwardedBy) NilGetProjectResponseIsFundedByIsAwardedBy {
+	return NilGetProjectResponseIsFundedByIsAwardedBy{
 		Value: v,
-		Set:   true,
 	}
 }
 
-// OptGetProjectResponseIsFundedByIsAwardedBy is optional GetProjectResponseIsFundedByIsAwardedBy.
-type OptGetProjectResponseIsFundedByIsAwardedBy struct {
+// NilGetProjectResponseIsFundedByIsAwardedBy is nullable GetProjectResponseIsFundedByIsAwardedBy.
+type NilGetProjectResponseIsFundedByIsAwardedBy struct {
 	Value GetProjectResponseIsFundedByIsAwardedBy
-	Set   bool
-}
-
-// IsSet returns true if OptGetProjectResponseIsFundedByIsAwardedBy was set.
-func (o OptGetProjectResponseIsFundedByIsAwardedBy) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptGetProjectResponseIsFundedByIsAwardedBy) Reset() {
-	var v GetProjectResponseIsFundedByIsAwardedBy
-	o.Value = v
-	o.Set = false
+	Null  bool
 }
 
 // SetTo sets value to v.
-func (o *OptGetProjectResponseIsFundedByIsAwardedBy) SetTo(v GetProjectResponseIsFundedByIsAwardedBy) {
-	o.Set = true
+func (o *NilGetProjectResponseIsFundedByIsAwardedBy) SetTo(v GetProjectResponseIsFundedByIsAwardedBy) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsSet returns true if value is Null.
+func (o NilGetProjectResponseIsFundedByIsAwardedBy) IsNull() bool { return o.Null }
+
+// SetNull sets value to null.
+func (o *NilGetProjectResponseIsFundedByIsAwardedBy) SetToNull() {
+	o.Null = true
+	var v GetProjectResponseIsFundedByIsAwardedBy
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptGetProjectResponseIsFundedByIsAwardedBy) Get() (v GetProjectResponseIsFundedByIsAwardedBy, ok bool) {
-	if !o.Set {
+func (o NilGetProjectResponseIsFundedByIsAwardedBy) Get() (v GetProjectResponseIsFundedByIsAwardedBy, ok bool) {
+	if o.Null {
 		return v, false
 	}
 	return o.Value, true
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptGetProjectResponseIsFundedByIsAwardedBy) Or(d GetProjectResponseIsFundedByIsAwardedBy) GetProjectResponseIsFundedByIsAwardedBy {
+func (o NilGetProjectResponseIsFundedByIsAwardedBy) Or(d GetProjectResponseIsFundedByIsAwardedBy) GetProjectResponseIsFundedByIsAwardedBy {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewNilString returns new NilString with value set to v.
+func NewNilString(v string) NilString {
+	return NilString{
+		Value: v,
+	}
+}
+
+// NilString is nullable string.
+type NilString struct {
+	Value string
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilString) SetTo(v string) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsSet returns true if value is Null.
+func (o NilString) IsNull() bool { return o.Null }
+
+// SetNull sets value to null.
+func (o *NilString) SetToNull() {
+	o.Null = true
+	var v string
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilString) Get() (v string, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilString) Or(d string) string {
 	if v, ok := o.Get(); ok {
 		return v
 	}

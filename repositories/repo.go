@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"log"
 
 	"entgo.io/ent/dialect"
 	sqldialect "entgo.io/ent/dialect/sql"
@@ -62,13 +61,35 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 	}
 
 	pc := r.client.Project.Create().
-		SetIdentifier(sids).
-		SetDescription(p.Description).
-		SetFoundingDate(p.FoundingDate).
-		SetDissolutionDate(p.DissolutionDate).
-		SetAcronym(p.Acronym).
-		SetGrant(p.Grant).
-		SetFundingProgramme(p.FundingProgramme)
+		SetIdentifier(sids)
+
+	if p.Name != nil {
+		pc.SetName(*p.Name)
+	}
+
+	if p.Description != nil {
+		pc.SetDescription(*p.Description)
+	}
+
+	if p.FoundingDate != nil {
+		pc.SetFoundingDate(*p.FoundingDate)
+	}
+
+	if p.DissolutionDate != nil {
+		pc.SetDissolutionDate(*p.DissolutionDate)
+	}
+
+	if p.Grant != nil {
+		pc.SetGrant(*p.Grant)
+	}
+
+	if p.FundingProgramme != nil {
+		pc.SetFundingProgramme(*p.FundingProgramme)
+	}
+
+	if p.Acronym != nil {
+		pc.SetAcronym(*p.Acronym)
+	}
 
 	_, err := pc.Save(ctx)
 
@@ -92,6 +113,10 @@ func (r *Repo) GetProject(ctx context.Context, id string) (*models.Project, erro
 		return nil, err
 	}
 
+	return rowToProject(row), nil
+}
+
+func rowToProject(row *ent.Project) *models.Project {
 	ids := make([]*models.Identifier, 0, len(row.Identifier))
 	for _, id := range row.Identifier {
 		ids = append(ids, &models.Identifier{
@@ -102,21 +127,17 @@ func (r *Repo) GetProject(ctx context.Context, id string) (*models.Project, erro
 
 	p := &models.Project{
 		ID:               row.ID,
+		Identifier:       ids,
 		Name:             row.Name,
 		Description:      row.Description,
-		Identifier:       ids,
 		FoundingDate:     row.FoundingDate,
 		DissolutionDate:  row.DissolutionDate,
-		Grant:            row.Grant,
 		FundingProgramme: row.FundingProgramme,
+		Grant:            row.Grant,
 		Acronym:          row.Acronym,
-		DateCreated:      &row.Created,
-		DateModified:     &row.Modified,
 	}
 
-	log.Printf("%+v", row)
-
-	return p, nil
+	return p
 }
 
 // func (r *Repo) SuggestProjects(ctx context.Context, id string) (*models.Project, error) {

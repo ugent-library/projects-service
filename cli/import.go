@@ -105,11 +105,11 @@ var importCmd = &cobra.Command{
 			}
 
 			if err := repo.AddProject(ctx, &models.Project{
-				Name:            gp.Name,
-				Description:     gp.Description,
-				Identifier:      ids,
-				FoundingDate:    gp.FoundingDate,
-				DissolutionDate: gp.DissolutionDate,
+				// Name:            gp.Name,
+				// Description:     gp.Description,
+				// Identifier:      ids,
+				// FoundingDate:    gp.FoundingDate,
+				// DissolutionDate: gp.DissolutionDate,
 			}); err != nil {
 				logger.Warn(err)
 			}

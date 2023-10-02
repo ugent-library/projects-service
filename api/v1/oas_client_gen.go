@@ -97,8 +97,7 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 //
 // POST /add-project
 func (c *Client) AddProject(ctx context.Context, request *AddProjectRequest) error {
-	res, err := c.sendAddProject(ctx, request)
-	_ = res
+	_, err := c.sendAddProject(ctx, request)
 	return err
 }
 
@@ -216,7 +215,6 @@ func (c *Client) sendAddProject(ctx context.Context, request *AddProjectRequest)
 // POST /get-project
 func (c *Client) GetProject(ctx context.Context, request *GetProjectRequest) (*GetProjectResponse, error) {
 	res, err := c.sendGetProject(ctx, request)
-	_ = res
 	return res, err
 }
 

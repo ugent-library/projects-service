@@ -223,7 +223,7 @@ func (m *ProjectMutation) Name() (r string, exists bool) {
 // OldName returns the old "name" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldName(ctx context.Context) (v string, err error) {
+func (m *ProjectMutation) OldName(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldName is only allowed on UpdateOne operations")
 	}
@@ -272,7 +272,7 @@ func (m *ProjectMutation) Description() (r string, exists bool) {
 // OldDescription returns the old "description" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldDescription(ctx context.Context) (v string, err error) {
+func (m *ProjectMutation) OldDescription(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
 	}
@@ -321,7 +321,7 @@ func (m *ProjectMutation) FoundingDate() (r string, exists bool) {
 // OldFoundingDate returns the old "founding_date" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldFoundingDate(ctx context.Context) (v string, err error) {
+func (m *ProjectMutation) OldFoundingDate(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldFoundingDate is only allowed on UpdateOne operations")
 	}
@@ -370,7 +370,7 @@ func (m *ProjectMutation) DissolutionDate() (r string, exists bool) {
 // OldDissolutionDate returns the old "dissolution_date" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldDissolutionDate(ctx context.Context) (v string, err error) {
+func (m *ProjectMutation) OldDissolutionDate(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDissolutionDate is only allowed on UpdateOne operations")
 	}
@@ -419,7 +419,7 @@ func (m *ProjectMutation) Acronym() (r string, exists bool) {
 // OldAcronym returns the old "acronym" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldAcronym(ctx context.Context) (v string, err error) {
+func (m *ProjectMutation) OldAcronym(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldAcronym is only allowed on UpdateOne operations")
 	}
@@ -468,7 +468,7 @@ func (m *ProjectMutation) Grant() (r string, exists bool) {
 // OldGrant returns the old "grant" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldGrant(ctx context.Context) (v string, err error) {
+func (m *ProjectMutation) OldGrant(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldGrant is only allowed on UpdateOne operations")
 	}
@@ -517,7 +517,7 @@ func (m *ProjectMutation) FundingProgramme() (r string, exists bool) {
 // OldFundingProgramme returns the old "funding_programme" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldFundingProgramme(ctx context.Context) (v string, err error) {
+func (m *ProjectMutation) OldFundingProgramme(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldFundingProgramme is only allowed on UpdateOne operations")
 	}

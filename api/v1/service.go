@@ -27,19 +27,36 @@ func (s *Service) AddProject(ctx context.Context, req *AddProjectRequest) error 
 	}
 
 	p := &models.Project{
-		Name:            req.GetName().Or(""),
-		Description:     req.GetDescription().Or(""),
-		Identifier:      ids,
-		FoundingDate:    req.GetFoundingDate().Or(""),
-		DissolutionDate: req.GetDissolutionDate().Or(""),
-		Acronym:         req.GetHasAcronym().Or(""),
+		Identifier: ids,
+	}
+
+	if v, ok := req.GetName().Get(); ok {
+		p.Name = &v
+	}
+
+	if v, ok := req.GetDescription().Get(); ok {
+		p.Description = &v
+	}
+
+	if v, ok := req.GetFoundingDate().Get(); ok {
+		p.FoundingDate = &v
+	}
+
+	if v, ok := req.GetDissolutionDate().Get(); ok {
+		p.DissolutionDate = &v
+	}
+
+	if v, ok := req.GetHasAcronym().Get(); ok {
+		p.Acronym = &v
 	}
 
 	if fb, ok := req.GetIsFundedBy().Get(); ok {
-		p.Grant = fb.GetIdentifier()
+		id := fb.GetIdentifier()
+		p.Grant = &id
 
 		if ab, ok := fb.GetIsAwardedBy().Get(); ok {
-			p.FundingProgramme = ab.Name
+			name := ab.GetName()
+			p.FundingProgramme = &name
 		}
 	}
 
@@ -62,33 +79,64 @@ func (s *Service) GetProject(ctx context.Context, req *GetProjectRequest) (*GetP
 		})
 	}
 
-	g := NewOptGetProjectResponseIsFundedBy(GetProjectResponseIsFundedBy{})
-	if p.Grant != "" {
-		g.Value.SetIdentifier(p.Grant)
-		g.Value.SetType("Grant")
-
-		fp := NewOptGetProjectResponseIsFundedByIsAwardedBy(GetProjectResponseIsFundedByIsAwardedBy{})
-
-		if p.FundingProgramme != "" {
-			fp.Value.SetName(p.FundingProgramme)
-			fp.Value.SetType("FundingProgramme")
-		}
-	} else {
-		g.Reset()
+	r := &GetProjectResponse{
+		Type:       "ResearchProject",
+		Identifier: ids,
+		Created:    p.DateCreated,
+		Modified:   p.DateModified,
 	}
 
-	return &GetProjectResponse{
-		Type:            "ResearchProject",
-		Identifier:      ids,
-		Name:            NewOptString(p.Name),
-		Description:     NewOptString(p.Description),
-		IsFundedBy:      g,
-		HasAcronym:      NewOptString(p.Acronym),
-		FoundingDate:    NewOptString(p.FoundingDate),
-		DissolutionDate: NewOptString(p.DissolutionDate),
-		Created:         *p.DateCreated,
-		Modified:        *p.DateModified,
-	}, nil
+	r.Name = NewNilString("")
+	r.Name.SetToNull()
+	if p.Name != nil {
+		r.Name.SetTo(*p.Name)
+	}
+
+	r.Description = NewNilString("")
+	r.Description.SetToNull()
+	if p.Description != nil {
+		r.Description.SetTo(*p.Description)
+	}
+
+	r.FoundingDate = NewNilString("")
+	r.FoundingDate.SetToNull()
+	if p.FoundingDate != nil {
+		r.FoundingDate.SetTo(*p.FoundingDate)
+	}
+
+	r.DissolutionDate = NewNilString("")
+	r.DissolutionDate.SetToNull()
+	if p.DissolutionDate != nil {
+		r.DissolutionDate.SetTo(*p.DissolutionDate)
+	}
+
+	r.HasAcronym = NewNilString("")
+	r.HasAcronym.SetToNull()
+	if p.Acronym != nil {
+		r.HasAcronym.SetTo(*p.Acronym)
+	}
+
+	r.IsFundedBy.SetTo(GetProjectResponseIsFundedBy{})
+	r.IsFundedBy.SetToNull()
+	if p.Grant != nil {
+		g := GetProjectResponseIsFundedBy{
+			Type:       "Grant",
+			Identifier: *p.Grant,
+		}
+
+		g.IsAwardedBy.SetTo(GetProjectResponseIsFundedByIsAwardedBy{})
+		g.IsAwardedBy.SetToNull()
+		if p.FundingProgramme != nil {
+			g.IsAwardedBy.SetTo(GetProjectResponseIsFundedByIsAwardedBy{
+				Type: "FundingProgramme",
+				Name: *p.FundingProgramme,
+			})
+		}
+
+		r.IsFundedBy.SetTo(g)
+	}
+
+	return r, nil
 }
 
 func (s *Service) NewError(ctx context.Context, err error) *ErrorStatusCode {

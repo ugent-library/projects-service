@@ -276,31 +276,31 @@ func (pc *ProjectCreate) createSpec() (*Project, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := pc.mutation.Name(); ok {
 		_spec.SetField(project.FieldName, field.TypeString, value)
-		_node.Name = value
+		_node.Name = &value
 	}
 	if value, ok := pc.mutation.Description(); ok {
 		_spec.SetField(project.FieldDescription, field.TypeString, value)
-		_node.Description = value
+		_node.Description = &value
 	}
 	if value, ok := pc.mutation.FoundingDate(); ok {
 		_spec.SetField(project.FieldFoundingDate, field.TypeString, value)
-		_node.FoundingDate = value
+		_node.FoundingDate = &value
 	}
 	if value, ok := pc.mutation.DissolutionDate(); ok {
 		_spec.SetField(project.FieldDissolutionDate, field.TypeString, value)
-		_node.DissolutionDate = value
+		_node.DissolutionDate = &value
 	}
 	if value, ok := pc.mutation.Acronym(); ok {
 		_spec.SetField(project.FieldAcronym, field.TypeString, value)
-		_node.Acronym = value
+		_node.Acronym = &value
 	}
 	if value, ok := pc.mutation.Grant(); ok {
 		_spec.SetField(project.FieldGrant, field.TypeString, value)
-		_node.Grant = value
+		_node.Grant = &value
 	}
 	if value, ok := pc.mutation.FundingProgramme(); ok {
 		_spec.SetField(project.FieldFundingProgramme, field.TypeString, value)
-		_node.FundingProgramme = value
+		_node.FundingProgramme = &value
 	}
 	if value, ok := pc.mutation.Created(); ok {
 		_spec.SetField(project.FieldCreated, field.TypeTime, value)
@@ -500,6 +500,18 @@ func (u *ProjectUpsert) ClearFundingProgramme() *ProjectUpsert {
 	return u
 }
 
+// SetModified sets the "modified" field.
+func (u *ProjectUpsert) SetModified(v time.Time) *ProjectUpsert {
+	u.Set(project.FieldModified, v)
+	return u
+}
+
+// UpdateModified sets the "modified" field to the value that was provided on create.
+func (u *ProjectUpsert) UpdateModified() *ProjectUpsert {
+	u.SetExcluded(project.FieldModified)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -519,9 +531,6 @@ func (u *ProjectUpsertOne) UpdateNewValues() *ProjectUpsertOne {
 		}
 		if _, exists := u.create.mutation.Created(); exists {
 			s.SetIgnore(project.FieldCreated)
-		}
-		if _, exists := u.create.mutation.Modified(); exists {
-			s.SetIgnore(project.FieldModified)
 		}
 	}))
 	return u
@@ -715,6 +724,20 @@ func (u *ProjectUpsertOne) ClearFundingProgramme() *ProjectUpsertOne {
 	})
 }
 
+// SetModified sets the "modified" field.
+func (u *ProjectUpsertOne) SetModified(v time.Time) *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.SetModified(v)
+	})
+}
+
+// UpdateModified sets the "modified" field to the value that was provided on create.
+func (u *ProjectUpsertOne) UpdateModified() *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.UpdateModified()
+	})
+}
+
 // Exec executes the query.
 func (u *ProjectUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -896,9 +919,6 @@ func (u *ProjectUpsertBulk) UpdateNewValues() *ProjectUpsertBulk {
 			}
 			if _, exists := b.mutation.Created(); exists {
 				s.SetIgnore(project.FieldCreated)
-			}
-			if _, exists := b.mutation.Modified(); exists {
-				s.SetIgnore(project.FieldModified)
 			}
 		}
 	}))
@@ -1090,6 +1110,20 @@ func (u *ProjectUpsertBulk) UpdateFundingProgramme() *ProjectUpsertBulk {
 func (u *ProjectUpsertBulk) ClearFundingProgramme() *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
 		s.ClearFundingProgramme()
+	})
+}
+
+// SetModified sets the "modified" field.
+func (u *ProjectUpsertBulk) SetModified(v time.Time) *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.SetModified(v)
+	})
+}
+
+// UpdateModified sets the "modified" field to the value that was provided on create.
+func (u *ProjectUpsertBulk) UpdateModified() *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.UpdateModified()
 	})
 }
 

@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -178,6 +179,12 @@ func (pu *ProjectUpdate) SetNillableFundingProgramme(s *string) *ProjectUpdate {
 // ClearFundingProgramme clears the value of the "funding_programme" field.
 func (pu *ProjectUpdate) ClearFundingProgramme() *ProjectUpdate {
 	pu.mutation.ClearFundingProgramme()
+	return pu
+}
+
+// SetModified sets the "modified" field.
+func (pu *ProjectUpdate) SetModified(t time.Time) *ProjectUpdate {
+	pu.mutation.SetModified(t)
 	return pu
 }
 
@@ -453,6 +460,12 @@ func (puo *ProjectUpdateOne) SetNillableFundingProgramme(s *string) *ProjectUpda
 // ClearFundingProgramme clears the value of the "funding_programme" field.
 func (puo *ProjectUpdateOne) ClearFundingProgramme() *ProjectUpdateOne {
 	puo.mutation.ClearFundingProgramme()
+	return puo
+}
+
+// SetModified sets the "modified" field.
+func (puo *ProjectUpdateOne) SetModified(t time.Time) *ProjectUpdateOne {
+	puo.mutation.SetModified(t)
 	return puo
 }
 
