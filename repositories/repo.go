@@ -60,38 +60,16 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 		})
 	}
 
-	pc := r.client.Project.Create().
-		SetIdentifier(sids)
-
-	if p.Name != nil {
-		pc.SetName(*p.Name)
-	}
-
-	if p.Description != nil {
-		pc.SetDescription(*p.Description)
-	}
-
-	if p.FoundingDate != nil {
-		pc.SetFoundingDate(*p.FoundingDate)
-	}
-
-	if p.DissolutionDate != nil {
-		pc.SetDissolutionDate(*p.DissolutionDate)
-	}
-
-	if p.Grant != nil {
-		pc.SetGrant(*p.Grant)
-	}
-
-	if p.FundingProgramme != nil {
-		pc.SetFundingProgramme(*p.FundingProgramme)
-	}
-
-	if p.Acronym != nil {
-		pc.SetAcronym(*p.Acronym)
-	}
-
-	_, err := pc.Save(ctx)
+	_, err := r.client.Project.Create().
+		SetIdentifier(sids).
+		SetNillableName(p.Name).
+		SetNillableDescription(p.Description).
+		SetNillableFoundingDate(p.FoundingDate).
+		SetNillableDissolutionDate(p.DissolutionDate).
+		SetNillableGrant(p.Grant).
+		SetNillableFundingProgramme(p.FundingProgramme).
+		SetNillableAcronym(p.Acronym).
+		Save(ctx)
 
 	return err
 }
