@@ -59,8 +59,15 @@ go run main.go server
 Or via Docker:
 
 ```
-docker build -t ugentlib/projects .
+cd docker && docker build -f app.Dockerfile -t ugentlib/projects ../
 docker run ugentlib/projects /dist/app server
+```
+
+Running migrations via Docker:
+
+```
+cd docker && docker build -f db.Dockerfile -t ugentlib/projects-atlas ../
+docker run -v $(pwd)/atlas.hcl:/atlas.hcl ugentlib/projects-atlas migrate apply --env local
 ```
 
 ## Development
