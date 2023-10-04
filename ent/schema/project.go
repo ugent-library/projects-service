@@ -4,7 +4,10 @@ import (
 	"time"
 
 	"entgo.io/ent"
+	"entgo.io/ent/dialect"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 	"github.com/oklog/ulid/v2"
 )
 
@@ -60,5 +63,17 @@ func (Project) Fields() []ent.Field {
 		field.Time("modified").
 			Default(timeUTC).
 			UpdateDefault(timeUTC),
+		field.String("ts").
+			Optional().
+			SchemaType(map[string]string{
+				dialect.Postgres: "tsvector GENERATED ALWAYS AS(to_tsvector('simple', jsonb_path_query_array(identifier,'$.**{2}')) || to_tsvector('simple', id) || to_tsvector('usimple',name)) STORED",
+			}),
+	}
+}
+
+func (Project) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("ts").
+			Annotations(entsql.IndexType("GIN")),
 	}
 }

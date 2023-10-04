@@ -63,23 +63,56 @@ func (s *Service) AddProject(ctx context.Context, req *AddProjectRequest) error 
 	return s.repo.AddProject(ctx, p)
 }
 
-func (s *Service) GetProject(ctx context.Context, req *GetProjectRequest) (*GetProjectResponse, error) {
+func (s *Service) GetProject(ctx context.Context, req *GetProjectRequest) (*Project, error) {
 	p, err := s.repo.GetProject(ctx, req.ID)
 
 	if err != nil {
 		return nil, err
 	}
 
-	ids := make([]GetProjectResponseIdentifierItem, 0, len(p.Identifier))
+	oasp := mapToOASProject(p)
+
+	return oasp, nil
+}
+
+func (s *Service) SuggestProjects(ctx context.Context, req *SuggestProjectsRequest) (*SuggestProjectsResponse, error) {
+	ps, err := s.repo.SuggestProjects(ctx, req.Query)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &SuggestProjectsResponse{
+		Data: make([]Project, 0, len(ps)),
+	}
+
+	for _, p := range ps {
+		res.Data = append(res.Data, *mapToOASProject(p))
+	}
+
+	return res, nil
+}
+
+func (s *Service) NewError(ctx context.Context, err error) *ErrorStatusCode {
+	return &ErrorStatusCode{
+		StatusCode: 500,
+		Response: Error{
+			Code:    500,
+			Message: err.Error(),
+		},
+	}
+}
+
+func mapToOASProject(p *models.Project) *Project {
+	ids := make([]ProjectIdentifierItem, 0, len(p.Identifier))
 	for _, id := range p.Identifier {
-		ids = append(ids, GetProjectResponseIdentifierItem{
+		ids = append(ids, ProjectIdentifierItem{
 			Type:       "PropertyValue",
 			PropertyID: id.PropertyID,
 			Value:      id.Value,
 		})
 	}
 
-	r := &GetProjectResponse{
+	r := &Project{
 		Type:       "ResearchProject",
 		Identifier: ids,
 		Created:    p.DateCreated,
@@ -116,18 +149,18 @@ func (s *Service) GetProject(ctx context.Context, req *GetProjectRequest) (*GetP
 		r.HasAcronym.SetTo(*p.Acronym)
 	}
 
-	r.IsFundedBy.SetTo(GetProjectResponseIsFundedBy{})
+	r.IsFundedBy.SetTo(ProjectIsFundedBy{})
 	r.IsFundedBy.SetToNull()
 	if p.Grant != nil {
-		g := GetProjectResponseIsFundedBy{
+		g := ProjectIsFundedBy{
 			Type:       "Grant",
 			Identifier: *p.Grant,
 		}
 
-		g.IsAwardedBy.SetTo(GetProjectResponseIsFundedByIsAwardedBy{})
+		g.IsAwardedBy.SetTo(ProjectIsFundedByIsAwardedBy{})
 		g.IsAwardedBy.SetToNull()
 		if p.FundingProgramme != nil {
-			g.IsAwardedBy.SetTo(GetProjectResponseIsFundedByIsAwardedBy{
+			g.IsAwardedBy.SetTo(ProjectIsFundedByIsAwardedBy{
 				Type: "FundingProgramme",
 				Name: *p.FundingProgramme,
 			})
@@ -136,15 +169,5 @@ func (s *Service) GetProject(ctx context.Context, req *GetProjectRequest) (*GetP
 		r.IsFundedBy.SetTo(g)
 	}
 
-	return r, nil
-}
-
-func (s *Service) NewError(ctx context.Context, err error) *ErrorStatusCode {
-	return &ErrorStatusCode{
-		StatusCode: 500,
-		Response: Error{
-			Code:    500,
-			Message: err.Error(),
-		},
-	}
+	return r
 }

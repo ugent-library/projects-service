@@ -34,6 +34,8 @@ const (
 	FieldCreated = "created"
 	// FieldModified holds the string denoting the modified field in the database.
 	FieldModified = "modified"
+	// FieldTs holds the string denoting the ts field in the database.
+	FieldTs = "ts"
 	// Table holds the table name of the project in the database.
 	Table = "projects"
 )
@@ -51,6 +53,7 @@ var Columns = []string{
 	FieldFundingProgramme,
 	FieldCreated,
 	FieldModified,
+	FieldTs,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -127,4 +130,9 @@ func ByCreated(opts ...sql.OrderTermOption) OrderOption {
 // ByModified orders the results by the modified field.
 func ByModified(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldModified, opts...).ToFunc()
+}
+
+// ByTs orders the results by the ts field.
+func ByTs(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTs, opts...).ToFunc()
 }

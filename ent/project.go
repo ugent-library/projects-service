@@ -38,7 +38,9 @@ type Project struct {
 	// Created holds the value of the "created" field.
 	Created time.Time `json:"created,omitempty"`
 	// Modified holds the value of the "modified" field.
-	Modified     time.Time `json:"modified,omitempty"`
+	Modified time.Time `json:"modified,omitempty"`
+	// Ts holds the value of the "ts" field.
+	Ts           string `json:"ts,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -49,7 +51,7 @@ func (*Project) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case project.FieldIdentifier:
 			values[i] = new([]byte)
-		case project.FieldID, project.FieldName, project.FieldDescription, project.FieldFoundingDate, project.FieldDissolutionDate, project.FieldAcronym, project.FieldGrant, project.FieldFundingProgramme:
+		case project.FieldID, project.FieldName, project.FieldDescription, project.FieldFoundingDate, project.FieldDissolutionDate, project.FieldAcronym, project.FieldGrant, project.FieldFundingProgramme, project.FieldTs:
 			values[i] = new(sql.NullString)
 		case project.FieldCreated, project.FieldModified:
 			values[i] = new(sql.NullTime)
@@ -143,6 +145,12 @@ func (pr *Project) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				pr.Modified = value.Time
 			}
+		case project.FieldTs:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field ts", values[i])
+			} else if value.Valid {
+				pr.Ts = value.String
+			}
 		default:
 			pr.selectValues.Set(columns[i], values[i])
 		}
@@ -222,6 +230,9 @@ func (pr *Project) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("modified=")
 	builder.WriteString(pr.Modified.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("ts=")
+	builder.WriteString(pr.Ts)
 	builder.WriteByte(')')
 	return builder.String()
 }

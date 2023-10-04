@@ -109,6 +109,11 @@ func Modified(v time.Time) predicate.Project {
 	return predicate.Project(sql.FieldEQ(FieldModified, v))
 }
 
+// Ts applies equality check predicate on the "ts" field. It's identical to TsEQ.
+func Ts(v string) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldTs, v))
+}
+
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.Project {
 	return predicate.Project(sql.FieldEQ(FieldName, v))
@@ -712,6 +717,81 @@ func ModifiedLT(v time.Time) predicate.Project {
 // ModifiedLTE applies the LTE predicate on the "modified" field.
 func ModifiedLTE(v time.Time) predicate.Project {
 	return predicate.Project(sql.FieldLTE(FieldModified, v))
+}
+
+// TsEQ applies the EQ predicate on the "ts" field.
+func TsEQ(v string) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldTs, v))
+}
+
+// TsNEQ applies the NEQ predicate on the "ts" field.
+func TsNEQ(v string) predicate.Project {
+	return predicate.Project(sql.FieldNEQ(FieldTs, v))
+}
+
+// TsIn applies the In predicate on the "ts" field.
+func TsIn(vs ...string) predicate.Project {
+	return predicate.Project(sql.FieldIn(FieldTs, vs...))
+}
+
+// TsNotIn applies the NotIn predicate on the "ts" field.
+func TsNotIn(vs ...string) predicate.Project {
+	return predicate.Project(sql.FieldNotIn(FieldTs, vs...))
+}
+
+// TsGT applies the GT predicate on the "ts" field.
+func TsGT(v string) predicate.Project {
+	return predicate.Project(sql.FieldGT(FieldTs, v))
+}
+
+// TsGTE applies the GTE predicate on the "ts" field.
+func TsGTE(v string) predicate.Project {
+	return predicate.Project(sql.FieldGTE(FieldTs, v))
+}
+
+// TsLT applies the LT predicate on the "ts" field.
+func TsLT(v string) predicate.Project {
+	return predicate.Project(sql.FieldLT(FieldTs, v))
+}
+
+// TsLTE applies the LTE predicate on the "ts" field.
+func TsLTE(v string) predicate.Project {
+	return predicate.Project(sql.FieldLTE(FieldTs, v))
+}
+
+// TsContains applies the Contains predicate on the "ts" field.
+func TsContains(v string) predicate.Project {
+	return predicate.Project(sql.FieldContains(FieldTs, v))
+}
+
+// TsHasPrefix applies the HasPrefix predicate on the "ts" field.
+func TsHasPrefix(v string) predicate.Project {
+	return predicate.Project(sql.FieldHasPrefix(FieldTs, v))
+}
+
+// TsHasSuffix applies the HasSuffix predicate on the "ts" field.
+func TsHasSuffix(v string) predicate.Project {
+	return predicate.Project(sql.FieldHasSuffix(FieldTs, v))
+}
+
+// TsIsNil applies the IsNil predicate on the "ts" field.
+func TsIsNil() predicate.Project {
+	return predicate.Project(sql.FieldIsNull(FieldTs))
+}
+
+// TsNotNil applies the NotNil predicate on the "ts" field.
+func TsNotNil() predicate.Project {
+	return predicate.Project(sql.FieldNotNull(FieldTs))
+}
+
+// TsEqualFold applies the EqualFold predicate on the "ts" field.
+func TsEqualFold(v string) predicate.Project {
+	return predicate.Project(sql.FieldEqualFold(FieldTs, v))
+}
+
+// TsContainsFold applies the ContainsFold predicate on the "ts" field.
+func TsContainsFold(v string) predicate.Project {
+	return predicate.Project(sql.FieldContainsFold(FieldTs, v))
 }
 
 // And groups predicates with the AND operator between them.

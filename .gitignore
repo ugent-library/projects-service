@@ -31,3 +31,5 @@ reflex.conf
 # Config
 .env*
 !.env.example
+atlas.hcl
+!atlas.hcl.example

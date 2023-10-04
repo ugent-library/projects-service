@@ -27,7 +27,16 @@ func (UnimplementedHandler) AddProject(ctx context.Context, req *AddProjectReque
 // Get a single project.
 //
 // POST /get-project
-func (UnimplementedHandler) GetProject(ctx context.Context, req *GetProjectRequest) (r *GetProjectResponse, _ error) {
+func (UnimplementedHandler) GetProject(ctx context.Context, req *GetProjectRequest) (r *Project, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SuggestProjects implements suggestProjects operation.
+//
+// Search in projects.
+//
+// POST /suggest-projects
+func (UnimplementedHandler) SuggestProjects(ctx context.Context, req *SuggestProjectsRequest) (r *SuggestProjectsResponse, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

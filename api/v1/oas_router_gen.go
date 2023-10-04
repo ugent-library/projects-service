@@ -95,6 +95,24 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					return
 				}
+			case 's': // Prefix: "suggest-projects"
+				if l := len("suggest-projects"); len(elem) >= l && elem[0:l] == "suggest-projects" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "POST":
+						s.handleSuggestProjectsRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "POST")
+					}
+
+					return
+				}
 			}
 		}
 	}
@@ -224,6 +242,28 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.summary = "Get a single project"
 						r.operationID = "getProject"
 						r.pathPattern = "/get-project"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+			case 's': // Prefix: "suggest-projects"
+				if l := len("suggest-projects"); len(elem) >= l && elem[0:l] == "suggest-projects" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch method {
+					case "POST":
+						// Leaf: SuggestProjects
+						r.name = "SuggestProjects"
+						r.summary = "Search in projects"
+						r.operationID = "suggestProjects"
+						r.pathPattern = "/suggest-projects"
 						r.args = args
 						r.count = 0
 						return r, true

@@ -188,6 +188,26 @@ func (pu *ProjectUpdate) SetModified(t time.Time) *ProjectUpdate {
 	return pu
 }
 
+// SetTs sets the "ts" field.
+func (pu *ProjectUpdate) SetTs(s string) *ProjectUpdate {
+	pu.mutation.SetTs(s)
+	return pu
+}
+
+// SetNillableTs sets the "ts" field if the given value is not nil.
+func (pu *ProjectUpdate) SetNillableTs(s *string) *ProjectUpdate {
+	if s != nil {
+		pu.SetTs(*s)
+	}
+	return pu
+}
+
+// ClearTs clears the value of the "ts" field.
+func (pu *ProjectUpdate) ClearTs() *ProjectUpdate {
+	pu.mutation.ClearTs()
+	return pu
+}
+
 // Mutation returns the ProjectMutation object of the builder.
 func (pu *ProjectUpdate) Mutation() *ProjectMutation {
 	return pu.mutation
@@ -290,6 +310,12 @@ func (pu *ProjectUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := pu.mutation.Modified(); ok {
 		_spec.SetField(project.FieldModified, field.TypeTime, value)
+	}
+	if value, ok := pu.mutation.Ts(); ok {
+		_spec.SetField(project.FieldTs, field.TypeString, value)
+	}
+	if pu.mutation.TsCleared() {
+		_spec.ClearField(project.FieldTs, field.TypeString)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, pu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -469,6 +495,26 @@ func (puo *ProjectUpdateOne) SetModified(t time.Time) *ProjectUpdateOne {
 	return puo
 }
 
+// SetTs sets the "ts" field.
+func (puo *ProjectUpdateOne) SetTs(s string) *ProjectUpdateOne {
+	puo.mutation.SetTs(s)
+	return puo
+}
+
+// SetNillableTs sets the "ts" field if the given value is not nil.
+func (puo *ProjectUpdateOne) SetNillableTs(s *string) *ProjectUpdateOne {
+	if s != nil {
+		puo.SetTs(*s)
+	}
+	return puo
+}
+
+// ClearTs clears the value of the "ts" field.
+func (puo *ProjectUpdateOne) ClearTs() *ProjectUpdateOne {
+	puo.mutation.ClearTs()
+	return puo
+}
+
 // Mutation returns the ProjectMutation object of the builder.
 func (puo *ProjectUpdateOne) Mutation() *ProjectMutation {
 	return puo.mutation
@@ -601,6 +647,12 @@ func (puo *ProjectUpdateOne) sqlSave(ctx context.Context) (_node *Project, err e
 	}
 	if value, ok := puo.mutation.Modified(); ok {
 		_spec.SetField(project.FieldModified, field.TypeTime, value)
+	}
+	if value, ok := puo.mutation.Ts(); ok {
+		_spec.SetField(project.FieldTs, field.TypeString, value)
+	}
+	if puo.mutation.TsCleared() {
+		_spec.ClearField(project.FieldTs, field.TypeString)
 	}
 	_node = &Project{config: puo.config}
 	_spec.Assign = _node.assignValues

@@ -2,6 +2,67 @@
 
 A service that publishes a directory of research projects at Ghent University.
 
+## Setup
+
+### Database
+
+Create a new database and a user.
+
+This application uses PostgreSQL's text search feature. You need to create 
+a custom `TEXT CONFIGURATION` using these queries:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS unaccent;
+CREATE TEXT SEARCH CONFIGURATION usimple ( COPY = simple );
+ALTER TEXT SEARCH CONFIGURATION usimple ALTER MAPPING FOR hword, hword_part, word WITH unaccent, simple;
+```
+
+The database is managed with [atlas](https://atlasgo.io/).
+
+Copy the `atlas.hcl.example` to `atlas.hcl`. 
+
+Atlas requires you to have two databases when developing, both are referenced in the `atlas.hcl` file:
+
+* a [dev-database](https://atlasgo.io/concepts/dev-database) used to check the state 
+of the database against the schema and migrations in order to generate a migration path.
+* The target database containing data, on which migrations are applied.
+
+In production, using a `dev-database` to verify the migration path and allow rollbacks is optional.
+
+Initialize the database with the `env` flag:
+
+```
+atlas migrate apply --env local
+```
+
+### Environment variables
+
+Copy `.env.example` to `.env` and ensure these variables are present:
+
+```
+PROJECTS_ENV               # environment (local, production, development, default:production)
+PROJECTS_HOST              # host or IP (default: localhost)
+PROJECTS_PORT              # host port (default: 3000)
+PROJECTS_API_KEY           # REST API Key
+PROJECTS_REPO_CONN         # PostgreSQL DSN connection string
+PROJECTS_REPO_SECRET       # PostgreSQL secret seed
+```
+
+### Application boot
+
+Manually:
+
+```go
+go run main.go server
+```
+
+Or via Docker:
+
+```
+docker build -t ugentlib/projects .
+docker run ugentlib/projects /dist/app server
+```
+
 ## Development
 
 ### Live reload
@@ -12,55 +73,29 @@ cp reflex.example.conf reflex.conf
 reflex -c reflex.conf
 ```
 
-### REST API
+## Database migrations
 
-### Nats
+If you make a change to the schema files in `ent/schema/`, you will need to run these steps:
 
-First, install the [nats client](). Then, start a NATS server in development mode using the client.
-Finally, create a stream and a consumer
+Re-generate the `ent` code with `cd ent && go generate ./...`. Next, generate a new migration
+with `atlas migrate diff --env local`. This will generate a new migration file in 
+`ent/migrate/migrations` and update the `atlas.sum` file in that directory. Finally, run the 
+migration against your database with `atlas migrate apply --env local`.
 
-```
-nats server run --jetstream
-nats stream add
-nats consumer add
-```
+### Data migrations
 
-The output of `nats server` will list credentials for an auto-generated `user` account.
-Use the credentials to configure the connection with the `PROJECTS_NATS_URL` env variable.
+Create a new migration file with `atlas migrate new <name> --env local`. Then edit that file 
+with `atlas migrate edit <filename> --env local`. This wil automatically update the `atlas.sum`
+file. You can also edit the file directly, but then you have to run `atlas migrate hash --env local`
+to re-generate the `atlas.sum` file.
 
-The consumer and stream should match these values in `.env`:
+## OpenAPI
 
-```
-PROJECTS_NATS_STREAM
-PROJECTS_NATS_CONSUMER
-```
+The REST API is described through [OpenAPI](https://swagger.io/specification/). The code is generated
+with [ogen](https://ogen.dev/).
 
-Start the importer:
+When making changes to the API specification in `api/v1/openapi.yaml`, you must regenerate the API 
+server code: `cd api/v1 && go generate ./...`.
 
-```
-go run main.go import
-```
-
-Publish messages to the stream like this:
-
-```
-nats pub project.a --count=3 --sleep 1s '{
-    "type": "ResearchProject",
-    "name": "Project: title",
-    "foundingDate": "2015-01-01",
-    "dissolutionDate": "2016-01-01",
-    "description": "lorem ipsum dolor sit amet.",
-    "identifier": [
-        {
-            "type": "PropertyValue",
-            "propertyID": "IWETO",
-            "value":  "00B99999"
-        },
-        {
-            "type": "PropertyValue",
-            "propertyID": "GISMO",
-            "value":  "f0b38757-f375-4d24-b6c4-879955f8589a"
-        }
-    ]
-}'
-```
+The implementation of the handler resides in `api/v1/service.go`. Make sure all methods of the `Handler`
+interface are implemented.

@@ -4,6 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
+	"regexp"
+	"strings"
 
 	"entgo.io/ent/dialect"
 	sqldialect "entgo.io/ent/dialect/sql"
@@ -94,6 +97,27 @@ func (r *Repo) GetProject(ctx context.Context, id string) (*models.Project, erro
 	return rowToProject(row), nil
 }
 
+func (r *Repo) SuggestProjects(ctx context.Context, query string) ([]*models.Project, error) {
+	tsQuery, tsQueryArgs := toTSQuery(query)
+	tsQuery = "ts @@ " + tsQuery
+	rows, err := r.client.Project.Query().Where(func(s *sqldialect.Selector) {
+		s.Where(
+			sqldialect.ExprP(tsQuery, tsQueryArgs...),
+		)
+	}).Limit(10).All(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	projects := make([]*models.Project, 0, len(rows))
+	for _, row := range rows {
+		projects = append(projects, rowToProject(row))
+	}
+
+	return projects, nil
+}
+
 func rowToProject(row *ent.Project) *models.Project {
 	ids := make([]*models.Identifier, 0, len(row.Identifier))
 	for _, id := range row.Identifier {
@@ -118,6 +142,36 @@ func rowToProject(row *ent.Project) *models.Project {
 	return p
 }
 
-// func (r *Repo) SuggestProjects(ctx context.Context, id string) (*models.Project, error) {
+var regexMultipleSpaces = regexp.MustCompile(`\s+`)
+var regexNoBrackets = regexp.MustCompile(`[\[\]()\{\}]`)
 
-// }
+func toTSQuery(query string) (string, []any) {
+	// remove duplicate spaces
+	query = regexMultipleSpaces.ReplaceAllString(query, " ")
+	// trim
+	query = strings.TrimSpace(query)
+
+	queryParts := make([]string, 0)
+	queryArgs := make([]any, 0)
+	argCounter := 0
+
+	for _, qp := range strings.Split(query, " ") {
+		// remove terms that contain brackets
+		if regexNoBrackets.MatchString(qp) {
+			continue
+		}
+		argCounter++
+
+		// $1 || ':*'
+		queryParts = append(queryParts, fmt.Sprintf("$%d || ':*'", argCounter))
+		queryArgs = append(queryArgs, qp)
+	}
+
+	// $1:* & $2:*
+	tsQuery := fmt.Sprintf(
+		"to_tsquery('usimple', %s)",
+		strings.Join(queryParts, " || ' & ' || "),
+	)
+
+	return tsQuery, queryArgs
+}

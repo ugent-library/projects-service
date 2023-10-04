@@ -45,6 +45,7 @@ type ProjectMutation struct {
 	funding_programme *string
 	created           *time.Time
 	modified          *time.Time
+	ts                *string
 	clearedFields     map[string]struct{}
 	done              bool
 	oldValue          func(context.Context) (*Project, error)
@@ -621,6 +622,55 @@ func (m *ProjectMutation) ResetModified() {
 	m.modified = nil
 }
 
+// SetTs sets the "ts" field.
+func (m *ProjectMutation) SetTs(s string) {
+	m.ts = &s
+}
+
+// Ts returns the value of the "ts" field in the mutation.
+func (m *ProjectMutation) Ts() (r string, exists bool) {
+	v := m.ts
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTs returns the old "ts" field's value of the Project entity.
+// If the Project object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ProjectMutation) OldTs(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTs: %w", err)
+	}
+	return oldValue.Ts, nil
+}
+
+// ClearTs clears the value of the "ts" field.
+func (m *ProjectMutation) ClearTs() {
+	m.ts = nil
+	m.clearedFields[project.FieldTs] = struct{}{}
+}
+
+// TsCleared returns if the "ts" field was cleared in this mutation.
+func (m *ProjectMutation) TsCleared() bool {
+	_, ok := m.clearedFields[project.FieldTs]
+	return ok
+}
+
+// ResetTs resets all changes to the "ts" field.
+func (m *ProjectMutation) ResetTs() {
+	m.ts = nil
+	delete(m.clearedFields, project.FieldTs)
+}
+
 // Where appends a list predicates to the ProjectMutation builder.
 func (m *ProjectMutation) Where(ps ...predicate.Project) {
 	m.predicates = append(m.predicates, ps...)
@@ -655,7 +705,7 @@ func (m *ProjectMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ProjectMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.identifier != nil {
 		fields = append(fields, project.FieldIdentifier)
 	}
@@ -686,6 +736,9 @@ func (m *ProjectMutation) Fields() []string {
 	if m.modified != nil {
 		fields = append(fields, project.FieldModified)
 	}
+	if m.ts != nil {
+		fields = append(fields, project.FieldTs)
+	}
 	return fields
 }
 
@@ -714,6 +767,8 @@ func (m *ProjectMutation) Field(name string) (ent.Value, bool) {
 		return m.Created()
 	case project.FieldModified:
 		return m.Modified()
+	case project.FieldTs:
+		return m.Ts()
 	}
 	return nil, false
 }
@@ -743,6 +798,8 @@ func (m *ProjectMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldCreated(ctx)
 	case project.FieldModified:
 		return m.OldModified(ctx)
+	case project.FieldTs:
+		return m.OldTs(ctx)
 	}
 	return nil, fmt.Errorf("unknown Project field %s", name)
 }
@@ -822,6 +879,13 @@ func (m *ProjectMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetModified(v)
 		return nil
+	case project.FieldTs:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTs(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Project field %s", name)
 }
@@ -873,6 +937,9 @@ func (m *ProjectMutation) ClearedFields() []string {
 	if m.FieldCleared(project.FieldFundingProgramme) {
 		fields = append(fields, project.FieldFundingProgramme)
 	}
+	if m.FieldCleared(project.FieldTs) {
+		fields = append(fields, project.FieldTs)
+	}
 	return fields
 }
 
@@ -907,6 +974,9 @@ func (m *ProjectMutation) ClearField(name string) error {
 		return nil
 	case project.FieldFundingProgramme:
 		m.ClearFundingProgramme()
+		return nil
+	case project.FieldTs:
+		m.ClearTs()
 		return nil
 	}
 	return fmt.Errorf("unknown Project nullable field %s", name)
@@ -945,6 +1015,9 @@ func (m *ProjectMutation) ResetField(name string) error {
 		return nil
 	case project.FieldModified:
 		m.ResetModified()
+		return nil
+	case project.FieldTs:
+		m.ResetTs()
 		return nil
 	}
 	return fmt.Errorf("unknown Project field %s", name)

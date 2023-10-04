@@ -1,0 +1,22 @@
+// Define an environment named "local"
+env "local" {
+    // Declare where the schema definition resides.
+    // Also supported: ["file://multi.hcl", "file://schema.hcl"].
+    src = "ent://ent/schema"
+
+    // Define the URL of the database which is managed
+    // in this environment.
+    url = "postgres://projects:projects@localhost:5432/projects?sslmode=disable&search_path=public"
+
+    // Define the URL of the Dev Database for this environment
+    // See: https://atlasgo.io/concepts/dev-database
+    dev = "postgres://projects:projects@localhost:5432/projects_dev?sslmode=disable&search_path=public"
+
+    migration {
+        // URL where the migration directory resides.
+        dir = "file://ent/migrate/migrations"
+        // An optional format of the migration directory:
+        // atlas (default) | flyway | liquibase | goose | golang-migrate | dbmate
+        format = atlas
+    }
+}

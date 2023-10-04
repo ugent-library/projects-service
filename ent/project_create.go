@@ -156,6 +156,20 @@ func (pc *ProjectCreate) SetNillableModified(t *time.Time) *ProjectCreate {
 	return pc
 }
 
+// SetTs sets the "ts" field.
+func (pc *ProjectCreate) SetTs(s string) *ProjectCreate {
+	pc.mutation.SetTs(s)
+	return pc
+}
+
+// SetNillableTs sets the "ts" field if the given value is not nil.
+func (pc *ProjectCreate) SetNillableTs(s *string) *ProjectCreate {
+	if s != nil {
+		pc.SetTs(*s)
+	}
+	return pc
+}
+
 // SetID sets the "id" field.
 func (pc *ProjectCreate) SetID(s string) *ProjectCreate {
 	pc.mutation.SetID(s)
@@ -309,6 +323,10 @@ func (pc *ProjectCreate) createSpec() (*Project, *sqlgraph.CreateSpec) {
 	if value, ok := pc.mutation.Modified(); ok {
 		_spec.SetField(project.FieldModified, field.TypeTime, value)
 		_node.Modified = value
+	}
+	if value, ok := pc.mutation.Ts(); ok {
+		_spec.SetField(project.FieldTs, field.TypeString, value)
+		_node.Ts = value
 	}
 	return _node, _spec
 }
@@ -509,6 +527,24 @@ func (u *ProjectUpsert) SetModified(v time.Time) *ProjectUpsert {
 // UpdateModified sets the "modified" field to the value that was provided on create.
 func (u *ProjectUpsert) UpdateModified() *ProjectUpsert {
 	u.SetExcluded(project.FieldModified)
+	return u
+}
+
+// SetTs sets the "ts" field.
+func (u *ProjectUpsert) SetTs(v string) *ProjectUpsert {
+	u.Set(project.FieldTs, v)
+	return u
+}
+
+// UpdateTs sets the "ts" field to the value that was provided on create.
+func (u *ProjectUpsert) UpdateTs() *ProjectUpsert {
+	u.SetExcluded(project.FieldTs)
+	return u
+}
+
+// ClearTs clears the value of the "ts" field.
+func (u *ProjectUpsert) ClearTs() *ProjectUpsert {
+	u.SetNull(project.FieldTs)
 	return u
 }
 
@@ -735,6 +771,27 @@ func (u *ProjectUpsertOne) SetModified(v time.Time) *ProjectUpsertOne {
 func (u *ProjectUpsertOne) UpdateModified() *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
 		s.UpdateModified()
+	})
+}
+
+// SetTs sets the "ts" field.
+func (u *ProjectUpsertOne) SetTs(v string) *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.SetTs(v)
+	})
+}
+
+// UpdateTs sets the "ts" field to the value that was provided on create.
+func (u *ProjectUpsertOne) UpdateTs() *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.UpdateTs()
+	})
+}
+
+// ClearTs clears the value of the "ts" field.
+func (u *ProjectUpsertOne) ClearTs() *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.ClearTs()
 	})
 }
 
@@ -1124,6 +1181,27 @@ func (u *ProjectUpsertBulk) SetModified(v time.Time) *ProjectUpsertBulk {
 func (u *ProjectUpsertBulk) UpdateModified() *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
 		s.UpdateModified()
+	})
+}
+
+// SetTs sets the "ts" field.
+func (u *ProjectUpsertBulk) SetTs(v string) *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.SetTs(v)
+	})
+}
+
+// UpdateTs sets the "ts" field to the value that was provided on create.
+func (u *ProjectUpsertBulk) UpdateTs() *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.UpdateTs()
+	})
+}
+
+// ClearTs clears the value of the "ts" field.
+func (u *ProjectUpsertBulk) ClearTs() *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.ClearTs()
 	})
 }
 

@@ -19,7 +19,13 @@ type Handler interface {
 	// Get a single project.
 	//
 	// POST /get-project
-	GetProject(ctx context.Context, req *GetProjectRequest) (*GetProjectResponse, error)
+	GetProject(ctx context.Context, req *GetProjectRequest) (*Project, error)
+	// SuggestProjects implements suggestProjects operation.
+	//
+	// Search in projects.
+	//
+	// POST /suggest-projects
+	SuggestProjects(ctx context.Context, req *SuggestProjectsRequest) (*SuggestProjectsResponse, error)
 	// NewError creates *ErrorStatusCode from error returned by handler.
 	//
 	// Used for common default response.
