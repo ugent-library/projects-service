@@ -66,7 +66,7 @@ func (Project) Fields() []ent.Field {
 		field.String("ts").
 			Optional().
 			SchemaType(map[string]string{
-				dialect.Postgres: "tsvector GENERATED ALWAYS AS(to_tsvector('simple', jsonb_path_query_array(identifier,'$.**{2}')) || to_tsvector('simple', id) || to_tsvector('usimple',name)) STORED",
+				dialect.Postgres: "tsvector NULL GENERATED ALWAYS AS(to_tsvector('simple', jsonb_path_query_array(identifier,'$.**{2}')) || to_tsvector('simple', id) || to_tsvector('usimple',name)) STORED",
 			}),
 	}
 }
