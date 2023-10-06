@@ -6,12 +6,13 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/alexliesenfeld/health"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/ory/graceful"
 	"github.com/spf13/cobra"
+	"github.com/ugent-library/httpx/render"
 
-	// "github.com/ugent-library/projects/api/v1"
 	"github.com/ugent-library/projects/api/v1"
 	"github.com/ugent-library/projects/repositories"
 	"github.com/ugent-library/zaphttp"
@@ -61,6 +62,20 @@ var serverCmd = &cobra.Command{
 		mux.Use(zaphttp.SetLogger(logger.Desugar(), zapchi.RequestID))
 		mux.Use(middleware.RequestLogger(zapchi.LogFormatter()))
 		mux.Use(middleware.Recoverer)
+
+		// mount health and info
+		mux.Get("/health", health.NewHandler(health.NewChecker())) // TODO add checkers
+		mux.Get("/info", func(w http.ResponseWriter, r *http.Request) {
+			render.JSON(w, http.StatusOK, &struct {
+				Branch string `json:"branch,omitempty"`
+				Commit string `json:"commit,omitempty"`
+				Image  string `json:"image,omitempty"`
+			}{
+				Branch: version.Branch,
+				Commit: version.Commit,
+				Image:  version.Image,
+			})
+		})
 
 		// mount api
 		mux.Mount("/api/v1", http.StripPrefix("/api/v1", apiServer))

@@ -2,6 +2,13 @@ package cli
 
 import "fmt"
 
+// Version info
+type Version struct {
+	Branch string `env:"SOURCE_BRANCH"`
+	Commit string `env:"SOURCE_COMMIT"`
+	Image  string `env:"IMAGE_NAME"`
+}
+
 type Config struct {
 	// Version info
 	Version struct {

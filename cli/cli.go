@@ -8,8 +8,9 @@ import (
 )
 
 var (
-	config Config
-	logger *zap.SugaredLogger
+	version Version
+	config  Config
+	logger  *zap.SugaredLogger
 
 	rootCmd = &cobra.Command{
 		Use:   "projects",

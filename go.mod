@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	entgo.io/ent v0.12.3
+	github.com/alexliesenfeld/health v0.7.0
 	github.com/caarlos0/env/v8 v8.0.0
 	github.com/go-chi/chi/v5 v5.0.10
 	github.com/go-faster/errors v0.6.1
@@ -14,6 +15,7 @@ require (
 	github.com/oklog/ulid/v2 v2.1.0
 	github.com/ory/graceful v0.1.3
 	github.com/spf13/cobra v1.7.0
+	github.com/ugent-library/httpx v0.0.0-20230810085329-405b7b83c66c
 	github.com/ugent-library/zaphttp v0.0.0-20230513174723-52c27d21c5ce
 	go.opentelemetry.io/otel v1.19.0
 	go.opentelemetry.io/otel/metric v1.19.0
