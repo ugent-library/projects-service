@@ -63,12 +63,14 @@ cd docker && docker build -f app.Dockerfile -t ugentlib/projects ../
 docker run ugentlib/projects /dist/app server
 ```
 
-Running migrations via Docker:
+Use [tern](https://github.com/jackc/tern) to initalize the database:
 
 ```
-cd docker && docker build -f db.Dockerfile -t ugentlib/projects-atlas ../
-docker run -v $(pwd)/atlas.hcl:/atlas.hcl ugentlib/projects-atlas migrate apply --env local
+cd migrations && tern migrate apply
 ```
+
+Either create a `tern.conf` file in the `migrations` directory, or use `tern` with 
+[PG environment variables](https://www.postgresql.org/docs/current/libpq-envars.html).
 
 ## Development
 
@@ -84,17 +86,16 @@ reflex -c reflex.conf
 
 If you make a change to the schema files in `ent/schema/`, you will need to run these steps:
 
-Re-generate the `ent` code with `cd ent && go generate ./...`. Next, generate a new migration
-with `atlas migrate diff --env local`. This will generate a new migration file in 
-`ent/migrate/migrations` and update the `atlas.sum` file in that directory. Finally, run the 
-migration against your database with `atlas migrate apply --env local`.
+* `cd ent && go generate ./...` to generate `ent` Go code.
+* `tern migrate new` to create a new migration file.
+* Add SQL code to the migration file.
+* `tern migrate apply` to apply pending migrations to the database.
 
-### Data migrations
+**Experimental: atlas**
 
-Create a new migration file with `atlas migrate new <name> --env local`. Then edit that file 
-with `atlas migrate edit <filename> --env local`. This wil automatically update the `atlas.sum`
-file. You can also edit the file directly, but then you have to run `atlas migrate hash --env local`
-to re-generate the `atlas.sum` file.
+[atlas](https://atlasgo.io) is a companion to `ent`. It calculates a migration path by diffing
+the schema in Go against the migrations. It then generates a new migration in SQL. This project
+supports atlas, but prefers tern as atlas relies on [lib/pq](https://github.com/lib/pq).
 
 ## OpenAPI
 
