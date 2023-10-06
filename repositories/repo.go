@@ -13,7 +13,6 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 
 	"github.com/ugent-library/projects/ent"
-	"github.com/ugent-library/projects/ent/migrate"
 	"github.com/ugent-library/projects/ent/project"
 	"github.com/ugent-library/projects/ent/schema"
 	"github.com/ugent-library/projects/models"
@@ -40,13 +39,6 @@ func New(c Config) (*Repo, error) {
 
 	driver := sqldialect.OpenDB(dialect.Postgres, db)
 	client := ent.NewClient(ent.Driver(driver))
-
-	err = client.Schema.Create(context.TODO(),
-		migrate.WithDropIndex(true),
-	)
-	if err != nil {
-		return nil, err
-	}
 
 	return &Repo{
 		config: c,
