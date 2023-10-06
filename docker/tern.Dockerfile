@@ -10,8 +10,8 @@ FROM alpine:latest
 WORKDIR /migrations
 COPY --from=build /build/migrations .
 COPY --from=build /usr/local/bin/tern  /usr/local/bin/
-COPY --from=build /build/docker/entrypoint.sh .
-RUN chmod +x /migrations/entrypoint.sh
+COPY --from=build /build/docker/tern.sh .
+RUN chmod +x /migrations/tern.sh
 
 ENV PGDATABASE $PGDATABASE
 
