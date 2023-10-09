@@ -13,7 +13,7 @@ type Handler interface {
 	// Add a single project.
 	//
 	// POST /add-project
-	AddProject(ctx context.Context, req *AddProjectRequest) error
+	AddProject(ctx context.Context, req *Project) error
 	// GetProject implements getProject operation.
 	//
 	// Get a single project.

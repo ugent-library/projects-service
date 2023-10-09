@@ -14,195 +14,6 @@ func (s *ErrorStatusCode) Error() string {
 // AddProjectOK is response for AddProject operation.
 type AddProjectOK struct{}
 
-// Ref: #/components/schemas/AddProjectRequest
-type AddProjectRequest struct {
-	Type            string                            `json:"type"`
-	Identifier      []AddProjectRequestIdentifierItem `json:"identifier"`
-	IsFundedBy      NilAddProjectRequestIsFundedBy    `json:"isFundedBy"`
-	HasAcronym      NilString                         `json:"hasAcronym"`
-	Name            NilString                         `json:"name"`
-	Description     NilString                         `json:"description"`
-	FoundingDate    NilString                         `json:"foundingDate"`
-	DissolutionDate NilString                         `json:"dissolutionDate"`
-}
-
-// GetType returns the value of Type.
-func (s *AddProjectRequest) GetType() string {
-	return s.Type
-}
-
-// GetIdentifier returns the value of Identifier.
-func (s *AddProjectRequest) GetIdentifier() []AddProjectRequestIdentifierItem {
-	return s.Identifier
-}
-
-// GetIsFundedBy returns the value of IsFundedBy.
-func (s *AddProjectRequest) GetIsFundedBy() NilAddProjectRequestIsFundedBy {
-	return s.IsFundedBy
-}
-
-// GetHasAcronym returns the value of HasAcronym.
-func (s *AddProjectRequest) GetHasAcronym() NilString {
-	return s.HasAcronym
-}
-
-// GetName returns the value of Name.
-func (s *AddProjectRequest) GetName() NilString {
-	return s.Name
-}
-
-// GetDescription returns the value of Description.
-func (s *AddProjectRequest) GetDescription() NilString {
-	return s.Description
-}
-
-// GetFoundingDate returns the value of FoundingDate.
-func (s *AddProjectRequest) GetFoundingDate() NilString {
-	return s.FoundingDate
-}
-
-// GetDissolutionDate returns the value of DissolutionDate.
-func (s *AddProjectRequest) GetDissolutionDate() NilString {
-	return s.DissolutionDate
-}
-
-// SetType sets the value of Type.
-func (s *AddProjectRequest) SetType(val string) {
-	s.Type = val
-}
-
-// SetIdentifier sets the value of Identifier.
-func (s *AddProjectRequest) SetIdentifier(val []AddProjectRequestIdentifierItem) {
-	s.Identifier = val
-}
-
-// SetIsFundedBy sets the value of IsFundedBy.
-func (s *AddProjectRequest) SetIsFundedBy(val NilAddProjectRequestIsFundedBy) {
-	s.IsFundedBy = val
-}
-
-// SetHasAcronym sets the value of HasAcronym.
-func (s *AddProjectRequest) SetHasAcronym(val NilString) {
-	s.HasAcronym = val
-}
-
-// SetName sets the value of Name.
-func (s *AddProjectRequest) SetName(val NilString) {
-	s.Name = val
-}
-
-// SetDescription sets the value of Description.
-func (s *AddProjectRequest) SetDescription(val NilString) {
-	s.Description = val
-}
-
-// SetFoundingDate sets the value of FoundingDate.
-func (s *AddProjectRequest) SetFoundingDate(val NilString) {
-	s.FoundingDate = val
-}
-
-// SetDissolutionDate sets the value of DissolutionDate.
-func (s *AddProjectRequest) SetDissolutionDate(val NilString) {
-	s.DissolutionDate = val
-}
-
-type AddProjectRequestIdentifierItem struct {
-	Type       string `json:"type"`
-	PropertyID string `json:"propertyID"`
-	Value      string `json:"value"`
-}
-
-// GetType returns the value of Type.
-func (s *AddProjectRequestIdentifierItem) GetType() string {
-	return s.Type
-}
-
-// GetPropertyID returns the value of PropertyID.
-func (s *AddProjectRequestIdentifierItem) GetPropertyID() string {
-	return s.PropertyID
-}
-
-// GetValue returns the value of Value.
-func (s *AddProjectRequestIdentifierItem) GetValue() string {
-	return s.Value
-}
-
-// SetType sets the value of Type.
-func (s *AddProjectRequestIdentifierItem) SetType(val string) {
-	s.Type = val
-}
-
-// SetPropertyID sets the value of PropertyID.
-func (s *AddProjectRequestIdentifierItem) SetPropertyID(val string) {
-	s.PropertyID = val
-}
-
-// SetValue sets the value of Value.
-func (s *AddProjectRequestIdentifierItem) SetValue(val string) {
-	s.Value = val
-}
-
-type AddProjectRequestIsFundedBy struct {
-	Type        string                                    `json:"type"`
-	Identifier  string                                    `json:"identifier"`
-	IsAwardedBy NilAddProjectRequestIsFundedByIsAwardedBy `json:"isAwardedBy"`
-}
-
-// GetType returns the value of Type.
-func (s *AddProjectRequestIsFundedBy) GetType() string {
-	return s.Type
-}
-
-// GetIdentifier returns the value of Identifier.
-func (s *AddProjectRequestIsFundedBy) GetIdentifier() string {
-	return s.Identifier
-}
-
-// GetIsAwardedBy returns the value of IsAwardedBy.
-func (s *AddProjectRequestIsFundedBy) GetIsAwardedBy() NilAddProjectRequestIsFundedByIsAwardedBy {
-	return s.IsAwardedBy
-}
-
-// SetType sets the value of Type.
-func (s *AddProjectRequestIsFundedBy) SetType(val string) {
-	s.Type = val
-}
-
-// SetIdentifier sets the value of Identifier.
-func (s *AddProjectRequestIsFundedBy) SetIdentifier(val string) {
-	s.Identifier = val
-}
-
-// SetIsAwardedBy sets the value of IsAwardedBy.
-func (s *AddProjectRequestIsFundedBy) SetIsAwardedBy(val NilAddProjectRequestIsFundedByIsAwardedBy) {
-	s.IsAwardedBy = val
-}
-
-type AddProjectRequestIsFundedByIsAwardedBy struct {
-	Type string `json:"type"`
-	Name string `json:"name"`
-}
-
-// GetType returns the value of Type.
-func (s *AddProjectRequestIsFundedByIsAwardedBy) GetType() string {
-	return s.Type
-}
-
-// GetName returns the value of Name.
-func (s *AddProjectRequestIsFundedByIsAwardedBy) GetName() string {
-	return s.Name
-}
-
-// SetType sets the value of Type.
-func (s *AddProjectRequestIsFundedByIsAwardedBy) SetType(val string) {
-	s.Type = val
-}
-
-// SetName sets the value of Name.
-func (s *AddProjectRequestIsFundedByIsAwardedBy) SetName(val string) {
-	s.Name = val
-}
-
 type ApiKey struct {
 	APIKey string
 }
@@ -282,96 +93,6 @@ func (s *GetProjectRequest) GetID() string {
 // SetID sets the value of ID.
 func (s *GetProjectRequest) SetID(val string) {
 	s.ID = val
-}
-
-// NewNilAddProjectRequestIsFundedBy returns new NilAddProjectRequestIsFundedBy with value set to v.
-func NewNilAddProjectRequestIsFundedBy(v AddProjectRequestIsFundedBy) NilAddProjectRequestIsFundedBy {
-	return NilAddProjectRequestIsFundedBy{
-		Value: v,
-	}
-}
-
-// NilAddProjectRequestIsFundedBy is nullable AddProjectRequestIsFundedBy.
-type NilAddProjectRequestIsFundedBy struct {
-	Value AddProjectRequestIsFundedBy
-	Null  bool
-}
-
-// SetTo sets value to v.
-func (o *NilAddProjectRequestIsFundedBy) SetTo(v AddProjectRequestIsFundedBy) {
-	o.Null = false
-	o.Value = v
-}
-
-// IsSet returns true if value is Null.
-func (o NilAddProjectRequestIsFundedBy) IsNull() bool { return o.Null }
-
-// SetNull sets value to null.
-func (o *NilAddProjectRequestIsFundedBy) SetToNull() {
-	o.Null = true
-	var v AddProjectRequestIsFundedBy
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o NilAddProjectRequestIsFundedBy) Get() (v AddProjectRequestIsFundedBy, ok bool) {
-	if o.Null {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o NilAddProjectRequestIsFundedBy) Or(d AddProjectRequestIsFundedBy) AddProjectRequestIsFundedBy {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewNilAddProjectRequestIsFundedByIsAwardedBy returns new NilAddProjectRequestIsFundedByIsAwardedBy with value set to v.
-func NewNilAddProjectRequestIsFundedByIsAwardedBy(v AddProjectRequestIsFundedByIsAwardedBy) NilAddProjectRequestIsFundedByIsAwardedBy {
-	return NilAddProjectRequestIsFundedByIsAwardedBy{
-		Value: v,
-	}
-}
-
-// NilAddProjectRequestIsFundedByIsAwardedBy is nullable AddProjectRequestIsFundedByIsAwardedBy.
-type NilAddProjectRequestIsFundedByIsAwardedBy struct {
-	Value AddProjectRequestIsFundedByIsAwardedBy
-	Null  bool
-}
-
-// SetTo sets value to v.
-func (o *NilAddProjectRequestIsFundedByIsAwardedBy) SetTo(v AddProjectRequestIsFundedByIsAwardedBy) {
-	o.Null = false
-	o.Value = v
-}
-
-// IsSet returns true if value is Null.
-func (o NilAddProjectRequestIsFundedByIsAwardedBy) IsNull() bool { return o.Null }
-
-// SetNull sets value to null.
-func (o *NilAddProjectRequestIsFundedByIsAwardedBy) SetToNull() {
-	o.Null = true
-	var v AddProjectRequestIsFundedByIsAwardedBy
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o NilAddProjectRequestIsFundedByIsAwardedBy) Get() (v AddProjectRequestIsFundedByIsAwardedBy, ok bool) {
-	if o.Null {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o NilAddProjectRequestIsFundedByIsAwardedBy) Or(d AddProjectRequestIsFundedByIsAwardedBy) AddProjectRequestIsFundedByIsAwardedBy {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
 }
 
 // NewNilProjectIsFundedBy returns new NilProjectIsFundedBy with value set to v.
@@ -509,6 +230,52 @@ func (o NilString) Or(d string) string {
 	return d
 }
 
+// NewOptDateTime returns new OptDateTime with value set to v.
+func NewOptDateTime(v time.Time) OptDateTime {
+	return OptDateTime{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDateTime is optional time.Time.
+type OptDateTime struct {
+	Value time.Time
+	Set   bool
+}
+
+// IsSet returns true if OptDateTime was set.
+func (o OptDateTime) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDateTime) Reset() {
+	var v time.Time
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDateTime) SetTo(v time.Time) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDateTime) Get() (v time.Time, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDateTime) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptString returns new OptString with value set to v.
 func NewOptString(v string) OptString {
 	return OptString{
@@ -558,6 +325,8 @@ func (o OptString) Or(d string) string {
 // Ref: #/components/schemas/Project
 type Project struct {
 	ID              OptString               `json:"id"`
+	Created         OptDateTime             `json:"created"`
+	Modified        OptDateTime             `json:"modified"`
 	Type            string                  `json:"type"`
 	Identifier      []ProjectIdentifierItem `json:"identifier"`
 	IsFundedBy      NilProjectIsFundedBy    `json:"isFundedBy"`
@@ -566,13 +335,21 @@ type Project struct {
 	Description     NilString               `json:"description"`
 	FoundingDate    NilString               `json:"foundingDate"`
 	DissolutionDate NilString               `json:"dissolutionDate"`
-	Created         time.Time               `json:"created"`
-	Modified        time.Time               `json:"modified"`
 }
 
 // GetID returns the value of ID.
 func (s *Project) GetID() OptString {
 	return s.ID
+}
+
+// GetCreated returns the value of Created.
+func (s *Project) GetCreated() OptDateTime {
+	return s.Created
+}
+
+// GetModified returns the value of Modified.
+func (s *Project) GetModified() OptDateTime {
+	return s.Modified
 }
 
 // GetType returns the value of Type.
@@ -615,19 +392,19 @@ func (s *Project) GetDissolutionDate() NilString {
 	return s.DissolutionDate
 }
 
-// GetCreated returns the value of Created.
-func (s *Project) GetCreated() time.Time {
-	return s.Created
-}
-
-// GetModified returns the value of Modified.
-func (s *Project) GetModified() time.Time {
-	return s.Modified
-}
-
 // SetID sets the value of ID.
 func (s *Project) SetID(val OptString) {
 	s.ID = val
+}
+
+// SetCreated sets the value of Created.
+func (s *Project) SetCreated(val OptDateTime) {
+	s.Created = val
+}
+
+// SetModified sets the value of Modified.
+func (s *Project) SetModified(val OptDateTime) {
+	s.Modified = val
 }
 
 // SetType sets the value of Type.
@@ -668,16 +445,6 @@ func (s *Project) SetFoundingDate(val NilString) {
 // SetDissolutionDate sets the value of DissolutionDate.
 func (s *Project) SetDissolutionDate(val NilString) {
 	s.DissolutionDate = val
-}
-
-// SetCreated sets the value of Created.
-func (s *Project) SetCreated(val time.Time) {
-	s.Created = val
-}
-
-// SetModified sets the value of Modified.
-func (s *Project) SetModified(val time.Time) {
-	s.Modified = val
 }
 
 type ProjectIdentifierItem struct {

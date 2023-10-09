@@ -28,7 +28,7 @@ type Invoker interface {
 	// Add a single project.
 	//
 	// POST /add-project
-	AddProject(ctx context.Context, request *AddProjectRequest) error
+	AddProject(ctx context.Context, request *Project) error
 	// GetProject invokes getProject operation.
 	//
 	// Get a single project.
@@ -102,12 +102,12 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 // Add a single project.
 //
 // POST /add-project
-func (c *Client) AddProject(ctx context.Context, request *AddProjectRequest) error {
+func (c *Client) AddProject(ctx context.Context, request *Project) error {
 	_, err := c.sendAddProject(ctx, request)
 	return err
 }
 
-func (c *Client) sendAddProject(ctx context.Context, request *AddProjectRequest) (res *AddProjectOK, err error) {
+func (c *Client) sendAddProject(ctx context.Context, request *Project) (res *AddProjectOK, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("addProject"),
 		semconv.HTTPMethodKey.String("POST"),

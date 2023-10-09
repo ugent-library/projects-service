@@ -89,58 +89,7 @@ components:
 
   schemas:
     AddProjectRequest:
-      type: object
-      allOf:
-        - type: object
-          properties:
-            type:
-              type: string
-            identifier:
-              type: array
-              items:
-                type: object
-                properties:
-                  type:
-                    type: string
-                  propertyID:
-                    type: string
-                  value:
-                    type: string
-                required: [type, propertyID, value]
-            isFundedBy:
-              type: object
-              nullable: true
-              properties:
-                type:
-                  type: string
-                identifier:
-                  type: string
-                isAwardedBy:
-                  type: object
-                  nullable: true
-                  properties:
-                    type:
-                      type: string
-                    name:
-                      type: string
-                  required: [type, name]
-              required: [type, identifier, isAwardedBy]
-            hasAcronym:
-              type: string
-              nullable: true
-            name:
-              type: string
-              nullable: true
-            description:
-              type: string
-              nullable: true
-            foundingDate:
-              type: string
-              nullable: true
-            dissolutionDate:
-              type: string
-              nullable: true
-          required: [type, identifier, name, description, foundingDate, dissolutionDate, hasAcronym, isFundedBy]
+      $ref: "#/components/schemas/Project"
 
     GetProjectRequest:
       type: object
@@ -178,6 +127,12 @@ components:
       properties:
         id:
           type: string
+        created:
+          type: string
+          format: date-time
+        modified:
+          type: string
+          format: date-time
         type:
           type: string
         identifier:
@@ -225,14 +180,7 @@ components:
         dissolutionDate:
           type: string
           nullable: true
-        created:
-          type: string
-          format: date-time
-        modified:
-          type: string
-          format: date-time
-      required: [type, identifier, name, hasAcronym, isFundedBy, description, foundingDate, dissolutionDate, created, modified]
-
+      required: [type, identifier, name, hasAcronym, isFundedBy, description, foundingDate, dissolutionDate]
 
     Error:
       type: object

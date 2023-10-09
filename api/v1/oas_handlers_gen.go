@@ -137,7 +137,7 @@ func (s *Server) handleAddProjectRequest(args [0]string, argsEscaped bool, w htt
 		}
 
 		type (
-			Request  = *AddProjectRequest
+			Request  = *Project
 			Params   = struct{}
 			Response = *AddProjectOK
 		)
