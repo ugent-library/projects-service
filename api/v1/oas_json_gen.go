@@ -311,52 +311,6 @@ func (s *NilProjectIsFundedByIsAwardedBy) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes string as json.
-func (o NilString) Encode(e *jx.Encoder) {
-	if o.Null {
-		e.Null()
-		return
-	}
-	e.Str(string(o.Value))
-}
-
-// Decode decodes string from json.
-func (o *NilString) Decode(d *jx.Decoder) error {
-	if o == nil {
-		return errors.New("invalid: unable to decode NilString to nil")
-	}
-	if d.Next() == jx.Null {
-		if err := d.Null(); err != nil {
-			return err
-		}
-
-		var v string
-		o.Value = v
-		o.Null = true
-		return nil
-	}
-	o.Null = false
-	v, err := d.Str()
-	if err != nil {
-		return err
-	}
-	o.Value = string(v)
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s NilString) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *NilString) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
 // Encode encodes time.Time as json.
 func (o OptDateTime) Encode(e *jx.Encoder, format func(*jx.Encoder, time.Time)) {
 	if !o.Set {
@@ -688,6 +642,202 @@ func (s *Project) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *Project) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes ProjectDescription as json.
+func (s ProjectDescription) Encode(e *jx.Encoder) {
+	switch s.Type {
+	case StringProjectDescription:
+		e.Str(s.String)
+	case NullProjectDescription:
+		_ = s.Null
+		e.Null()
+	}
+}
+
+// Decode decodes ProjectDescription from json.
+func (s *ProjectDescription) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ProjectDescription to nil")
+	}
+	// Sum type type_discriminator.
+	switch t := d.Next(); t {
+	case jx.Null:
+		if err := d.Null(); err != nil {
+			return err
+		}
+		s.Type = NullProjectDescription
+	case jx.String:
+		v, err := d.Str()
+		s.String = string(v)
+		if err != nil {
+			return err
+		}
+		s.Type = StringProjectDescription
+	default:
+		return errors.Errorf("unexpected json type %q", t)
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s ProjectDescription) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ProjectDescription) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes ProjectDissolutionDate as json.
+func (s ProjectDissolutionDate) Encode(e *jx.Encoder) {
+	switch s.Type {
+	case StringProjectDissolutionDate:
+		e.Str(s.String)
+	case NullProjectDissolutionDate:
+		_ = s.Null
+		e.Null()
+	}
+}
+
+// Decode decodes ProjectDissolutionDate from json.
+func (s *ProjectDissolutionDate) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ProjectDissolutionDate to nil")
+	}
+	// Sum type type_discriminator.
+	switch t := d.Next(); t {
+	case jx.Null:
+		if err := d.Null(); err != nil {
+			return err
+		}
+		s.Type = NullProjectDissolutionDate
+	case jx.String:
+		v, err := d.Str()
+		s.String = string(v)
+		if err != nil {
+			return err
+		}
+		s.Type = StringProjectDissolutionDate
+	default:
+		return errors.Errorf("unexpected json type %q", t)
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s ProjectDissolutionDate) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ProjectDissolutionDate) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes ProjectFoundingDate as json.
+func (s ProjectFoundingDate) Encode(e *jx.Encoder) {
+	switch s.Type {
+	case StringProjectFoundingDate:
+		e.Str(s.String)
+	case NullProjectFoundingDate:
+		_ = s.Null
+		e.Null()
+	}
+}
+
+// Decode decodes ProjectFoundingDate from json.
+func (s *ProjectFoundingDate) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ProjectFoundingDate to nil")
+	}
+	// Sum type type_discriminator.
+	switch t := d.Next(); t {
+	case jx.Null:
+		if err := d.Null(); err != nil {
+			return err
+		}
+		s.Type = NullProjectFoundingDate
+	case jx.String:
+		v, err := d.Str()
+		s.String = string(v)
+		if err != nil {
+			return err
+		}
+		s.Type = StringProjectFoundingDate
+	default:
+		return errors.Errorf("unexpected json type %q", t)
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s ProjectFoundingDate) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ProjectFoundingDate) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes ProjectHasAcronym as json.
+func (s ProjectHasAcronym) Encode(e *jx.Encoder) {
+	switch s.Type {
+	case StringProjectHasAcronym:
+		e.Str(s.String)
+	case NullProjectHasAcronym:
+		_ = s.Null
+		e.Null()
+	}
+}
+
+// Decode decodes ProjectHasAcronym from json.
+func (s *ProjectHasAcronym) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ProjectHasAcronym to nil")
+	}
+	// Sum type type_discriminator.
+	switch t := d.Next(); t {
+	case jx.Null:
+		if err := d.Null(); err != nil {
+			return err
+		}
+		s.Type = NullProjectHasAcronym
+	case jx.String:
+		v, err := d.Str()
+		s.String = string(v)
+		if err != nil {
+			return err
+		}
+		s.Type = StringProjectHasAcronym
+	default:
+		return errors.Errorf("unexpected json type %q", t)
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s ProjectHasAcronym) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ProjectHasAcronym) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -1059,6 +1209,55 @@ func (s *ProjectIsFundedByIsAwardedBy) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *ProjectIsFundedByIsAwardedBy) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes ProjectName as json.
+func (s ProjectName) Encode(e *jx.Encoder) {
+	switch s.Type {
+	case StringProjectName:
+		e.Str(s.String)
+	case NullProjectName:
+		_ = s.Null
+		e.Null()
+	}
+}
+
+// Decode decodes ProjectName from json.
+func (s *ProjectName) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ProjectName to nil")
+	}
+	// Sum type type_discriminator.
+	switch t := d.Next(); t {
+	case jx.Null:
+		if err := d.Null(); err != nil {
+			return err
+		}
+		s.Type = NullProjectName
+	case jx.String:
+		v, err := d.Str()
+		s.String = string(v)
+		if err != nil {
+			return err
+		}
+		s.Type = StringProjectName
+	default:
+		return errors.Errorf("unexpected json type %q", t)
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s ProjectName) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ProjectName) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

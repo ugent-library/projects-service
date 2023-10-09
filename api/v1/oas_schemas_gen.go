@@ -185,51 +185,6 @@ func (o NilProjectIsFundedByIsAwardedBy) Or(d ProjectIsFundedByIsAwardedBy) Proj
 	return d
 }
 
-// NewNilString returns new NilString with value set to v.
-func NewNilString(v string) NilString {
-	return NilString{
-		Value: v,
-	}
-}
-
-// NilString is nullable string.
-type NilString struct {
-	Value string
-	Null  bool
-}
-
-// SetTo sets value to v.
-func (o *NilString) SetTo(v string) {
-	o.Null = false
-	o.Value = v
-}
-
-// IsSet returns true if value is Null.
-func (o NilString) IsNull() bool { return o.Null }
-
-// SetNull sets value to null.
-func (o *NilString) SetToNull() {
-	o.Null = true
-	var v string
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o NilString) Get() (v string, ok bool) {
-	if o.Null {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o NilString) Or(d string) string {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
 // NewOptDateTime returns new OptDateTime with value set to v.
 func NewOptDateTime(v time.Time) OptDateTime {
 	return OptDateTime{
@@ -330,11 +285,11 @@ type Project struct {
 	Type            string                  `json:"type"`
 	Identifier      []ProjectIdentifierItem `json:"identifier"`
 	IsFundedBy      NilProjectIsFundedBy    `json:"isFundedBy"`
-	HasAcronym      NilString               `json:"hasAcronym"`
-	Name            NilString               `json:"name"`
-	Description     NilString               `json:"description"`
-	FoundingDate    NilString               `json:"foundingDate"`
-	DissolutionDate NilString               `json:"dissolutionDate"`
+	HasAcronym      ProjectHasAcronym       `json:"hasAcronym"`
+	Name            ProjectName             `json:"name"`
+	Description     ProjectDescription      `json:"description"`
+	FoundingDate    ProjectFoundingDate     `json:"foundingDate"`
+	DissolutionDate ProjectDissolutionDate  `json:"dissolutionDate"`
 }
 
 // GetID returns the value of ID.
@@ -368,27 +323,27 @@ func (s *Project) GetIsFundedBy() NilProjectIsFundedBy {
 }
 
 // GetHasAcronym returns the value of HasAcronym.
-func (s *Project) GetHasAcronym() NilString {
+func (s *Project) GetHasAcronym() ProjectHasAcronym {
 	return s.HasAcronym
 }
 
 // GetName returns the value of Name.
-func (s *Project) GetName() NilString {
+func (s *Project) GetName() ProjectName {
 	return s.Name
 }
 
 // GetDescription returns the value of Description.
-func (s *Project) GetDescription() NilString {
+func (s *Project) GetDescription() ProjectDescription {
 	return s.Description
 }
 
 // GetFoundingDate returns the value of FoundingDate.
-func (s *Project) GetFoundingDate() NilString {
+func (s *Project) GetFoundingDate() ProjectFoundingDate {
 	return s.FoundingDate
 }
 
 // GetDissolutionDate returns the value of DissolutionDate.
-func (s *Project) GetDissolutionDate() NilString {
+func (s *Project) GetDissolutionDate() ProjectDissolutionDate {
 	return s.DissolutionDate
 }
 
@@ -423,28 +378,284 @@ func (s *Project) SetIsFundedBy(val NilProjectIsFundedBy) {
 }
 
 // SetHasAcronym sets the value of HasAcronym.
-func (s *Project) SetHasAcronym(val NilString) {
+func (s *Project) SetHasAcronym(val ProjectHasAcronym) {
 	s.HasAcronym = val
 }
 
 // SetName sets the value of Name.
-func (s *Project) SetName(val NilString) {
+func (s *Project) SetName(val ProjectName) {
 	s.Name = val
 }
 
 // SetDescription sets the value of Description.
-func (s *Project) SetDescription(val NilString) {
+func (s *Project) SetDescription(val ProjectDescription) {
 	s.Description = val
 }
 
 // SetFoundingDate sets the value of FoundingDate.
-func (s *Project) SetFoundingDate(val NilString) {
+func (s *Project) SetFoundingDate(val ProjectFoundingDate) {
 	s.FoundingDate = val
 }
 
 // SetDissolutionDate sets the value of DissolutionDate.
-func (s *Project) SetDissolutionDate(val NilString) {
+func (s *Project) SetDissolutionDate(val ProjectDissolutionDate) {
 	s.DissolutionDate = val
+}
+
+// ProjectDescription represents sum type.
+type ProjectDescription struct {
+	Type   ProjectDescriptionType // switch on this field
+	String string
+	Null   struct{}
+}
+
+// ProjectDescriptionType is oneOf type of ProjectDescription.
+type ProjectDescriptionType string
+
+// Possible values for ProjectDescriptionType.
+const (
+	StringProjectDescription ProjectDescriptionType = "string"
+	NullProjectDescription   ProjectDescriptionType = "struct{}"
+)
+
+// IsString reports whether ProjectDescription is string.
+func (s ProjectDescription) IsString() bool { return s.Type == StringProjectDescription }
+
+// IsNull reports whether ProjectDescription is struct{}.
+func (s ProjectDescription) IsNull() bool { return s.Type == NullProjectDescription }
+
+// SetString sets ProjectDescription to string.
+func (s *ProjectDescription) SetString(v string) {
+	s.Type = StringProjectDescription
+	s.String = v
+}
+
+// GetString returns string and true boolean if ProjectDescription is string.
+func (s ProjectDescription) GetString() (v string, ok bool) {
+	if !s.IsString() {
+		return v, false
+	}
+	return s.String, true
+}
+
+// NewStringProjectDescription returns new ProjectDescription from string.
+func NewStringProjectDescription(v string) ProjectDescription {
+	var s ProjectDescription
+	s.SetString(v)
+	return s
+}
+
+// SetNull sets ProjectDescription to struct{}.
+func (s *ProjectDescription) SetNull(v struct{}) {
+	s.Type = NullProjectDescription
+	s.Null = v
+}
+
+// GetNull returns struct{} and true boolean if ProjectDescription is struct{}.
+func (s ProjectDescription) GetNull() (v struct{}, ok bool) {
+	if !s.IsNull() {
+		return v, false
+	}
+	return s.Null, true
+}
+
+// NewNullProjectDescription returns new ProjectDescription from struct{}.
+func NewNullProjectDescription(v struct{}) ProjectDescription {
+	var s ProjectDescription
+	s.SetNull(v)
+	return s
+}
+
+// ProjectDissolutionDate represents sum type.
+type ProjectDissolutionDate struct {
+	Type   ProjectDissolutionDateType // switch on this field
+	String string
+	Null   struct{}
+}
+
+// ProjectDissolutionDateType is oneOf type of ProjectDissolutionDate.
+type ProjectDissolutionDateType string
+
+// Possible values for ProjectDissolutionDateType.
+const (
+	StringProjectDissolutionDate ProjectDissolutionDateType = "string"
+	NullProjectDissolutionDate   ProjectDissolutionDateType = "struct{}"
+)
+
+// IsString reports whether ProjectDissolutionDate is string.
+func (s ProjectDissolutionDate) IsString() bool { return s.Type == StringProjectDissolutionDate }
+
+// IsNull reports whether ProjectDissolutionDate is struct{}.
+func (s ProjectDissolutionDate) IsNull() bool { return s.Type == NullProjectDissolutionDate }
+
+// SetString sets ProjectDissolutionDate to string.
+func (s *ProjectDissolutionDate) SetString(v string) {
+	s.Type = StringProjectDissolutionDate
+	s.String = v
+}
+
+// GetString returns string and true boolean if ProjectDissolutionDate is string.
+func (s ProjectDissolutionDate) GetString() (v string, ok bool) {
+	if !s.IsString() {
+		return v, false
+	}
+	return s.String, true
+}
+
+// NewStringProjectDissolutionDate returns new ProjectDissolutionDate from string.
+func NewStringProjectDissolutionDate(v string) ProjectDissolutionDate {
+	var s ProjectDissolutionDate
+	s.SetString(v)
+	return s
+}
+
+// SetNull sets ProjectDissolutionDate to struct{}.
+func (s *ProjectDissolutionDate) SetNull(v struct{}) {
+	s.Type = NullProjectDissolutionDate
+	s.Null = v
+}
+
+// GetNull returns struct{} and true boolean if ProjectDissolutionDate is struct{}.
+func (s ProjectDissolutionDate) GetNull() (v struct{}, ok bool) {
+	if !s.IsNull() {
+		return v, false
+	}
+	return s.Null, true
+}
+
+// NewNullProjectDissolutionDate returns new ProjectDissolutionDate from struct{}.
+func NewNullProjectDissolutionDate(v struct{}) ProjectDissolutionDate {
+	var s ProjectDissolutionDate
+	s.SetNull(v)
+	return s
+}
+
+// ProjectFoundingDate represents sum type.
+type ProjectFoundingDate struct {
+	Type   ProjectFoundingDateType // switch on this field
+	String string
+	Null   struct{}
+}
+
+// ProjectFoundingDateType is oneOf type of ProjectFoundingDate.
+type ProjectFoundingDateType string
+
+// Possible values for ProjectFoundingDateType.
+const (
+	StringProjectFoundingDate ProjectFoundingDateType = "string"
+	NullProjectFoundingDate   ProjectFoundingDateType = "struct{}"
+)
+
+// IsString reports whether ProjectFoundingDate is string.
+func (s ProjectFoundingDate) IsString() bool { return s.Type == StringProjectFoundingDate }
+
+// IsNull reports whether ProjectFoundingDate is struct{}.
+func (s ProjectFoundingDate) IsNull() bool { return s.Type == NullProjectFoundingDate }
+
+// SetString sets ProjectFoundingDate to string.
+func (s *ProjectFoundingDate) SetString(v string) {
+	s.Type = StringProjectFoundingDate
+	s.String = v
+}
+
+// GetString returns string and true boolean if ProjectFoundingDate is string.
+func (s ProjectFoundingDate) GetString() (v string, ok bool) {
+	if !s.IsString() {
+		return v, false
+	}
+	return s.String, true
+}
+
+// NewStringProjectFoundingDate returns new ProjectFoundingDate from string.
+func NewStringProjectFoundingDate(v string) ProjectFoundingDate {
+	var s ProjectFoundingDate
+	s.SetString(v)
+	return s
+}
+
+// SetNull sets ProjectFoundingDate to struct{}.
+func (s *ProjectFoundingDate) SetNull(v struct{}) {
+	s.Type = NullProjectFoundingDate
+	s.Null = v
+}
+
+// GetNull returns struct{} and true boolean if ProjectFoundingDate is struct{}.
+func (s ProjectFoundingDate) GetNull() (v struct{}, ok bool) {
+	if !s.IsNull() {
+		return v, false
+	}
+	return s.Null, true
+}
+
+// NewNullProjectFoundingDate returns new ProjectFoundingDate from struct{}.
+func NewNullProjectFoundingDate(v struct{}) ProjectFoundingDate {
+	var s ProjectFoundingDate
+	s.SetNull(v)
+	return s
+}
+
+// ProjectHasAcronym represents sum type.
+type ProjectHasAcronym struct {
+	Type   ProjectHasAcronymType // switch on this field
+	String string
+	Null   struct{}
+}
+
+// ProjectHasAcronymType is oneOf type of ProjectHasAcronym.
+type ProjectHasAcronymType string
+
+// Possible values for ProjectHasAcronymType.
+const (
+	StringProjectHasAcronym ProjectHasAcronymType = "string"
+	NullProjectHasAcronym   ProjectHasAcronymType = "struct{}"
+)
+
+// IsString reports whether ProjectHasAcronym is string.
+func (s ProjectHasAcronym) IsString() bool { return s.Type == StringProjectHasAcronym }
+
+// IsNull reports whether ProjectHasAcronym is struct{}.
+func (s ProjectHasAcronym) IsNull() bool { return s.Type == NullProjectHasAcronym }
+
+// SetString sets ProjectHasAcronym to string.
+func (s *ProjectHasAcronym) SetString(v string) {
+	s.Type = StringProjectHasAcronym
+	s.String = v
+}
+
+// GetString returns string and true boolean if ProjectHasAcronym is string.
+func (s ProjectHasAcronym) GetString() (v string, ok bool) {
+	if !s.IsString() {
+		return v, false
+	}
+	return s.String, true
+}
+
+// NewStringProjectHasAcronym returns new ProjectHasAcronym from string.
+func NewStringProjectHasAcronym(v string) ProjectHasAcronym {
+	var s ProjectHasAcronym
+	s.SetString(v)
+	return s
+}
+
+// SetNull sets ProjectHasAcronym to struct{}.
+func (s *ProjectHasAcronym) SetNull(v struct{}) {
+	s.Type = NullProjectHasAcronym
+	s.Null = v
+}
+
+// GetNull returns struct{} and true boolean if ProjectHasAcronym is struct{}.
+func (s ProjectHasAcronym) GetNull() (v struct{}, ok bool) {
+	if !s.IsNull() {
+		return v, false
+	}
+	return s.Null, true
+}
+
+// NewNullProjectHasAcronym returns new ProjectHasAcronym from struct{}.
+func NewNullProjectHasAcronym(v struct{}) ProjectHasAcronym {
+	var s ProjectHasAcronym
+	s.SetNull(v)
+	return s
 }
 
 type ProjectIdentifierItem struct {
@@ -542,6 +753,70 @@ func (s *ProjectIsFundedByIsAwardedBy) SetType(val string) {
 // SetName sets the value of Name.
 func (s *ProjectIsFundedByIsAwardedBy) SetName(val string) {
 	s.Name = val
+}
+
+// ProjectName represents sum type.
+type ProjectName struct {
+	Type   ProjectNameType // switch on this field
+	String string
+	Null   struct{}
+}
+
+// ProjectNameType is oneOf type of ProjectName.
+type ProjectNameType string
+
+// Possible values for ProjectNameType.
+const (
+	StringProjectName ProjectNameType = "string"
+	NullProjectName   ProjectNameType = "struct{}"
+)
+
+// IsString reports whether ProjectName is string.
+func (s ProjectName) IsString() bool { return s.Type == StringProjectName }
+
+// IsNull reports whether ProjectName is struct{}.
+func (s ProjectName) IsNull() bool { return s.Type == NullProjectName }
+
+// SetString sets ProjectName to string.
+func (s *ProjectName) SetString(v string) {
+	s.Type = StringProjectName
+	s.String = v
+}
+
+// GetString returns string and true boolean if ProjectName is string.
+func (s ProjectName) GetString() (v string, ok bool) {
+	if !s.IsString() {
+		return v, false
+	}
+	return s.String, true
+}
+
+// NewStringProjectName returns new ProjectName from string.
+func NewStringProjectName(v string) ProjectName {
+	var s ProjectName
+	s.SetString(v)
+	return s
+}
+
+// SetNull sets ProjectName to struct{}.
+func (s *ProjectName) SetNull(v struct{}) {
+	s.Type = NullProjectName
+	s.Null = v
+}
+
+// GetNull returns struct{} and true boolean if ProjectName is struct{}.
+func (s ProjectName) GetNull() (v struct{}, ok bool) {
+	if !s.IsNull() {
+		return v, false
+	}
+	return s.Null, true
+}
+
+// NewNullProjectName returns new ProjectName from struct{}.
+func NewNullProjectName(v struct{}) ProjectName {
+	var s ProjectName
+	s.SetNull(v)
+	return s
 }
 
 // Ref: #/components/schemas/SuggestProjectsRequest

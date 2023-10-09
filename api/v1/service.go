@@ -39,23 +39,23 @@ func (s *Service) AddProject(ctx context.Context, req *Project) error {
 
 	p.Identifier = ids
 
-	if v, ok := req.GetName().Get(); ok {
+	if v, ok := req.GetName().GetString(); ok {
 		p.Name = &v
 	}
 
-	if v, ok := req.GetDescription().Get(); ok {
+	if v, ok := req.GetDescription().GetString(); ok {
 		p.Description = &v
 	}
 
-	if v, ok := req.GetFoundingDate().Get(); ok {
+	if v, ok := req.GetFoundingDate().GetString(); ok {
 		p.FoundingDate = &v
 	}
 
-	if v, ok := req.GetDissolutionDate().Get(); ok {
+	if v, ok := req.GetDissolutionDate().GetString(); ok {
 		p.DissolutionDate = &v
 	}
 
-	if v, ok := req.GetHasAcronym().Get(); ok {
+	if v, ok := req.GetHasAcronym().GetString(); ok {
 		p.Acronym = &v
 	}
 
@@ -132,34 +132,34 @@ func mapToOASProject(p *models.Project) *Project {
 
 	r.ID.SetTo(p.ID)
 
-	r.Name = NewNilString("")
-	r.Name.SetToNull()
 	if p.Name != nil {
-		r.Name.SetTo(*p.Name)
+		r.Name = NewStringProjectName(*p.Name)
+	} else {
+		r.Name = NewNullProjectName(struct{}{})
 	}
 
-	r.Description = NewNilString("")
-	r.Description.SetToNull()
 	if p.Description != nil {
-		r.Description.SetTo(*p.Description)
+		r.Description = NewStringProjectDescription(*p.Description)
+	} else {
+		r.Description = NewNullProjectDescription(struct{}{})
 	}
 
-	r.FoundingDate = NewNilString("")
-	r.FoundingDate.SetToNull()
 	if p.FoundingDate != nil {
-		r.FoundingDate.SetTo(*p.FoundingDate)
+		r.FoundingDate = NewStringProjectFoundingDate(*p.FoundingDate)
+	} else {
+		r.FoundingDate = NewNullProjectFoundingDate(struct{}{})
 	}
 
-	r.DissolutionDate = NewNilString("")
-	r.DissolutionDate.SetToNull()
 	if p.DissolutionDate != nil {
-		r.DissolutionDate.SetTo(*p.DissolutionDate)
+		r.DissolutionDate = NewStringProjectDissolutionDate(*p.DissolutionDate)
+	} else {
+		r.DissolutionDate = NewNullProjectDissolutionDate(struct{}{})
 	}
 
-	r.HasAcronym = NewNilString("")
-	r.HasAcronym.SetToNull()
 	if p.Acronym != nil {
-		r.HasAcronym.SetTo(*p.Acronym)
+		r.HasAcronym = NewStringProjectHasAcronym(*p.Acronym)
+	} else {
+		r.HasAcronym = NewNullProjectHasAcronym(struct{}{})
 	}
 
 	r.IsFundedBy.SetTo(ProjectIsFundedBy{})

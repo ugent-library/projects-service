@@ -166,20 +166,25 @@ components:
               required: [type, name]
           required: [type, identifier, isAwardedBy]
         hasAcronym:
-          type: string
-          nullable: true
+          oneOf:
+          - type: string
+          - type: 'null'
         name:
-          type: string
-          nullable: true
+          oneOf:
+          - type: string
+          - type: 'null'
         description:
-          type: string
-          nullable: true
+          oneOf:
+          - type: string
+          - type: 'null'
         foundingDate:
-          type: string
-          nullable: true
+          oneOf:
+          - type: string
+          - type: 'null'
         dissolutionDate:
-          type: string
-          nullable: true
+          oneOf:
+          - type: string
+          - type: 'null'
       required: [type, identifier, name, hasAcronym, isFundedBy, description, foundingDate, dissolutionDate]
 
     Error:
