@@ -17,18 +17,27 @@ func NewService(repo *repositories.Repo) *Service {
 	}
 }
 
-func (s *Service) AddProject(ctx context.Context, req *AddProjectRequest) error {
-	ids := make([]*models.Identifier, 0, len(req.Identifier))
-	for _, id := range req.GetIdentifier() {
-		ids = append(ids, &models.Identifier{
-			PropertyID: id.GetPropertyID(),
-			Value:      id.GetValue(),
-		})
+func (s *Service) AddProject(ctx context.Context, req *Project) error {
+	p := &models.Project{}
+
+	if v, ok := req.ID.Get(); ok {
+		p.ID = v
 	}
 
-	p := &models.Project{
-		Identifier: ids,
+	if v, ok := req.Created.Get(); ok {
+		p.DateCreated = v
 	}
+
+	if v, ok := req.Modified.Get(); ok {
+		p.DateModified = v
+	}
+
+	ids := make(map[string][]string)
+	for _, id := range req.GetIdentifier() {
+		ids[id.GetPropertyID()] = append(ids[id.GetPropertyID()], id.GetValue())
+	}
+
+	p.Identifier = ids
 
 	if v, ok := req.GetName().Get(); ok {
 		p.Name = &v
@@ -103,21 +112,25 @@ func (s *Service) NewError(ctx context.Context, err error) *ErrorStatusCode {
 }
 
 func mapToOASProject(p *models.Project) *Project {
-	ids := make([]ProjectIdentifierItem, 0, len(p.Identifier))
-	for _, id := range p.Identifier {
-		ids = append(ids, ProjectIdentifierItem{
-			Type:       "PropertyValue",
-			PropertyID: id.PropertyID,
-			Value:      id.Value,
-		})
+	sids := make([]ProjectIdentifierItem, 0)
+	for k, ids := range p.Identifier {
+		for _, id := range ids {
+			sids = append(sids, ProjectIdentifierItem{
+				Type:       "PropertyValue",
+				PropertyID: k,
+				Value:      id,
+			})
+		}
 	}
 
 	r := &Project{
 		Type:       "ResearchProject",
-		Identifier: ids,
-		Created:    p.DateCreated,
-		Modified:   p.DateModified,
+		Identifier: sids,
+		Created:    NewOptDateTime(p.DateCreated),
+		Modified:   NewOptDateTime(p.DateModified),
 	}
+
+	r.ID.SetTo(p.ID)
 
 	r.Name = NewNilString("")
 	r.Name.SetToNull()

@@ -2,14 +2,9 @@ package models
 
 import "time"
 
-type Identifier struct {
-	PropertyID string
-	Value      string
-}
-
 type Project struct {
 	ID               string
-	Identifier       []*Identifier
+	Identifier       map[string][]string
 	Name             *string
 	Description      *string
 	FoundingDate     *string

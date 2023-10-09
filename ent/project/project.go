@@ -68,7 +68,7 @@ func ValidColumn(column string) bool {
 
 var (
 	// DefaultIdentifier holds the default value on creation for the "identifier" field.
-	DefaultIdentifier []schema.Identifier
+	DefaultIdentifier schema.Identifier
 	// DefaultCreated holds the default value on creation for the "created" field.
 	DefaultCreated func() time.Time
 	// DefaultModified holds the default value on creation for the "modified" field.

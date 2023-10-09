@@ -20,7 +20,7 @@ type Project struct {
 	// ID of the ent.
 	ID string `json:"id,omitempty"`
 	// Identifier holds the value of the "identifier" field.
-	Identifier []schema.Identifier `json:"identifier,omitempty"`
+	Identifier schema.Identifier `json:"identifier,omitempty"`
 	// Name holds the value of the "name" field.
 	Name *string `json:"name,omitempty"`
 	// Description holds the value of the "description" field.

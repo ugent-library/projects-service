@@ -47,24 +47,43 @@ func New(c Config) (*Repo, error) {
 }
 
 func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
-	sids := make([]schema.Identifier, 0, len(p.Identifier))
-	for _, id := range p.Identifier {
-		sids = append(sids, schema.Identifier{
-			PropertyID: id.PropertyID,
-			Value:      id.Value,
-		})
-	}
+	var err error
 
-	_, err := r.client.Project.Create().
-		SetIdentifier(sids).
-		SetNillableName(p.Name).
-		SetNillableDescription(p.Description).
-		SetNillableFoundingDate(p.FoundingDate).
-		SetNillableDissolutionDate(p.DissolutionDate).
-		SetNillableGrant(p.Grant).
-		SetNillableFundingProgramme(p.FundingProgramme).
-		SetNillableAcronym(p.Acronym).
-		Save(ctx)
+	dp, err := r.client.Project.Query().
+		Where(project.IDEQ(p.ID)).
+		Only(ctx)
+
+	if ent.IsNotFound(err) {
+		sids := schema.Identifier{
+			Value: p.Identifier,
+		}
+
+		err = r.client.Project.Create().
+			SetIdentifier(sids).
+			SetNillableName(p.Name).
+			SetNillableDescription(p.Description).
+			SetNillableFoundingDate(p.FoundingDate).
+			SetNillableDissolutionDate(p.DissolutionDate).
+			SetNillableGrant(p.Grant).
+			SetNillableFundingProgramme(p.FundingProgramme).
+			SetNillableAcronym(p.Acronym).
+			Exec(ctx)
+	} else {
+		sids := schema.Identifier{
+			Value: p.Identifier,
+		}
+
+		err = dp.Update().
+			SetIdentifier(sids).
+			SetNillableName(p.Name).
+			SetNillableDescription(p.Description).
+			SetNillableFoundingDate(p.FoundingDate).
+			SetNillableDissolutionDate(p.DissolutionDate).
+			SetNillableGrant(p.Grant).
+			SetNillableFundingProgramme(p.FundingProgramme).
+			SetNillableAcronym(p.Acronym).
+			Exec(ctx)
+	}
 
 	return err
 }
@@ -111,17 +130,9 @@ func (r *Repo) SuggestProjects(ctx context.Context, query string) ([]*models.Pro
 }
 
 func rowToProject(row *ent.Project) *models.Project {
-	ids := make([]*models.Identifier, 0, len(row.Identifier))
-	for _, id := range row.Identifier {
-		ids = append(ids, &models.Identifier{
-			PropertyID: id.PropertyID,
-			Value:      id.Value,
-		})
-	}
-
 	p := &models.Project{
 		ID:               row.ID,
-		Identifier:       ids,
+		Identifier:       row.Identifier.Value,
 		Name:             row.Name,
 		Description:      row.Description,
 		FoundingDate:     row.FoundingDate,
@@ -129,6 +140,8 @@ func rowToProject(row *ent.Project) *models.Project {
 		FundingProgramme: row.FundingProgramme,
 		Grant:            row.Grant,
 		Acronym:          row.Acronym,
+		DateCreated:      row.Created,
+		DateModified:     row.Modified,
 	}
 
 	return p

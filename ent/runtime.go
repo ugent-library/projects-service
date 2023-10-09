@@ -18,7 +18,7 @@ func init() {
 	// projectDescIdentifier is the schema descriptor for identifier field.
 	projectDescIdentifier := projectFields[1].Descriptor()
 	// project.DefaultIdentifier holds the default value on creation for the identifier field.
-	project.DefaultIdentifier = projectDescIdentifier.Default.([]schema.Identifier)
+	project.DefaultIdentifier = projectDescIdentifier.Default.(schema.Identifier)
 	// projectDescCreated is the schema descriptor for created field.
 	projectDescCreated := projectFields[9].Descriptor()
 	// project.DefaultCreated holds the default value on creation for the created field.

@@ -25,8 +25,16 @@ type ProjectCreate struct {
 }
 
 // SetIdentifier sets the "identifier" field.
-func (pc *ProjectCreate) SetIdentifier(s []schema.Identifier) *ProjectCreate {
+func (pc *ProjectCreate) SetIdentifier(s schema.Identifier) *ProjectCreate {
 	pc.mutation.SetIdentifier(s)
+	return pc
+}
+
+// SetNillableIdentifier sets the "identifier" field if the given value is not nil.
+func (pc *ProjectCreate) SetNillableIdentifier(s *schema.Identifier) *ProjectCreate {
+	if s != nil {
+		pc.SetIdentifier(*s)
+	}
 	return pc
 }
 
@@ -381,7 +389,7 @@ type (
 )
 
 // SetIdentifier sets the "identifier" field.
-func (u *ProjectUpsert) SetIdentifier(v []schema.Identifier) *ProjectUpsert {
+func (u *ProjectUpsert) SetIdentifier(v schema.Identifier) *ProjectUpsert {
 	u.Set(project.FieldIdentifier, v)
 	return u
 }
@@ -600,7 +608,7 @@ func (u *ProjectUpsertOne) Update(set func(*ProjectUpsert)) *ProjectUpsertOne {
 }
 
 // SetIdentifier sets the "identifier" field.
-func (u *ProjectUpsertOne) SetIdentifier(v []schema.Identifier) *ProjectUpsertOne {
+func (u *ProjectUpsertOne) SetIdentifier(v schema.Identifier) *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
 		s.SetIdentifier(v)
 	})
@@ -1010,7 +1018,7 @@ func (u *ProjectUpsertBulk) Update(set func(*ProjectUpsert)) *ProjectUpsertBulk 
 }
 
 // SetIdentifier sets the "identifier" field.
-func (u *ProjectUpsertBulk) SetIdentifier(v []schema.Identifier) *ProjectUpsertBulk {
+func (u *ProjectUpsertBulk) SetIdentifier(v schema.Identifier) *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
 		s.SetIdentifier(v)
 	})

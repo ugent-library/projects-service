@@ -10,7 +10,6 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/ugent-library/projects/ent/predicate"
 	"github.com/ugent-library/projects/ent/project"
@@ -31,14 +30,16 @@ func (pu *ProjectUpdate) Where(ps ...predicate.Project) *ProjectUpdate {
 }
 
 // SetIdentifier sets the "identifier" field.
-func (pu *ProjectUpdate) SetIdentifier(s []schema.Identifier) *ProjectUpdate {
+func (pu *ProjectUpdate) SetIdentifier(s schema.Identifier) *ProjectUpdate {
 	pu.mutation.SetIdentifier(s)
 	return pu
 }
 
-// AppendIdentifier appends s to the "identifier" field.
-func (pu *ProjectUpdate) AppendIdentifier(s []schema.Identifier) *ProjectUpdate {
-	pu.mutation.AppendIdentifier(s)
+// SetNillableIdentifier sets the "identifier" field if the given value is not nil.
+func (pu *ProjectUpdate) SetNillableIdentifier(s *schema.Identifier) *ProjectUpdate {
+	if s != nil {
+		pu.SetIdentifier(*s)
+	}
 	return pu
 }
 
@@ -261,11 +262,6 @@ func (pu *ProjectUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := pu.mutation.Identifier(); ok {
 		_spec.SetField(project.FieldIdentifier, field.TypeJSON, value)
 	}
-	if value, ok := pu.mutation.AppendedIdentifier(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, project.FieldIdentifier, value)
-		})
-	}
 	if value, ok := pu.mutation.Name(); ok {
 		_spec.SetField(project.FieldName, field.TypeString, value)
 	}
@@ -338,14 +334,16 @@ type ProjectUpdateOne struct {
 }
 
 // SetIdentifier sets the "identifier" field.
-func (puo *ProjectUpdateOne) SetIdentifier(s []schema.Identifier) *ProjectUpdateOne {
+func (puo *ProjectUpdateOne) SetIdentifier(s schema.Identifier) *ProjectUpdateOne {
 	puo.mutation.SetIdentifier(s)
 	return puo
 }
 
-// AppendIdentifier appends s to the "identifier" field.
-func (puo *ProjectUpdateOne) AppendIdentifier(s []schema.Identifier) *ProjectUpdateOne {
-	puo.mutation.AppendIdentifier(s)
+// SetNillableIdentifier sets the "identifier" field if the given value is not nil.
+func (puo *ProjectUpdateOne) SetNillableIdentifier(s *schema.Identifier) *ProjectUpdateOne {
+	if s != nil {
+		puo.SetIdentifier(*s)
+	}
 	return puo
 }
 
@@ -597,11 +595,6 @@ func (puo *ProjectUpdateOne) sqlSave(ctx context.Context) (_node *Project, err e
 	}
 	if value, ok := puo.mutation.Identifier(); ok {
 		_spec.SetField(project.FieldIdentifier, field.TypeJSON, value)
-	}
-	if value, ok := puo.mutation.AppendedIdentifier(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, project.FieldIdentifier, value)
-		})
 	}
 	if value, ok := puo.mutation.Name(); ok {
 		_spec.SetField(project.FieldName, field.TypeString, value)

@@ -20,8 +20,7 @@ type Project struct {
 }
 
 type Identifier struct {
-	PropertyID string `json:"property_id"`
-	Value      string `json:"value"`
+	Value map[string][]string `json:"Value"`
 }
 
 type Grant struct {
@@ -41,8 +40,8 @@ func (Project) Fields() []ent.Field {
 			DefaultFunc(func() string {
 				return ulid.Make().String()
 			}),
-		field.JSON("identifier", []Identifier{}).
-			Default([]Identifier{}),
+		field.JSON("identifier", Identifier{}).
+			Default(Identifier{}),
 		field.String("name").
 			Optional().Nillable(),
 		field.Text("description").

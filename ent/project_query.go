@@ -261,7 +261,7 @@ func (pq *ProjectQuery) Clone() *ProjectQuery {
 // Example:
 //
 //	var v []struct {
-//		Identifier []schema.Identifier `json:"identifier,omitempty"`
+//		Identifier schema.Identifier `json:"identifier,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -284,7 +284,7 @@ func (pq *ProjectQuery) GroupBy(field string, fields ...string) *ProjectGroupBy 
 // Example:
 //
 //	var v []struct {
-//		Identifier []schema.Identifier `json:"identifier,omitempty"`
+//		Identifier schema.Identifier `json:"identifier,omitempty"`
 //	}
 //
 //	client.Project.Query().

@@ -34,8 +34,7 @@ type ProjectMutation struct {
 	op                Op
 	typ               string
 	id                *string
-	identifier        *[]schema.Identifier
-	appendidentifier  []schema.Identifier
+	identifier        *schema.Identifier
 	name              *string
 	description       *string
 	founding_date     *string
@@ -157,13 +156,12 @@ func (m *ProjectMutation) IDs(ctx context.Context) ([]string, error) {
 }
 
 // SetIdentifier sets the "identifier" field.
-func (m *ProjectMutation) SetIdentifier(s []schema.Identifier) {
+func (m *ProjectMutation) SetIdentifier(s schema.Identifier) {
 	m.identifier = &s
-	m.appendidentifier = nil
 }
 
 // Identifier returns the value of the "identifier" field in the mutation.
-func (m *ProjectMutation) Identifier() (r []schema.Identifier, exists bool) {
+func (m *ProjectMutation) Identifier() (r schema.Identifier, exists bool) {
 	v := m.identifier
 	if v == nil {
 		return
@@ -174,7 +172,7 @@ func (m *ProjectMutation) Identifier() (r []schema.Identifier, exists bool) {
 // OldIdentifier returns the old "identifier" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldIdentifier(ctx context.Context) (v []schema.Identifier, err error) {
+func (m *ProjectMutation) OldIdentifier(ctx context.Context) (v schema.Identifier, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIdentifier is only allowed on UpdateOne operations")
 	}
@@ -188,23 +186,9 @@ func (m *ProjectMutation) OldIdentifier(ctx context.Context) (v []schema.Identif
 	return oldValue.Identifier, nil
 }
 
-// AppendIdentifier adds s to the "identifier" field.
-func (m *ProjectMutation) AppendIdentifier(s []schema.Identifier) {
-	m.appendidentifier = append(m.appendidentifier, s...)
-}
-
-// AppendedIdentifier returns the list of values that were appended to the "identifier" field in this mutation.
-func (m *ProjectMutation) AppendedIdentifier() ([]schema.Identifier, bool) {
-	if len(m.appendidentifier) == 0 {
-		return nil, false
-	}
-	return m.appendidentifier, true
-}
-
 // ResetIdentifier resets all changes to the "identifier" field.
 func (m *ProjectMutation) ResetIdentifier() {
 	m.identifier = nil
-	m.appendidentifier = nil
 }
 
 // SetName sets the "name" field.
@@ -810,7 +794,7 @@ func (m *ProjectMutation) OldField(ctx context.Context, name string) (ent.Value,
 func (m *ProjectMutation) SetField(name string, value ent.Value) error {
 	switch name {
 	case project.FieldIdentifier:
-		v, ok := value.([]schema.Identifier)
+		v, ok := value.(schema.Identifier)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
