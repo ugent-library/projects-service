@@ -124,7 +124,7 @@ func (s *Server) handleAddProjectRequest(args [0]string, argsEscaped bool, w htt
 		}
 	}()
 
-	var response *AddProjectOK
+	var response AddProjectRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -139,7 +139,7 @@ func (s *Server) handleAddProjectRequest(args [0]string, argsEscaped bool, w htt
 		type (
 			Request  = *AddProject
 			Params   = struct{}
-			Response = *AddProjectOK
+			Response = AddProjectRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -150,12 +150,12 @@ func (s *Server) handleAddProjectRequest(args [0]string, argsEscaped bool, w htt
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.AddProject(ctx, request)
+				response, err = s.h.AddProject(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.AddProject(ctx, request)
+		response, err = s.h.AddProject(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
@@ -287,7 +287,7 @@ func (s *Server) handleGetProjectRequest(args [0]string, argsEscaped bool, w htt
 		}
 	}()
 
-	var response *GetProject
+	var response GetProjectRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -302,7 +302,7 @@ func (s *Server) handleGetProjectRequest(args [0]string, argsEscaped bool, w htt
 		type (
 			Request  = *GetProjectRequest
 			Params   = struct{}
-			Response = *GetProject
+			Response = GetProjectRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,

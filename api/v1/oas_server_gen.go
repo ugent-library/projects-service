@@ -13,13 +13,13 @@ type Handler interface {
 	// Add a single project.
 	//
 	// POST /add-project
-	AddProject(ctx context.Context, req *AddProject) error
+	AddProject(ctx context.Context, req *AddProject) (AddProjectRes, error)
 	// GetProject implements getProject operation.
 	//
 	// Get a single project.
 	//
 	// POST /get-project
-	GetProject(ctx context.Context, req *GetProjectRequest) (*GetProject, error)
+	GetProject(ctx context.Context, req *GetProjectRequest) (GetProjectRes, error)
 	// SuggestProjects implements suggestProjects operation.
 	//
 	// Search in projects.

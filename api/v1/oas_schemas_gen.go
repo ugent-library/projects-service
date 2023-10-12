@@ -237,6 +237,8 @@ func (s *AddProjectIsFundedByIsAwardedBy) SetName(val string) {
 // AddProjectOK is response for AddProject operation.
 type AddProjectOK struct{}
 
+func (*AddProjectOK) addProjectRes() {}
+
 type ApiKey struct {
 	APIKey string
 }
@@ -302,6 +304,9 @@ func (s *ErrorStatusCode) SetStatusCode(val int) {
 func (s *ErrorStatusCode) SetResponse(val Error) {
 	s.Response = val
 }
+
+func (*ErrorStatusCode) addProjectRes() {}
+func (*ErrorStatusCode) getProjectRes() {}
 
 // Merged schema.
 // Ref: #/components/schemas/GetProject
@@ -428,6 +433,8 @@ func (s *GetProject) SetFoundingDate(val OptString) {
 func (s *GetProject) SetDissolutionDate(val OptString) {
 	s.DissolutionDate = val
 }
+
+func (*GetProject) getProjectRes() {}
 
 type GetProjectIdentifierItem struct {
 	Type       string `json:"type"`

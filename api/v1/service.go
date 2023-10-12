@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-faster/errors"
 	"github.com/ugent-library/projects/models"
@@ -18,13 +19,19 @@ func NewService(repo *repositories.Repo) *Service {
 	}
 }
 
-func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
+func (s *Service) AddProject(ctx context.Context, req *AddProject) (AddProjectRes, error) {
 	var p *models.Project
 
 	if v, ok := req.GetID().Get(); ok {
 		tmp, err := s.repo.GetProject(ctx, v)
 		if errors.Is(err, repositories.ErrNotFound) {
-			return err
+			return &ErrorStatusCode{
+				StatusCode: 404,
+				Response: Error{
+					Code:    404,
+					Message: fmt.Sprintf("Project not found: %s", v),
+				},
+			}, nil
 		}
 		p = tmp
 	} else {
@@ -81,14 +88,24 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
 		}
 	}
 
-	return s.repo.AddProject(ctx, p)
+	if err := s.repo.AddProject(ctx, p); err != nil {
+		return nil, err
+	}
+
+	return &AddProjectOK{}, nil
 }
 
-func (s *Service) GetProject(ctx context.Context, req *GetProjectRequest) (*GetProject, error) {
-	p, err := s.repo.GetProject(ctx, req.ID)
-
-	if err != nil {
-		return nil, err
+func (s *Service) GetProject(ctx context.Context, req *GetProjectRequest) (GetProjectRes, error) {
+	v := req.GetID()
+	p, err := s.repo.GetProject(ctx, v)
+	if errors.Is(err, repositories.ErrNotFound) {
+		return &ErrorStatusCode{
+			StatusCode: 404,
+			Response: Error{
+				Code:    404,
+				Message: fmt.Sprintf("Project not found: %s", v),
+			},
+		}, nil
 	}
 
 	oasp := mapToOASProject(p)
