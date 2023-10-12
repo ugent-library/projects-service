@@ -29,9 +29,15 @@ type Invoker interface {
 	//
 	// POST /add-project
 	AddProject(ctx context.Context, request *AddProject) (AddProjectRes, error)
+	// DeleteProject invokes deleteProject operation.
+	//
+	// Delete a record.
+	//
+	// POST /delete-record
+	DeleteProject(ctx context.Context, request *DeleteProjectRequest) (DeleteProjectRes, error)
 	// GetProject invokes getProject operation.
 	//
-	// Get a single project.
+	// Get a project.
 	//
 	// POST /get-project
 	GetProject(ctx context.Context, request *GetProjectRequest) (GetProjectRes, error)
@@ -214,9 +220,126 @@ func (c *Client) sendAddProject(ctx context.Context, request *AddProject) (res A
 	return result, nil
 }
 
+// DeleteProject invokes deleteProject operation.
+//
+// Delete a record.
+//
+// POST /delete-record
+func (c *Client) DeleteProject(ctx context.Context, request *DeleteProjectRequest) (DeleteProjectRes, error) {
+	res, err := c.sendDeleteProject(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendDeleteProject(ctx context.Context, request *DeleteProjectRequest) (res DeleteProjectRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("deleteProject"),
+		semconv.HTTPMethodKey.String("POST"),
+		semconv.HTTPRouteKey.String("/delete-record"),
+	}
+	// Validate request before sending.
+	if err := func() error {
+		if err := request.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return res, errors.Wrap(err, "validate")
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, "DeleteProject",
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/delete-record"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeDeleteProjectRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:ApiKey"
+			switch err := c.securityApiKey(ctx, "DeleteProject", r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"ApiKey\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeDeleteProjectResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetProject invokes getProject operation.
 //
-// Get a single project.
+// Get a project.
 //
 // POST /get-project
 func (c *Client) GetProject(ctx context.Context, request *GetProjectRequest) (GetProjectRes, error) {

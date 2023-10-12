@@ -253,6 +253,26 @@ func (s *ApiKey) SetAPIKey(val string) {
 	s.APIKey = val
 }
 
+// DeleteProjectOK is response for DeleteProject operation.
+type DeleteProjectOK struct{}
+
+func (*DeleteProjectOK) deleteProjectRes() {}
+
+// Ref: #/components/schemas/DeleteProjectRequest
+type DeleteProjectRequest struct {
+	ID string `json:"id"`
+}
+
+// GetID returns the value of ID.
+func (s *DeleteProjectRequest) GetID() string {
+	return s.ID
+}
+
+// SetID sets the value of ID.
+func (s *DeleteProjectRequest) SetID(val string) {
+	s.ID = val
+}
+
 // Ref: #/components/schemas/Error
 type Error struct {
 	Code    int64  `json:"code"`
@@ -305,8 +325,9 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 	s.Response = val
 }
 
-func (*ErrorStatusCode) addProjectRes() {}
-func (*ErrorStatusCode) getProjectRes() {}
+func (*ErrorStatusCode) addProjectRes()    {}
+func (*ErrorStatusCode) deleteProjectRes() {}
+func (*ErrorStatusCode) getProjectRes()    {}
 
 // Merged schema.
 // Ref: #/components/schemas/GetProject

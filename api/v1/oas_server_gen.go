@@ -14,9 +14,15 @@ type Handler interface {
 	//
 	// POST /add-project
 	AddProject(ctx context.Context, req *AddProject) (AddProjectRes, error)
+	// DeleteProject implements deleteProject operation.
+	//
+	// Delete a record.
+	//
+	// POST /delete-record
+	DeleteProject(ctx context.Context, req *DeleteProjectRequest) (DeleteProjectRes, error)
 	// GetProject implements getProject operation.
 	//
-	// Get a single project.
+	// Get a project.
 	//
 	// POST /get-project
 	GetProject(ctx context.Context, req *GetProjectRequest) (GetProjectRes, error)

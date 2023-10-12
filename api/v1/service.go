@@ -95,6 +95,22 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) (AddProjectRe
 	return &AddProjectOK{}, nil
 }
 
+func (s *Service) DeleteProject(ctx context.Context, req *DeleteProjectRequest) (DeleteProjectRes, error) {
+	v := req.GetID()
+	err := s.repo.DeleteProject(ctx, v)
+	if errors.Is(err, repositories.ErrNotFound) {
+		return &ErrorStatusCode{
+			StatusCode: 404,
+			Response: Error{
+				Code:    404,
+				Message: fmt.Sprintf("Project not found: %s", v),
+			},
+		}, nil
+	}
+
+	return &DeleteProjectOK{}, nil
+}
+
 func (s *Service) GetProject(ctx context.Context, req *GetProjectRequest) (GetProjectRes, error) {
 	v := req.GetID()
 	p, err := s.repo.GetProject(ctx, v)
@@ -142,11 +158,11 @@ func (s *Service) NewError(ctx context.Context, err error) *ErrorStatusCode {
 
 func mapToOASProject(p *models.Project) *GetProject {
 	sids := make([]GetProjectIdentifierItem, 0)
-	for k, ids := range p.Identifier {
+	for prop, ids := range p.Identifier {
 		for _, id := range ids {
 			sids = append(sids, GetProjectIdentifierItem{
 				Type:       "PropertyValue",
-				PropertyID: k,
+				PropertyID: prop,
 				Value:      id,
 			})
 		}

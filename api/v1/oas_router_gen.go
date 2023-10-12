@@ -77,6 +77,24 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					return
 				}
+			case 'd': // Prefix: "delete-record"
+				if l := len("delete-record"); len(elem) >= l && elem[0:l] == "delete-record" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "POST":
+						s.handleDeleteProjectRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "POST")
+					}
+
+					return
+				}
 			case 'g': // Prefix: "get-project"
 				if l := len("get-project"); len(elem) >= l && elem[0:l] == "get-project" {
 					elem = elem[l:]
@@ -227,6 +245,28 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						return
 					}
 				}
+			case 'd': // Prefix: "delete-record"
+				if l := len("delete-record"); len(elem) >= l && elem[0:l] == "delete-record" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch method {
+					case "POST":
+						// Leaf: DeleteProject
+						r.name = "DeleteProject"
+						r.summary = "Delete a project"
+						r.operationID = "deleteProject"
+						r.pathPattern = "/delete-record"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
 			case 'g': // Prefix: "get-project"
 				if l := len("get-project"); len(elem) >= l && elem[0:l] == "get-project" {
 					elem = elem[l:]
@@ -239,7 +279,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					case "POST":
 						// Leaf: GetProject
 						r.name = "GetProject"
-						r.summary = "Get a single project"
+						r.summary = "Get a project"
 						r.operationID = "getProject"
 						r.pathPattern = "/get-project"
 						r.args = args

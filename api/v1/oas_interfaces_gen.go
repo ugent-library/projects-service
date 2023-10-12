@@ -5,6 +5,10 @@ type AddProjectRes interface {
 	addProjectRes()
 }
 
+type DeleteProjectRes interface {
+	deleteProjectRes()
+}
+
 type GetProjectRes interface {
 	getProjectRes()
 }

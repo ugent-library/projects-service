@@ -30,8 +30,8 @@ paths:
 
   /get-project:
     post:
-      summary: Get a single project
-      description: get a single project
+      summary: Get a project
+      description: Get a project
       operationId: getProject
       requestBody:
         content:
@@ -51,6 +51,26 @@ paths:
           $ref: "#/components/responses/Error"
         default:
           $ref: "#/components/responses/Error"
+
+  /delete-record:
+    post:
+      summary: Delete a project
+      description: Delete a record
+      operationId: deleteProject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteProjectRequest'
+        required: true
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: Project not found
+          $ref: "#/components/responses/Error"
+        default:
+          $ref: '#/components/responses/Error'
 
   /suggest-projects:
     post:
@@ -95,7 +115,7 @@ components:
 
   schemas:
     AddProjectRequest:
-      $ref: "#/components/schemas/AddProject"
+      $ref: "#/components/schemas/AddProject"      
 
     GetProjectRequest:
       type: object
@@ -107,6 +127,14 @@ components:
 
     GetProjectResponse:
       $ref: "#/components/schemas/GetProject"
+
+    DeleteProjectRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+      required: [id]
 
     SuggestProjectsRequest:
       type: object

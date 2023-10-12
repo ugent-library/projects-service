@@ -104,6 +104,18 @@ func (r *Repo) GetProject(ctx context.Context, id string) (*models.Project, erro
 	return rowToProject(row), nil
 }
 
+func (r *Repo) DeleteProject(ctx context.Context, id string) error {
+	err := r.client.Project.
+		DeleteOneID(id).
+		Exec(ctx)
+
+	if ent.IsNotFound(err) {
+		return ErrNotFound
+	}
+
+	return err
+}
+
 func (r *Repo) SuggestProjects(ctx context.Context, query string) ([]*models.Project, error) {
 	tsQuery, tsQueryArgs := toTSQuery(query)
 	tsQuery = "ts @@ " + tsQuery

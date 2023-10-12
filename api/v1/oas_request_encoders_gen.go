@@ -25,6 +25,20 @@ func encodeAddProjectRequest(
 	return nil
 }
 
+func encodeDeleteProjectRequest(
+	req *DeleteProjectRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := jx.GetEncoder()
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeGetProjectRequest(
 	req *GetProjectRequest,
 	r *http.Request,
