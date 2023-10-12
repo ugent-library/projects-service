@@ -12,7 +12,7 @@ import (
 )
 
 func encodeAddProjectRequest(
-	req *Project,
+	req *AddProject,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

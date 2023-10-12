@@ -43,19 +43,19 @@ func (Project) Fields() []ent.Field {
 		field.JSON("identifier", Identifier{}).
 			Default(Identifier{}),
 		field.String("name").
-			Optional().Nillable(),
+			Optional(),
 		field.Text("description").
-			Optional().Nillable(),
+			Optional(),
 		field.String("founding_date").
-			Optional().Nillable(),
+			Optional(),
 		field.String("dissolution_date").
-			Optional().Nillable(),
+			Optional(),
 		field.String("acronym").
-			Optional().Nillable(),
-		field.String("grant").
-			Optional().Nillable(),
+			Optional(),
+		field.String("grant_id").
+			Optional(),
 		field.String("funding_programme").
-			Optional().Nillable(),
+			Optional(),
 		field.Time("created").
 			Default(timeUTC).
 			Immutable(),

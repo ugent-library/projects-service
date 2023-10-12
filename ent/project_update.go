@@ -143,23 +143,23 @@ func (pu *ProjectUpdate) ClearAcronym() *ProjectUpdate {
 	return pu
 }
 
-// SetGrant sets the "grant" field.
-func (pu *ProjectUpdate) SetGrant(s string) *ProjectUpdate {
-	pu.mutation.SetGrant(s)
+// SetGrantID sets the "grant_id" field.
+func (pu *ProjectUpdate) SetGrantID(s string) *ProjectUpdate {
+	pu.mutation.SetGrantID(s)
 	return pu
 }
 
-// SetNillableGrant sets the "grant" field if the given value is not nil.
-func (pu *ProjectUpdate) SetNillableGrant(s *string) *ProjectUpdate {
+// SetNillableGrantID sets the "grant_id" field if the given value is not nil.
+func (pu *ProjectUpdate) SetNillableGrantID(s *string) *ProjectUpdate {
 	if s != nil {
-		pu.SetGrant(*s)
+		pu.SetGrantID(*s)
 	}
 	return pu
 }
 
-// ClearGrant clears the value of the "grant" field.
-func (pu *ProjectUpdate) ClearGrant() *ProjectUpdate {
-	pu.mutation.ClearGrant()
+// ClearGrantID clears the value of the "grant_id" field.
+func (pu *ProjectUpdate) ClearGrantID() *ProjectUpdate {
+	pu.mutation.ClearGrantID()
 	return pu
 }
 
@@ -292,11 +292,11 @@ func (pu *ProjectUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if pu.mutation.AcronymCleared() {
 		_spec.ClearField(project.FieldAcronym, field.TypeString)
 	}
-	if value, ok := pu.mutation.Grant(); ok {
-		_spec.SetField(project.FieldGrant, field.TypeString, value)
+	if value, ok := pu.mutation.GrantID(); ok {
+		_spec.SetField(project.FieldGrantID, field.TypeString, value)
 	}
-	if pu.mutation.GrantCleared() {
-		_spec.ClearField(project.FieldGrant, field.TypeString)
+	if pu.mutation.GrantIDCleared() {
+		_spec.ClearField(project.FieldGrantID, field.TypeString)
 	}
 	if value, ok := pu.mutation.FundingProgramme(); ok {
 		_spec.SetField(project.FieldFundingProgramme, field.TypeString, value)
@@ -447,23 +447,23 @@ func (puo *ProjectUpdateOne) ClearAcronym() *ProjectUpdateOne {
 	return puo
 }
 
-// SetGrant sets the "grant" field.
-func (puo *ProjectUpdateOne) SetGrant(s string) *ProjectUpdateOne {
-	puo.mutation.SetGrant(s)
+// SetGrantID sets the "grant_id" field.
+func (puo *ProjectUpdateOne) SetGrantID(s string) *ProjectUpdateOne {
+	puo.mutation.SetGrantID(s)
 	return puo
 }
 
-// SetNillableGrant sets the "grant" field if the given value is not nil.
-func (puo *ProjectUpdateOne) SetNillableGrant(s *string) *ProjectUpdateOne {
+// SetNillableGrantID sets the "grant_id" field if the given value is not nil.
+func (puo *ProjectUpdateOne) SetNillableGrantID(s *string) *ProjectUpdateOne {
 	if s != nil {
-		puo.SetGrant(*s)
+		puo.SetGrantID(*s)
 	}
 	return puo
 }
 
-// ClearGrant clears the value of the "grant" field.
-func (puo *ProjectUpdateOne) ClearGrant() *ProjectUpdateOne {
-	puo.mutation.ClearGrant()
+// ClearGrantID clears the value of the "grant_id" field.
+func (puo *ProjectUpdateOne) ClearGrantID() *ProjectUpdateOne {
+	puo.mutation.ClearGrantID()
 	return puo
 }
 
@@ -626,11 +626,11 @@ func (puo *ProjectUpdateOne) sqlSave(ctx context.Context) (_node *Project, err e
 	if puo.mutation.AcronymCleared() {
 		_spec.ClearField(project.FieldAcronym, field.TypeString)
 	}
-	if value, ok := puo.mutation.Grant(); ok {
-		_spec.SetField(project.FieldGrant, field.TypeString, value)
+	if value, ok := puo.mutation.GrantID(); ok {
+		_spec.SetField(project.FieldGrantID, field.TypeString, value)
 	}
-	if puo.mutation.GrantCleared() {
-		_spec.ClearField(project.FieldGrant, field.TypeString)
+	if puo.mutation.GrantIDCleared() {
+		_spec.ClearField(project.FieldGrantID, field.TypeString)
 	}
 	if value, ok := puo.mutation.FundingProgramme(); ok {
 		_spec.SetField(project.FieldFundingProgramme, field.TypeString, value)

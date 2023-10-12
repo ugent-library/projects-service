@@ -26,8 +26,8 @@ const (
 	FieldDissolutionDate = "dissolution_date"
 	// FieldAcronym holds the string denoting the acronym field in the database.
 	FieldAcronym = "acronym"
-	// FieldGrant holds the string denoting the grant field in the database.
-	FieldGrant = "grant"
+	// FieldGrantID holds the string denoting the grant_id field in the database.
+	FieldGrantID = "grant_id"
 	// FieldFundingProgramme holds the string denoting the funding_programme field in the database.
 	FieldFundingProgramme = "funding_programme"
 	// FieldCreated holds the string denoting the created field in the database.
@@ -49,7 +49,7 @@ var Columns = []string{
 	FieldFoundingDate,
 	FieldDissolutionDate,
 	FieldAcronym,
-	FieldGrant,
+	FieldGrantID,
 	FieldFundingProgramme,
 	FieldCreated,
 	FieldModified,
@@ -112,9 +112,9 @@ func ByAcronym(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAcronym, opts...).ToFunc()
 }
 
-// ByGrant orders the results by the grant field.
-func ByGrant(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldGrant, opts...).ToFunc()
+// ByGrantID orders the results by the grant_id field.
+func ByGrantID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldGrantID, opts...).ToFunc()
 }
 
 // ByFundingProgramme orders the results by the funding_programme field.

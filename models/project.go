@@ -5,13 +5,13 @@ import "time"
 type Project struct {
 	ID               string
 	Identifier       map[string][]string
-	Name             *string
-	Description      *string
-	FoundingDate     *string
-	DissolutionDate  *string
-	Grant            *string
-	FundingProgramme *string
-	Acronym          *string
+	Name             string
+	Description      string
+	FoundingDate     string
+	DissolutionDate  string
+	Grant            string
+	FundingProgramme string
+	Acronym          string
 	DateCreated      time.Time
 	DateModified     time.Time
 }

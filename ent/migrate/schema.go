@@ -18,7 +18,7 @@ var (
 		{Name: "founding_date", Type: field.TypeString, Nullable: true},
 		{Name: "dissolution_date", Type: field.TypeString, Nullable: true},
 		{Name: "acronym", Type: field.TypeString, Nullable: true},
-		{Name: "grant", Type: field.TypeString, Nullable: true},
+		{Name: "grant_id", Type: field.TypeString, Nullable: true},
 		{Name: "funding_programme", Type: field.TypeString, Nullable: true},
 		{Name: "created", Type: field.TypeTime},
 		{Name: "modified", Type: field.TypeTime},

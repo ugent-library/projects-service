@@ -40,7 +40,7 @@ type ProjectMutation struct {
 	founding_date     *string
 	dissolution_date  *string
 	acronym           *string
-	grant             *string
+	grant_id          *string
 	funding_programme *string
 	created           *time.Time
 	modified          *time.Time
@@ -208,7 +208,7 @@ func (m *ProjectMutation) Name() (r string, exists bool) {
 // OldName returns the old "name" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldName(ctx context.Context) (v *string, err error) {
+func (m *ProjectMutation) OldName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldName is only allowed on UpdateOne operations")
 	}
@@ -257,7 +257,7 @@ func (m *ProjectMutation) Description() (r string, exists bool) {
 // OldDescription returns the old "description" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldDescription(ctx context.Context) (v *string, err error) {
+func (m *ProjectMutation) OldDescription(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
 	}
@@ -306,7 +306,7 @@ func (m *ProjectMutation) FoundingDate() (r string, exists bool) {
 // OldFoundingDate returns the old "founding_date" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldFoundingDate(ctx context.Context) (v *string, err error) {
+func (m *ProjectMutation) OldFoundingDate(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldFoundingDate is only allowed on UpdateOne operations")
 	}
@@ -355,7 +355,7 @@ func (m *ProjectMutation) DissolutionDate() (r string, exists bool) {
 // OldDissolutionDate returns the old "dissolution_date" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldDissolutionDate(ctx context.Context) (v *string, err error) {
+func (m *ProjectMutation) OldDissolutionDate(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDissolutionDate is only allowed on UpdateOne operations")
 	}
@@ -404,7 +404,7 @@ func (m *ProjectMutation) Acronym() (r string, exists bool) {
 // OldAcronym returns the old "acronym" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldAcronym(ctx context.Context) (v *string, err error) {
+func (m *ProjectMutation) OldAcronym(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldAcronym is only allowed on UpdateOne operations")
 	}
@@ -436,53 +436,53 @@ func (m *ProjectMutation) ResetAcronym() {
 	delete(m.clearedFields, project.FieldAcronym)
 }
 
-// SetGrant sets the "grant" field.
-func (m *ProjectMutation) SetGrant(s string) {
-	m.grant = &s
+// SetGrantID sets the "grant_id" field.
+func (m *ProjectMutation) SetGrantID(s string) {
+	m.grant_id = &s
 }
 
-// Grant returns the value of the "grant" field in the mutation.
-func (m *ProjectMutation) Grant() (r string, exists bool) {
-	v := m.grant
+// GrantID returns the value of the "grant_id" field in the mutation.
+func (m *ProjectMutation) GrantID() (r string, exists bool) {
+	v := m.grant_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldGrant returns the old "grant" field's value of the Project entity.
+// OldGrantID returns the old "grant_id" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldGrant(ctx context.Context) (v *string, err error) {
+func (m *ProjectMutation) OldGrantID(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldGrant is only allowed on UpdateOne operations")
+		return v, errors.New("OldGrantID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldGrant requires an ID field in the mutation")
+		return v, errors.New("OldGrantID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldGrant: %w", err)
+		return v, fmt.Errorf("querying old value for OldGrantID: %w", err)
 	}
-	return oldValue.Grant, nil
+	return oldValue.GrantID, nil
 }
 
-// ClearGrant clears the value of the "grant" field.
-func (m *ProjectMutation) ClearGrant() {
-	m.grant = nil
-	m.clearedFields[project.FieldGrant] = struct{}{}
+// ClearGrantID clears the value of the "grant_id" field.
+func (m *ProjectMutation) ClearGrantID() {
+	m.grant_id = nil
+	m.clearedFields[project.FieldGrantID] = struct{}{}
 }
 
-// GrantCleared returns if the "grant" field was cleared in this mutation.
-func (m *ProjectMutation) GrantCleared() bool {
-	_, ok := m.clearedFields[project.FieldGrant]
+// GrantIDCleared returns if the "grant_id" field was cleared in this mutation.
+func (m *ProjectMutation) GrantIDCleared() bool {
+	_, ok := m.clearedFields[project.FieldGrantID]
 	return ok
 }
 
-// ResetGrant resets all changes to the "grant" field.
-func (m *ProjectMutation) ResetGrant() {
-	m.grant = nil
-	delete(m.clearedFields, project.FieldGrant)
+// ResetGrantID resets all changes to the "grant_id" field.
+func (m *ProjectMutation) ResetGrantID() {
+	m.grant_id = nil
+	delete(m.clearedFields, project.FieldGrantID)
 }
 
 // SetFundingProgramme sets the "funding_programme" field.
@@ -502,7 +502,7 @@ func (m *ProjectMutation) FundingProgramme() (r string, exists bool) {
 // OldFundingProgramme returns the old "funding_programme" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldFundingProgramme(ctx context.Context) (v *string, err error) {
+func (m *ProjectMutation) OldFundingProgramme(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldFundingProgramme is only allowed on UpdateOne operations")
 	}
@@ -708,8 +708,8 @@ func (m *ProjectMutation) Fields() []string {
 	if m.acronym != nil {
 		fields = append(fields, project.FieldAcronym)
 	}
-	if m.grant != nil {
-		fields = append(fields, project.FieldGrant)
+	if m.grant_id != nil {
+		fields = append(fields, project.FieldGrantID)
 	}
 	if m.funding_programme != nil {
 		fields = append(fields, project.FieldFundingProgramme)
@@ -743,8 +743,8 @@ func (m *ProjectMutation) Field(name string) (ent.Value, bool) {
 		return m.DissolutionDate()
 	case project.FieldAcronym:
 		return m.Acronym()
-	case project.FieldGrant:
-		return m.Grant()
+	case project.FieldGrantID:
+		return m.GrantID()
 	case project.FieldFundingProgramme:
 		return m.FundingProgramme()
 	case project.FieldCreated:
@@ -774,8 +774,8 @@ func (m *ProjectMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldDissolutionDate(ctx)
 	case project.FieldAcronym:
 		return m.OldAcronym(ctx)
-	case project.FieldGrant:
-		return m.OldGrant(ctx)
+	case project.FieldGrantID:
+		return m.OldGrantID(ctx)
 	case project.FieldFundingProgramme:
 		return m.OldFundingProgramme(ctx)
 	case project.FieldCreated:
@@ -835,12 +835,12 @@ func (m *ProjectMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetAcronym(v)
 		return nil
-	case project.FieldGrant:
+	case project.FieldGrantID:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetGrant(v)
+		m.SetGrantID(v)
 		return nil
 	case project.FieldFundingProgramme:
 		v, ok := value.(string)
@@ -915,8 +915,8 @@ func (m *ProjectMutation) ClearedFields() []string {
 	if m.FieldCleared(project.FieldAcronym) {
 		fields = append(fields, project.FieldAcronym)
 	}
-	if m.FieldCleared(project.FieldGrant) {
-		fields = append(fields, project.FieldGrant)
+	if m.FieldCleared(project.FieldGrantID) {
+		fields = append(fields, project.FieldGrantID)
 	}
 	if m.FieldCleared(project.FieldFundingProgramme) {
 		fields = append(fields, project.FieldFundingProgramme)
@@ -953,8 +953,8 @@ func (m *ProjectMutation) ClearField(name string) error {
 	case project.FieldAcronym:
 		m.ClearAcronym()
 		return nil
-	case project.FieldGrant:
-		m.ClearGrant()
+	case project.FieldGrantID:
+		m.ClearGrantID()
 		return nil
 	case project.FieldFundingProgramme:
 		m.ClearFundingProgramme()
@@ -988,8 +988,8 @@ func (m *ProjectMutation) ResetField(name string) error {
 	case project.FieldAcronym:
 		m.ResetAcronym()
 		return nil
-	case project.FieldGrant:
-		m.ResetGrant()
+	case project.FieldGrantID:
+		m.ResetGrantID()
 		return nil
 	case project.FieldFundingProgramme:
 		m.ResetFundingProgramme()

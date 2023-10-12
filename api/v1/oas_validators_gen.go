@@ -10,6 +10,44 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
+func (s *AddProject) Validate() error {
+	var failures []validate.FieldError
+	if err := func() error {
+		if s.Identifier == nil {
+			return errors.New("nil is invalid value")
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "identifier",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
+func (s *GetProject) Validate() error {
+	var failures []validate.FieldError
+	if err := func() error {
+		if s.Identifier == nil {
+			return errors.New("nil is invalid value")
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "identifier",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
 func (s *GetProjectRequest) Validate() error {
 	var failures []validate.FieldError
 	if err := func() error {
@@ -28,25 +66,6 @@ func (s *GetProjectRequest) Validate() error {
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
 			Name:  "id",
-			Error: err,
-		})
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-	return nil
-}
-
-func (s *Project) Validate() error {
-	var failures []validate.FieldError
-	if err := func() error {
-		if s.Identifier == nil {
-			return errors.New("nil is invalid value")
-		}
-		return nil
-	}(); err != nil {
-		failures = append(failures, validate.FieldError{
-			Name:  "identifier",
 			Error: err,
 		})
 	}

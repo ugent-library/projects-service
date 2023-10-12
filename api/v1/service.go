@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 
+	"github.com/go-faster/errors"
 	"github.com/ugent-library/projects/models"
 	"github.com/ugent-library/projects/repositories"
 )
@@ -17,62 +18,73 @@ func NewService(repo *repositories.Repo) *Service {
 	}
 }
 
-func (s *Service) AddProject(ctx context.Context, req *Project) error {
-	p := &models.Project{}
+func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
+	var p *models.Project
 
-	if v, ok := req.ID.Get(); ok {
+	if v, ok := req.GetID().Get(); ok {
+		tmp, err := s.repo.GetProject(ctx, v)
+		if errors.Is(err, repositories.ErrNotFound) {
+			return err
+		}
+		p = tmp
+	} else {
+		p = &models.Project{}
+	}
+
+	if v, ok := req.GetID().Get(); ok {
 		p.ID = v
 	}
 
-	if v, ok := req.Created.Get(); ok {
+	if v, ok := req.GetCreated().Get(); ok {
 		p.DateCreated = v
 	}
 
-	if v, ok := req.Modified.Get(); ok {
+	if v, ok := req.GetModified().Get(); ok {
 		p.DateModified = v
 	}
 
-	ids := make(map[string][]string)
-	for _, id := range req.GetIdentifier() {
-		ids[id.GetPropertyID()] = append(ids[id.GetPropertyID()], id.GetValue())
+	if ids := req.GetIdentifier(); len(ids) > 0 {
+		tmp := make(map[string][]string)
+		for _, id := range ids {
+			tmp[id.GetPropertyID()] = append(tmp[id.GetPropertyID()], id.GetValue())
+		}
+		p.Identifier = tmp
 	}
 
-	p.Identifier = ids
-
-	if v, ok := req.GetName().GetString(); ok {
-		p.Name = &v
+	if v, ok := req.GetName().Get(); ok {
+		p.Name = v
 	}
 
-	if v, ok := req.GetDescription().GetString(); ok {
-		p.Description = &v
+	if v, ok := req.GetDescription().Get(); ok {
+		p.Description = v
 	}
 
-	if v, ok := req.GetFoundingDate().GetString(); ok {
-		p.FoundingDate = &v
+	if v, ok := req.GetFoundingDate().Get(); ok {
+		p.FoundingDate = v
 	}
 
-	if v, ok := req.GetDissolutionDate().GetString(); ok {
-		p.DissolutionDate = &v
+	if v, ok := req.GetDissolutionDate().Get(); ok {
+		p.DissolutionDate = v
 	}
 
-	if v, ok := req.GetHasAcronym().GetString(); ok {
-		p.Acronym = &v
+	if v, ok := req.GetHasAcronym().Get(); ok {
+		p.Acronym = v
 	}
 
 	if fb, ok := req.GetIsFundedBy().Get(); ok {
 		id := fb.GetIdentifier()
-		p.Grant = &id
+		p.Grant = id
 
 		if ab, ok := fb.GetIsAwardedBy().Get(); ok {
 			name := ab.GetName()
-			p.FundingProgramme = &name
+			p.FundingProgramme = name
 		}
 	}
 
 	return s.repo.AddProject(ctx, p)
 }
 
-func (s *Service) GetProject(ctx context.Context, req *GetProjectRequest) (*Project, error) {
+func (s *Service) GetProject(ctx context.Context, req *GetProjectRequest) (*GetProject, error) {
 	p, err := s.repo.GetProject(ctx, req.ID)
 
 	if err != nil {
@@ -91,7 +103,7 @@ func (s *Service) SuggestProjects(ctx context.Context, req *SuggestProjectsReque
 	}
 
 	res := &SuggestProjectsResponse{
-		Data: make([]Project, 0, len(ps)),
+		Data: make([]GetProject, 0, len(ps)),
 	}
 
 	for _, p := range ps {
@@ -111,11 +123,11 @@ func (s *Service) NewError(ctx context.Context, err error) *ErrorStatusCode {
 	}
 }
 
-func mapToOASProject(p *models.Project) *Project {
-	sids := make([]ProjectIdentifierItem, 0)
+func mapToOASProject(p *models.Project) *GetProject {
+	sids := make([]GetProjectIdentifierItem, 0)
 	for k, ids := range p.Identifier {
 		for _, id := range ids {
-			sids = append(sids, ProjectIdentifierItem{
+			sids = append(sids, GetProjectIdentifierItem{
 				Type:       "PropertyValue",
 				PropertyID: k,
 				Value:      id,
@@ -123,59 +135,44 @@ func mapToOASProject(p *models.Project) *Project {
 		}
 	}
 
-	r := &Project{
+	r := &GetProject{
 		Type:       "ResearchProject",
 		Identifier: sids,
-		Created:    NewOptDateTime(p.DateCreated),
-		Modified:   NewOptDateTime(p.DateModified),
+		Created:    p.DateCreated,
+		Modified:   p.DateModified,
 	}
 
-	r.ID.SetTo(p.ID)
+	r.ID = p.ID
 
-	if p.Name != nil {
-		r.Name = NewStringProjectName(*p.Name)
-	} else {
-		r.Name = NewNullProjectName(struct{}{})
+	if p.Name != "" {
+		r.SetName(NewOptString(p.Name))
 	}
 
-	if p.Description != nil {
-		r.Description = NewStringProjectDescription(*p.Description)
-	} else {
-		r.Description = NewNullProjectDescription(struct{}{})
+	if p.Description != "" {
+		r.SetDescription(NewOptString(p.Description))
 	}
 
-	if p.FoundingDate != nil {
-		r.FoundingDate = NewStringProjectFoundingDate(*p.FoundingDate)
-	} else {
-		r.FoundingDate = NewNullProjectFoundingDate(struct{}{})
+	if p.FoundingDate != "" {
+		r.SetFoundingDate(NewOptString(p.FoundingDate))
+	}
+	if p.DissolutionDate != "" {
+		r.SetDissolutionDate(NewOptString(p.DissolutionDate))
 	}
 
-	if p.DissolutionDate != nil {
-		r.DissolutionDate = NewStringProjectDissolutionDate(*p.DissolutionDate)
-	} else {
-		r.DissolutionDate = NewNullProjectDissolutionDate(struct{}{})
+	if p.Acronym != "" {
+		r.SetHasAcronym(NewOptString(p.Acronym))
 	}
 
-	if p.Acronym != nil {
-		r.HasAcronym = NewStringProjectHasAcronym(*p.Acronym)
-	} else {
-		r.HasAcronym = NewNullProjectHasAcronym(struct{}{})
-	}
-
-	r.IsFundedBy.SetTo(ProjectIsFundedBy{})
-	r.IsFundedBy.SetToNull()
-	if p.Grant != nil {
-		g := ProjectIsFundedBy{
+	if p.Grant != "" {
+		g := GetProjectIsFundedBy{
 			Type:       "Grant",
-			Identifier: *p.Grant,
+			Identifier: p.Grant,
 		}
 
-		g.IsAwardedBy.SetTo(ProjectIsFundedByIsAwardedBy{})
-		g.IsAwardedBy.SetToNull()
-		if p.FundingProgramme != nil {
-			g.IsAwardedBy.SetTo(ProjectIsFundedByIsAwardedBy{
+		if p.FundingProgramme != "" {
+			g.IsAwardedBy.SetTo(GetProjectIsFundedByIsAwardedBy{
 				Type: "FundingProgramme",
-				Name: *p.FundingProgramme,
+				Name: p.FundingProgramme,
 			})
 		}
 

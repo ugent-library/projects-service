@@ -89,9 +89,9 @@ func Acronym(v string) predicate.Project {
 	return predicate.Project(sql.FieldEQ(FieldAcronym, v))
 }
 
-// Grant applies equality check predicate on the "grant" field. It's identical to GrantEQ.
-func Grant(v string) predicate.Project {
-	return predicate.Project(sql.FieldEQ(FieldGrant, v))
+// GrantID applies equality check predicate on the "grant_id" field. It's identical to GrantIDEQ.
+func GrantID(v string) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldGrantID, v))
 }
 
 // FundingProgramme applies equality check predicate on the "funding_programme" field. It's identical to FundingProgrammeEQ.
@@ -489,79 +489,79 @@ func AcronymContainsFold(v string) predicate.Project {
 	return predicate.Project(sql.FieldContainsFold(FieldAcronym, v))
 }
 
-// GrantEQ applies the EQ predicate on the "grant" field.
-func GrantEQ(v string) predicate.Project {
-	return predicate.Project(sql.FieldEQ(FieldGrant, v))
+// GrantIDEQ applies the EQ predicate on the "grant_id" field.
+func GrantIDEQ(v string) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldGrantID, v))
 }
 
-// GrantNEQ applies the NEQ predicate on the "grant" field.
-func GrantNEQ(v string) predicate.Project {
-	return predicate.Project(sql.FieldNEQ(FieldGrant, v))
+// GrantIDNEQ applies the NEQ predicate on the "grant_id" field.
+func GrantIDNEQ(v string) predicate.Project {
+	return predicate.Project(sql.FieldNEQ(FieldGrantID, v))
 }
 
-// GrantIn applies the In predicate on the "grant" field.
-func GrantIn(vs ...string) predicate.Project {
-	return predicate.Project(sql.FieldIn(FieldGrant, vs...))
+// GrantIDIn applies the In predicate on the "grant_id" field.
+func GrantIDIn(vs ...string) predicate.Project {
+	return predicate.Project(sql.FieldIn(FieldGrantID, vs...))
 }
 
-// GrantNotIn applies the NotIn predicate on the "grant" field.
-func GrantNotIn(vs ...string) predicate.Project {
-	return predicate.Project(sql.FieldNotIn(FieldGrant, vs...))
+// GrantIDNotIn applies the NotIn predicate on the "grant_id" field.
+func GrantIDNotIn(vs ...string) predicate.Project {
+	return predicate.Project(sql.FieldNotIn(FieldGrantID, vs...))
 }
 
-// GrantGT applies the GT predicate on the "grant" field.
-func GrantGT(v string) predicate.Project {
-	return predicate.Project(sql.FieldGT(FieldGrant, v))
+// GrantIDGT applies the GT predicate on the "grant_id" field.
+func GrantIDGT(v string) predicate.Project {
+	return predicate.Project(sql.FieldGT(FieldGrantID, v))
 }
 
-// GrantGTE applies the GTE predicate on the "grant" field.
-func GrantGTE(v string) predicate.Project {
-	return predicate.Project(sql.FieldGTE(FieldGrant, v))
+// GrantIDGTE applies the GTE predicate on the "grant_id" field.
+func GrantIDGTE(v string) predicate.Project {
+	return predicate.Project(sql.FieldGTE(FieldGrantID, v))
 }
 
-// GrantLT applies the LT predicate on the "grant" field.
-func GrantLT(v string) predicate.Project {
-	return predicate.Project(sql.FieldLT(FieldGrant, v))
+// GrantIDLT applies the LT predicate on the "grant_id" field.
+func GrantIDLT(v string) predicate.Project {
+	return predicate.Project(sql.FieldLT(FieldGrantID, v))
 }
 
-// GrantLTE applies the LTE predicate on the "grant" field.
-func GrantLTE(v string) predicate.Project {
-	return predicate.Project(sql.FieldLTE(FieldGrant, v))
+// GrantIDLTE applies the LTE predicate on the "grant_id" field.
+func GrantIDLTE(v string) predicate.Project {
+	return predicate.Project(sql.FieldLTE(FieldGrantID, v))
 }
 
-// GrantContains applies the Contains predicate on the "grant" field.
-func GrantContains(v string) predicate.Project {
-	return predicate.Project(sql.FieldContains(FieldGrant, v))
+// GrantIDContains applies the Contains predicate on the "grant_id" field.
+func GrantIDContains(v string) predicate.Project {
+	return predicate.Project(sql.FieldContains(FieldGrantID, v))
 }
 
-// GrantHasPrefix applies the HasPrefix predicate on the "grant" field.
-func GrantHasPrefix(v string) predicate.Project {
-	return predicate.Project(sql.FieldHasPrefix(FieldGrant, v))
+// GrantIDHasPrefix applies the HasPrefix predicate on the "grant_id" field.
+func GrantIDHasPrefix(v string) predicate.Project {
+	return predicate.Project(sql.FieldHasPrefix(FieldGrantID, v))
 }
 
-// GrantHasSuffix applies the HasSuffix predicate on the "grant" field.
-func GrantHasSuffix(v string) predicate.Project {
-	return predicate.Project(sql.FieldHasSuffix(FieldGrant, v))
+// GrantIDHasSuffix applies the HasSuffix predicate on the "grant_id" field.
+func GrantIDHasSuffix(v string) predicate.Project {
+	return predicate.Project(sql.FieldHasSuffix(FieldGrantID, v))
 }
 
-// GrantIsNil applies the IsNil predicate on the "grant" field.
-func GrantIsNil() predicate.Project {
-	return predicate.Project(sql.FieldIsNull(FieldGrant))
+// GrantIDIsNil applies the IsNil predicate on the "grant_id" field.
+func GrantIDIsNil() predicate.Project {
+	return predicate.Project(sql.FieldIsNull(FieldGrantID))
 }
 
-// GrantNotNil applies the NotNil predicate on the "grant" field.
-func GrantNotNil() predicate.Project {
-	return predicate.Project(sql.FieldNotNull(FieldGrant))
+// GrantIDNotNil applies the NotNil predicate on the "grant_id" field.
+func GrantIDNotNil() predicate.Project {
+	return predicate.Project(sql.FieldNotNull(FieldGrantID))
 }
 
-// GrantEqualFold applies the EqualFold predicate on the "grant" field.
-func GrantEqualFold(v string) predicate.Project {
-	return predicate.Project(sql.FieldEqualFold(FieldGrant, v))
+// GrantIDEqualFold applies the EqualFold predicate on the "grant_id" field.
+func GrantIDEqualFold(v string) predicate.Project {
+	return predicate.Project(sql.FieldEqualFold(FieldGrantID, v))
 }
 
-// GrantContainsFold applies the ContainsFold predicate on the "grant" field.
-func GrantContainsFold(v string) predicate.Project {
-	return predicate.Project(sql.FieldContainsFold(FieldGrant, v))
+// GrantIDContainsFold applies the ContainsFold predicate on the "grant_id" field.
+func GrantIDContainsFold(v string) predicate.Project {
+	return predicate.Project(sql.FieldContainsFold(FieldGrantID, v))
 }
 
 // FundingProgrammeEQ applies the EQ predicate on the "funding_programme" field.

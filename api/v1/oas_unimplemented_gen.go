@@ -18,7 +18,7 @@ var _ Handler = UnimplementedHandler{}
 // Add a single project.
 //
 // POST /add-project
-func (UnimplementedHandler) AddProject(ctx context.Context, req *Project) error {
+func (UnimplementedHandler) AddProject(ctx context.Context, req *AddProject) error {
 	return ht.ErrNotImplemented
 }
 
@@ -27,7 +27,7 @@ func (UnimplementedHandler) AddProject(ctx context.Context, req *Project) error 
 // Get a single project.
 //
 // POST /get-project
-func (UnimplementedHandler) GetProject(ctx context.Context, req *GetProjectRequest) (r *Project, _ error) {
+func (UnimplementedHandler) GetProject(ctx context.Context, req *GetProjectRequest) (r *GetProject, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

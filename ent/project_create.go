@@ -108,16 +108,16 @@ func (pc *ProjectCreate) SetNillableAcronym(s *string) *ProjectCreate {
 	return pc
 }
 
-// SetGrant sets the "grant" field.
-func (pc *ProjectCreate) SetGrant(s string) *ProjectCreate {
-	pc.mutation.SetGrant(s)
+// SetGrantID sets the "grant_id" field.
+func (pc *ProjectCreate) SetGrantID(s string) *ProjectCreate {
+	pc.mutation.SetGrantID(s)
 	return pc
 }
 
-// SetNillableGrant sets the "grant" field if the given value is not nil.
-func (pc *ProjectCreate) SetNillableGrant(s *string) *ProjectCreate {
+// SetNillableGrantID sets the "grant_id" field if the given value is not nil.
+func (pc *ProjectCreate) SetNillableGrantID(s *string) *ProjectCreate {
 	if s != nil {
-		pc.SetGrant(*s)
+		pc.SetGrantID(*s)
 	}
 	return pc
 }
@@ -298,31 +298,31 @@ func (pc *ProjectCreate) createSpec() (*Project, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := pc.mutation.Name(); ok {
 		_spec.SetField(project.FieldName, field.TypeString, value)
-		_node.Name = &value
+		_node.Name = value
 	}
 	if value, ok := pc.mutation.Description(); ok {
 		_spec.SetField(project.FieldDescription, field.TypeString, value)
-		_node.Description = &value
+		_node.Description = value
 	}
 	if value, ok := pc.mutation.FoundingDate(); ok {
 		_spec.SetField(project.FieldFoundingDate, field.TypeString, value)
-		_node.FoundingDate = &value
+		_node.FoundingDate = value
 	}
 	if value, ok := pc.mutation.DissolutionDate(); ok {
 		_spec.SetField(project.FieldDissolutionDate, field.TypeString, value)
-		_node.DissolutionDate = &value
+		_node.DissolutionDate = value
 	}
 	if value, ok := pc.mutation.Acronym(); ok {
 		_spec.SetField(project.FieldAcronym, field.TypeString, value)
-		_node.Acronym = &value
+		_node.Acronym = value
 	}
-	if value, ok := pc.mutation.Grant(); ok {
-		_spec.SetField(project.FieldGrant, field.TypeString, value)
-		_node.Grant = &value
+	if value, ok := pc.mutation.GrantID(); ok {
+		_spec.SetField(project.FieldGrantID, field.TypeString, value)
+		_node.GrantID = value
 	}
 	if value, ok := pc.mutation.FundingProgramme(); ok {
 		_spec.SetField(project.FieldFundingProgramme, field.TypeString, value)
-		_node.FundingProgramme = &value
+		_node.FundingProgramme = value
 	}
 	if value, ok := pc.mutation.Created(); ok {
 		_spec.SetField(project.FieldCreated, field.TypeTime, value)
@@ -490,21 +490,21 @@ func (u *ProjectUpsert) ClearAcronym() *ProjectUpsert {
 	return u
 }
 
-// SetGrant sets the "grant" field.
-func (u *ProjectUpsert) SetGrant(v string) *ProjectUpsert {
-	u.Set(project.FieldGrant, v)
+// SetGrantID sets the "grant_id" field.
+func (u *ProjectUpsert) SetGrantID(v string) *ProjectUpsert {
+	u.Set(project.FieldGrantID, v)
 	return u
 }
 
-// UpdateGrant sets the "grant" field to the value that was provided on create.
-func (u *ProjectUpsert) UpdateGrant() *ProjectUpsert {
-	u.SetExcluded(project.FieldGrant)
+// UpdateGrantID sets the "grant_id" field to the value that was provided on create.
+func (u *ProjectUpsert) UpdateGrantID() *ProjectUpsert {
+	u.SetExcluded(project.FieldGrantID)
 	return u
 }
 
-// ClearGrant clears the value of the "grant" field.
-func (u *ProjectUpsert) ClearGrant() *ProjectUpsert {
-	u.SetNull(project.FieldGrant)
+// ClearGrantID clears the value of the "grant_id" field.
+func (u *ProjectUpsert) ClearGrantID() *ProjectUpsert {
+	u.SetNull(project.FieldGrantID)
 	return u
 }
 
@@ -726,24 +726,24 @@ func (u *ProjectUpsertOne) ClearAcronym() *ProjectUpsertOne {
 	})
 }
 
-// SetGrant sets the "grant" field.
-func (u *ProjectUpsertOne) SetGrant(v string) *ProjectUpsertOne {
+// SetGrantID sets the "grant_id" field.
+func (u *ProjectUpsertOne) SetGrantID(v string) *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
-		s.SetGrant(v)
+		s.SetGrantID(v)
 	})
 }
 
-// UpdateGrant sets the "grant" field to the value that was provided on create.
-func (u *ProjectUpsertOne) UpdateGrant() *ProjectUpsertOne {
+// UpdateGrantID sets the "grant_id" field to the value that was provided on create.
+func (u *ProjectUpsertOne) UpdateGrantID() *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
-		s.UpdateGrant()
+		s.UpdateGrantID()
 	})
 }
 
-// ClearGrant clears the value of the "grant" field.
-func (u *ProjectUpsertOne) ClearGrant() *ProjectUpsertOne {
+// ClearGrantID clears the value of the "grant_id" field.
+func (u *ProjectUpsertOne) ClearGrantID() *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
-		s.ClearGrant()
+		s.ClearGrantID()
 	})
 }
 
@@ -1136,24 +1136,24 @@ func (u *ProjectUpsertBulk) ClearAcronym() *ProjectUpsertBulk {
 	})
 }
 
-// SetGrant sets the "grant" field.
-func (u *ProjectUpsertBulk) SetGrant(v string) *ProjectUpsertBulk {
+// SetGrantID sets the "grant_id" field.
+func (u *ProjectUpsertBulk) SetGrantID(v string) *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
-		s.SetGrant(v)
+		s.SetGrantID(v)
 	})
 }
 
-// UpdateGrant sets the "grant" field to the value that was provided on create.
-func (u *ProjectUpsertBulk) UpdateGrant() *ProjectUpsertBulk {
+// UpdateGrantID sets the "grant_id" field to the value that was provided on create.
+func (u *ProjectUpsertBulk) UpdateGrantID() *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
-		s.UpdateGrant()
+		s.UpdateGrantID()
 	})
 }
 
-// ClearGrant clears the value of the "grant" field.
-func (u *ProjectUpsertBulk) ClearGrant() *ProjectUpsertBulk {
+// ClearGrantID clears the value of the "grant_id" field.
+func (u *ProjectUpsertBulk) ClearGrantID() *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
-		s.ClearGrant()
+		s.ClearGrantID()
 	})
 }
 

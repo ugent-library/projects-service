@@ -22,19 +22,19 @@ type Project struct {
 	// Identifier holds the value of the "identifier" field.
 	Identifier schema.Identifier `json:"identifier,omitempty"`
 	// Name holds the value of the "name" field.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
-	Description *string `json:"description,omitempty"`
+	Description string `json:"description,omitempty"`
 	// FoundingDate holds the value of the "founding_date" field.
-	FoundingDate *string `json:"founding_date,omitempty"`
+	FoundingDate string `json:"founding_date,omitempty"`
 	// DissolutionDate holds the value of the "dissolution_date" field.
-	DissolutionDate *string `json:"dissolution_date,omitempty"`
+	DissolutionDate string `json:"dissolution_date,omitempty"`
 	// Acronym holds the value of the "acronym" field.
-	Acronym *string `json:"acronym,omitempty"`
-	// Grant holds the value of the "grant" field.
-	Grant *string `json:"grant,omitempty"`
+	Acronym string `json:"acronym,omitempty"`
+	// GrantID holds the value of the "grant_id" field.
+	GrantID string `json:"grant_id,omitempty"`
 	// FundingProgramme holds the value of the "funding_programme" field.
-	FundingProgramme *string `json:"funding_programme,omitempty"`
+	FundingProgramme string `json:"funding_programme,omitempty"`
 	// Created holds the value of the "created" field.
 	Created time.Time `json:"created,omitempty"`
 	// Modified holds the value of the "modified" field.
@@ -51,7 +51,7 @@ func (*Project) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case project.FieldIdentifier:
 			values[i] = new([]byte)
-		case project.FieldID, project.FieldName, project.FieldDescription, project.FieldFoundingDate, project.FieldDissolutionDate, project.FieldAcronym, project.FieldGrant, project.FieldFundingProgramme, project.FieldTs:
+		case project.FieldID, project.FieldName, project.FieldDescription, project.FieldFoundingDate, project.FieldDissolutionDate, project.FieldAcronym, project.FieldGrantID, project.FieldFundingProgramme, project.FieldTs:
 			values[i] = new(sql.NullString)
 		case project.FieldCreated, project.FieldModified:
 			values[i] = new(sql.NullTime)
@@ -88,50 +88,43 @@ func (pr *Project) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				pr.Name = new(string)
-				*pr.Name = value.String
+				pr.Name = value.String
 			}
 		case project.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
-				pr.Description = new(string)
-				*pr.Description = value.String
+				pr.Description = value.String
 			}
 		case project.FieldFoundingDate:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field founding_date", values[i])
 			} else if value.Valid {
-				pr.FoundingDate = new(string)
-				*pr.FoundingDate = value.String
+				pr.FoundingDate = value.String
 			}
 		case project.FieldDissolutionDate:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field dissolution_date", values[i])
 			} else if value.Valid {
-				pr.DissolutionDate = new(string)
-				*pr.DissolutionDate = value.String
+				pr.DissolutionDate = value.String
 			}
 		case project.FieldAcronym:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field acronym", values[i])
 			} else if value.Valid {
-				pr.Acronym = new(string)
-				*pr.Acronym = value.String
+				pr.Acronym = value.String
 			}
-		case project.FieldGrant:
+		case project.FieldGrantID:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field grant", values[i])
+				return fmt.Errorf("unexpected type %T for field grant_id", values[i])
 			} else if value.Valid {
-				pr.Grant = new(string)
-				*pr.Grant = value.String
+				pr.GrantID = value.String
 			}
 		case project.FieldFundingProgramme:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field funding_programme", values[i])
 			} else if value.Valid {
-				pr.FundingProgramme = new(string)
-				*pr.FundingProgramme = value.String
+				pr.FundingProgramme = value.String
 			}
 		case project.FieldCreated:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -190,40 +183,26 @@ func (pr *Project) String() string {
 	builder.WriteString("identifier=")
 	builder.WriteString(fmt.Sprintf("%v", pr.Identifier))
 	builder.WriteString(", ")
-	if v := pr.Name; v != nil {
-		builder.WriteString("name=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString("name=")
+	builder.WriteString(pr.Name)
 	builder.WriteString(", ")
-	if v := pr.Description; v != nil {
-		builder.WriteString("description=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString("description=")
+	builder.WriteString(pr.Description)
 	builder.WriteString(", ")
-	if v := pr.FoundingDate; v != nil {
-		builder.WriteString("founding_date=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString("founding_date=")
+	builder.WriteString(pr.FoundingDate)
 	builder.WriteString(", ")
-	if v := pr.DissolutionDate; v != nil {
-		builder.WriteString("dissolution_date=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString("dissolution_date=")
+	builder.WriteString(pr.DissolutionDate)
 	builder.WriteString(", ")
-	if v := pr.Acronym; v != nil {
-		builder.WriteString("acronym=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString("acronym=")
+	builder.WriteString(pr.Acronym)
 	builder.WriteString(", ")
-	if v := pr.Grant; v != nil {
-		builder.WriteString("grant=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString("grant_id=")
+	builder.WriteString(pr.GrantID)
 	builder.WriteString(", ")
-	if v := pr.FundingProgramme; v != nil {
-		builder.WriteString("funding_programme=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString("funding_programme=")
+	builder.WriteString(pr.FundingProgramme)
 	builder.WriteString(", ")
 	builder.WriteString("created=")
 	builder.WriteString(pr.Created.Format(time.ANSIC))

@@ -65,7 +65,7 @@ func decodeAddProjectResponse(resp *http.Response) (res *AddProjectOK, _ error) 
 	return res, errors.Wrap(defRes, "error")
 }
 
-func decodeGetProjectResponse(resp *http.Response) (res *Project, _ error) {
+func decodeGetProjectResponse(resp *http.Response) (res *GetProject, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -81,7 +81,7 @@ func decodeGetProjectResponse(resp *http.Response) (res *Project, _ error) {
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response Project
+			var response GetProject
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err

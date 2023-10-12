@@ -20,7 +20,7 @@ func encodeAddProjectResponse(response *AddProjectOK, w http.ResponseWriter, spa
 	return nil
 }
 
-func encodeGetProjectResponse(response *Project, w http.ResponseWriter, span trace.Span) error {
+func encodeGetProjectResponse(response *GetProject, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))

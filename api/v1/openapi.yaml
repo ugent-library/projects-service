@@ -89,7 +89,7 @@ components:
 
   schemas:
     AddProjectRequest:
-      $ref: "#/components/schemas/Project"
+      $ref: "#/components/schemas/AddProject"
 
     GetProjectRequest:
       type: object
@@ -100,7 +100,7 @@ components:
       required: [id]
 
     GetProjectResponse:
-      $ref: "#/components/schemas/Project"
+      $ref: "#/components/schemas/GetProject"
 
     SuggestProjectsRequest:
       type: object
@@ -118,7 +118,7 @@ components:
         data:
           type: array
           items:
-            $ref: "#/components/schemas/Project"
+            $ref: "#/components/schemas/GetProject"
 
       required: [data]
 
@@ -149,7 +149,6 @@ components:
             required: [type, propertyID, value]
         isFundedBy:
           type: object
-          nullable: true
           properties:
             type:
               type: string
@@ -164,28 +163,27 @@ components:
                 name:
                   type: string
               required: [type, name]
-          required: [type, identifier, isAwardedBy]
+          required: [type, identifier]
         hasAcronym:
-          oneOf:
-          - type: string
-          - type: 'null'
+          type: string
         name:
-          oneOf:
-          - type: string
-          - type: 'null'
+          type: string
         description:
-          oneOf:
-          - type: string
-          - type: 'null'
+          type: string
         foundingDate:
-          oneOf:
-          - type: string
-          - type: 'null'
+          type: string
         dissolutionDate:
-          oneOf:
-          - type: string
-          - type: 'null'
-      required: [type, identifier, name, hasAcronym, isFundedBy, description, foundingDate, dissolutionDate]
+          type: string
+
+    AddProject:
+      allOf:
+        - $ref: "#/components/schemas/Project"
+        - required: [type, identifier]
+
+    GetProject:
+      allOf:
+        - $ref: "#/components/schemas/Project"
+        - required: [id, type, identifier, created, modified]
 
     Error:
       type: object

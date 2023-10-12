@@ -54,34 +54,30 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 		Only(ctx)
 
 	if ent.IsNotFound(err) {
-		sids := schema.Identifier{
-			Value: p.Identifier,
-		}
-
 		err = r.client.Project.Create().
-			SetIdentifier(sids).
-			SetNillableName(p.Name).
-			SetNillableDescription(p.Description).
-			SetNillableFoundingDate(p.FoundingDate).
-			SetNillableDissolutionDate(p.DissolutionDate).
-			SetNillableGrant(p.Grant).
-			SetNillableFundingProgramme(p.FundingProgramme).
-			SetNillableAcronym(p.Acronym).
+			SetIdentifier(schema.Identifier{
+				Value: p.Identifier,
+			}).
+			SetName(p.Name).
+			SetDescription(p.Description).
+			SetFoundingDate(p.FoundingDate).
+			SetDissolutionDate(p.DissolutionDate).
+			SetGrantID(p.Grant).
+			SetFundingProgramme(p.FundingProgramme).
+			SetAcronym(p.Acronym).
 			Exec(ctx)
 	} else {
-		sids := schema.Identifier{
-			Value: p.Identifier,
-		}
-
 		err = dp.Update().
-			SetIdentifier(sids).
-			SetNillableName(p.Name).
-			SetNillableDescription(p.Description).
-			SetNillableFoundingDate(p.FoundingDate).
-			SetNillableDissolutionDate(p.DissolutionDate).
-			SetNillableGrant(p.Grant).
-			SetNillableFundingProgramme(p.FundingProgramme).
-			SetNillableAcronym(p.Acronym).
+			SetIdentifier(schema.Identifier{
+				Value: p.Identifier,
+			}).
+			SetName(p.Name).
+			SetDescription(p.Description).
+			SetFoundingDate(p.FoundingDate).
+			SetDissolutionDate(p.DissolutionDate).
+			SetGrantID(p.Grant).
+			SetFundingProgramme(p.FundingProgramme).
+			SetAcronym(p.Acronym).
 			Exec(ctx)
 	}
 
@@ -131,17 +127,16 @@ func (r *Repo) SuggestProjects(ctx context.Context, query string) ([]*models.Pro
 
 func rowToProject(row *ent.Project) *models.Project {
 	p := &models.Project{
-		ID:               row.ID,
-		Identifier:       row.Identifier.Value,
-		Name:             row.Name,
-		Description:      row.Description,
-		FoundingDate:     row.FoundingDate,
-		DissolutionDate:  row.DissolutionDate,
-		FundingProgramme: row.FundingProgramme,
-		Grant:            row.Grant,
-		Acronym:          row.Acronym,
-		DateCreated:      row.Created,
-		DateModified:     row.Modified,
+		ID:              row.ID,
+		Identifier:      row.Identifier.Value,
+		DateCreated:     row.Created,
+		DateModified:    row.Modified,
+		Name:            row.Name,
+		Description:     row.Description,
+		FoundingDate:    row.FoundingDate,
+		DissolutionDate: row.DissolutionDate,
+		Grant:           row.GrantID,
+		Acronym:         row.Acronym,
 	}
 
 	return p
