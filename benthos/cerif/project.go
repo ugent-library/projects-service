@@ -12,19 +12,6 @@ import (
 
 var ErrNonCompliantXml = errors.New("non compliant cerif xml")
 
-// type MongoObject struct {
-// 	DateCreated string `json:"date_created"`
-// 	DateUpdated string `json:"date_updated"`
-// 	GismoID     string `json:"_id"`
-// }
-
-// type GISMOAction struct {
-// 	CreatedDate string        `json:"date_created,omitempty"`
-// 	SentDate    time.Time     `json:"sent_date,omitempty"`
-// 	Action      string        `json:"action,omitempty"`
-// 	Project     *CERIFProject `json:"project,omitempty"`
-// }
-
 type CERIFProject struct {
 	ID             string                           `json:"id,omitempty"`
 	StartDate      string                           `json:"start_date,omitempty"`
@@ -35,6 +22,8 @@ type CERIFProject struct {
 	Keyword        []CERIFTranslatedString          `json:"keyword,omitempty"`
 	Classification []CERIFClassification            `json:"classfication,omitempty"`
 	FederatedIDS   []CERIFFederatedIDClassification `json:"federated_ids,omitempty"`
+	SentDateTime   time.Time                        `json:"sent_date_time,omitempty"`
+	Action         string                           `json:"action,omitempty"`
 }
 
 type CERIFTranslatedString struct {
@@ -71,41 +60,6 @@ type CERIFFederatedID struct {
 	StartDate time.Time               `json:"start_date,omitempty"`
 	EndDate   time.Time               `json:"end_date,omitempty"`
 }
-
-// func ParseGismoAction(buf []byte) (*GISMOAction, error) {
-// 	gobj := &MongoObject{}
-// 	json.Unmarshal(buf, gobj)
-
-// 	doc, err := xmlquery.Parse(bytes.NewReader(buf))
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	node := xmlquery.FindOne(doc, "//ns0:cfProj")
-// 	if node == nil {
-// 		return nil, fmt.Errorf("not a valid cerif document")
-// 	}
-
-// 	projects := xmlquery.FindOne(doc, "//ns0:projects")
-// 	if projects == nil {
-// 		return nil, fmt.Errorf("not a valid cerif document")
-// 	}
-
-// 	p := CerifParseProject(node, doc)
-
-// 	a := &GISMOAction{
-// 		Project: p,
-// 	}
-
-// 	if val, err := parseDateTimeField(projects.SelectAttr("sentDateTime")); err == nil {
-// 		a.SentDate = val
-// 	}
-
-// 	a.Action = node.SelectAttr("action")
-// 	a.CreatedDate = gobj.DateCreated
-
-// 	return a, nil
-// }
 
 func CerifParseProject(buf []byte) (*CERIFProject, error) {
 	doc, err := xmlquery.Parse(bytes.NewReader(buf))
@@ -147,6 +101,16 @@ func CerifParseProject(buf []byte) (*CERIFProject, error) {
 		case "cfFedId":
 			p.FederatedIDS = parseFederatedIDClassification(p.FederatedIDS, n, doc)
 		}
+	}
+
+	if val, err := parseDateTimeField(projects.SelectAttr("sentDateTime")); err == nil {
+		p.SentDateTime = val
+	}
+
+	if action := node.SelectAttr("action"); action != "" {
+		p.Action = action
+	} else {
+		p.Action = "UPDATE"
 	}
 
 	return p, nil
