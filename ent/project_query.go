@@ -261,12 +261,12 @@ func (pq *ProjectQuery) Clone() *ProjectQuery {
 // Example:
 //
 //	var v []struct {
-//		Identifier schema.Identifier `json:"identifier,omitempty"`
+//		GismoID string `json:"gismo_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Project.Query().
-//		GroupBy(project.FieldIdentifier).
+//		GroupBy(project.FieldGismoID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (pq *ProjectQuery) GroupBy(field string, fields ...string) *ProjectGroupBy {
@@ -284,11 +284,11 @@ func (pq *ProjectQuery) GroupBy(field string, fields ...string) *ProjectGroupBy 
 // Example:
 //
 //	var v []struct {
-//		Identifier schema.Identifier `json:"identifier,omitempty"`
+//		GismoID string `json:"gismo_id,omitempty"`
 //	}
 //
 //	client.Project.Query().
-//		Select(project.FieldIdentifier).
+//		Select(project.FieldGismoID).
 //		Scan(ctx, &v)
 func (pq *ProjectQuery) Select(fields ...string) *ProjectSelect {
 	pq.ctx.Fields = append(pq.ctx.Fields, fields...)

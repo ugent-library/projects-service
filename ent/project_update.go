@@ -29,6 +29,12 @@ func (pu *ProjectUpdate) Where(ps ...predicate.Project) *ProjectUpdate {
 	return pu
 }
 
+// SetGismoID sets the "gismo_id" field.
+func (pu *ProjectUpdate) SetGismoID(s string) *ProjectUpdate {
+	pu.mutation.SetGismoID(s)
+	return pu
+}
+
 // SetIdentifier sets the "identifier" field.
 func (pu *ProjectUpdate) SetIdentifier(s schema.Identifier) *ProjectUpdate {
 	pu.mutation.SetIdentifier(s)
@@ -259,6 +265,9 @@ func (pu *ProjectUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := pu.mutation.GismoID(); ok {
+		_spec.SetField(project.FieldGismoID, field.TypeString, value)
+	}
 	if value, ok := pu.mutation.Identifier(); ok {
 		_spec.SetField(project.FieldIdentifier, field.TypeJSON, value)
 	}
@@ -331,6 +340,12 @@ type ProjectUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *ProjectMutation
+}
+
+// SetGismoID sets the "gismo_id" field.
+func (puo *ProjectUpdateOne) SetGismoID(s string) *ProjectUpdateOne {
+	puo.mutation.SetGismoID(s)
+	return puo
 }
 
 // SetIdentifier sets the "identifier" field.
@@ -592,6 +607,9 @@ func (puo *ProjectUpdateOne) sqlSave(ctx context.Context) (_node *Project, err e
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := puo.mutation.GismoID(); ok {
+		_spec.SetField(project.FieldGismoID, field.TypeString, value)
 	}
 	if value, ok := puo.mutation.Identifier(); ok {
 		_spec.SetField(project.FieldIdentifier, field.TypeJSON, value)

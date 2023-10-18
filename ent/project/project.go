@@ -14,6 +14,8 @@ const (
 	Label = "project"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldGismoID holds the string denoting the gismo_id field in the database.
+	FieldGismoID = "gismo_id"
 	// FieldIdentifier holds the string denoting the identifier field in the database.
 	FieldIdentifier = "identifier"
 	// FieldName holds the string denoting the name field in the database.
@@ -43,6 +45,7 @@ const (
 // Columns holds all SQL columns for project fields.
 var Columns = []string{
 	FieldID,
+	FieldGismoID,
 	FieldIdentifier,
 	FieldName,
 	FieldDescription,
@@ -85,6 +88,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByGismoID orders the results by the gismo_id field.
+func ByGismoID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldGismoID, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.

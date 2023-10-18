@@ -24,6 +24,12 @@ type ProjectCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetGismoID sets the "gismo_id" field.
+func (pc *ProjectCreate) SetGismoID(s string) *ProjectCreate {
+	pc.mutation.SetGismoID(s)
+	return pc
+}
+
 // SetIdentifier sets the "identifier" field.
 func (pc *ProjectCreate) SetIdentifier(s schema.Identifier) *ProjectCreate {
 	pc.mutation.SetIdentifier(s)
@@ -247,6 +253,9 @@ func (pc *ProjectCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (pc *ProjectCreate) check() error {
+	if _, ok := pc.mutation.GismoID(); !ok {
+		return &ValidationError{Name: "gismo_id", err: errors.New(`ent: missing required field "Project.gismo_id"`)}
+	}
 	if _, ok := pc.mutation.Identifier(); !ok {
 		return &ValidationError{Name: "identifier", err: errors.New(`ent: missing required field "Project.identifier"`)}
 	}
@@ -291,6 +300,10 @@ func (pc *ProjectCreate) createSpec() (*Project, *sqlgraph.CreateSpec) {
 	if id, ok := pc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := pc.mutation.GismoID(); ok {
+		_spec.SetField(project.FieldGismoID, field.TypeString, value)
+		_node.GismoID = value
 	}
 	if value, ok := pc.mutation.Identifier(); ok {
 		_spec.SetField(project.FieldIdentifier, field.TypeJSON, value)
@@ -343,7 +356,7 @@ func (pc *ProjectCreate) createSpec() (*Project, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.Project.Create().
-//		SetIdentifier(v).
+//		SetGismoID(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -352,7 +365,7 @@ func (pc *ProjectCreate) createSpec() (*Project, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.ProjectUpsert) {
-//			SetIdentifier(v+v).
+//			SetGismoID(v+v).
 //		}).
 //		Exec(ctx)
 func (pc *ProjectCreate) OnConflict(opts ...sql.ConflictOption) *ProjectUpsertOne {
@@ -387,6 +400,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetGismoID sets the "gismo_id" field.
+func (u *ProjectUpsert) SetGismoID(v string) *ProjectUpsert {
+	u.Set(project.FieldGismoID, v)
+	return u
+}
+
+// UpdateGismoID sets the "gismo_id" field to the value that was provided on create.
+func (u *ProjectUpsert) UpdateGismoID() *ProjectUpsert {
+	u.SetExcluded(project.FieldGismoID)
+	return u
+}
 
 // SetIdentifier sets the "identifier" field.
 func (u *ProjectUpsert) SetIdentifier(v schema.Identifier) *ProjectUpsert {
@@ -605,6 +630,20 @@ func (u *ProjectUpsertOne) Update(set func(*ProjectUpsert)) *ProjectUpsertOne {
 		set(&ProjectUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetGismoID sets the "gismo_id" field.
+func (u *ProjectUpsertOne) SetGismoID(v string) *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.SetGismoID(v)
+	})
+}
+
+// UpdateGismoID sets the "gismo_id" field to the value that was provided on create.
+func (u *ProjectUpsertOne) UpdateGismoID() *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.UpdateGismoID()
+	})
 }
 
 // SetIdentifier sets the "identifier" field.
@@ -935,7 +974,7 @@ func (pcb *ProjectCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.ProjectUpsert) {
-//			SetIdentifier(v+v).
+//			SetGismoID(v+v).
 //		}).
 //		Exec(ctx)
 func (pcb *ProjectCreateBulk) OnConflict(opts ...sql.ConflictOption) *ProjectUpsertBulk {
@@ -1015,6 +1054,20 @@ func (u *ProjectUpsertBulk) Update(set func(*ProjectUpsert)) *ProjectUpsertBulk 
 		set(&ProjectUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetGismoID sets the "gismo_id" field.
+func (u *ProjectUpsertBulk) SetGismoID(v string) *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.SetGismoID(v)
+	})
+}
+
+// UpdateGismoID sets the "gismo_id" field to the value that was provided on create.
+func (u *ProjectUpsertBulk) UpdateGismoID() *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.UpdateGismoID()
+	})
 }
 
 // SetIdentifier sets the "identifier" field.

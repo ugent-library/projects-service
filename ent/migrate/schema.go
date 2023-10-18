@@ -12,6 +12,7 @@ var (
 	// ProjectsColumns holds the columns for the "projects" table.
 	ProjectsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "gismo_id", Type: field.TypeString, Unique: true},
 		{Name: "identifier", Type: field.TypeJSON},
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "description", Type: field.TypeString, Nullable: true, Size: 2147483647},
@@ -33,7 +34,7 @@ var (
 			{
 				Name:    "project_ts",
 				Unique:  false,
-				Columns: []*schema.Column{ProjectsColumns[11]},
+				Columns: []*schema.Column{ProjectsColumns[12]},
 				Annotation: &entsql.IndexAnnotation{
 					Type: "GIN",
 				},

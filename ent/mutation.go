@@ -34,6 +34,7 @@ type ProjectMutation struct {
 	op                Op
 	typ               string
 	id                *string
+	gismo_id          *string
 	identifier        *schema.Identifier
 	name              *string
 	description       *string
@@ -153,6 +154,42 @@ func (m *ProjectMutation) IDs(ctx context.Context) ([]string, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetGismoID sets the "gismo_id" field.
+func (m *ProjectMutation) SetGismoID(s string) {
+	m.gismo_id = &s
+}
+
+// GismoID returns the value of the "gismo_id" field in the mutation.
+func (m *ProjectMutation) GismoID() (r string, exists bool) {
+	v := m.gismo_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldGismoID returns the old "gismo_id" field's value of the Project entity.
+// If the Project object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ProjectMutation) OldGismoID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldGismoID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldGismoID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGismoID: %w", err)
+	}
+	return oldValue.GismoID, nil
+}
+
+// ResetGismoID resets all changes to the "gismo_id" field.
+func (m *ProjectMutation) ResetGismoID() {
+	m.gismo_id = nil
 }
 
 // SetIdentifier sets the "identifier" field.
@@ -689,7 +726,10 @@ func (m *ProjectMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ProjectMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
+	if m.gismo_id != nil {
+		fields = append(fields, project.FieldGismoID)
+	}
 	if m.identifier != nil {
 		fields = append(fields, project.FieldIdentifier)
 	}
@@ -731,6 +771,8 @@ func (m *ProjectMutation) Fields() []string {
 // schema.
 func (m *ProjectMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case project.FieldGismoID:
+		return m.GismoID()
 	case project.FieldIdentifier:
 		return m.Identifier()
 	case project.FieldName:
@@ -762,6 +804,8 @@ func (m *ProjectMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *ProjectMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case project.FieldGismoID:
+		return m.OldGismoID(ctx)
 	case project.FieldIdentifier:
 		return m.OldIdentifier(ctx)
 	case project.FieldName:
@@ -793,6 +837,13 @@ func (m *ProjectMutation) OldField(ctx context.Context, name string) (ent.Value,
 // type.
 func (m *ProjectMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case project.FieldGismoID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGismoID(v)
+		return nil
 	case project.FieldIdentifier:
 		v, ok := value.(schema.Identifier)
 		if !ok {
@@ -970,6 +1021,9 @@ func (m *ProjectMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *ProjectMutation) ResetField(name string) error {
 	switch name {
+	case project.FieldGismoID:
+		m.ResetGismoID()
+		return nil
 	case project.FieldIdentifier:
 		m.ResetIdentifier()
 		return nil

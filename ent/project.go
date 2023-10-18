@@ -19,6 +19,8 @@ type Project struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID string `json:"id,omitempty"`
+	// GismoID holds the value of the "gismo_id" field.
+	GismoID string `json:"gismo_id,omitempty"`
 	// Identifier holds the value of the "identifier" field.
 	Identifier schema.Identifier `json:"identifier,omitempty"`
 	// Name holds the value of the "name" field.
@@ -51,7 +53,7 @@ func (*Project) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case project.FieldIdentifier:
 			values[i] = new([]byte)
-		case project.FieldID, project.FieldName, project.FieldDescription, project.FieldFoundingDate, project.FieldDissolutionDate, project.FieldAcronym, project.FieldGrantID, project.FieldFundingProgramme, project.FieldTs:
+		case project.FieldID, project.FieldGismoID, project.FieldName, project.FieldDescription, project.FieldFoundingDate, project.FieldDissolutionDate, project.FieldAcronym, project.FieldGrantID, project.FieldFundingProgramme, project.FieldTs:
 			values[i] = new(sql.NullString)
 		case project.FieldCreated, project.FieldModified:
 			values[i] = new(sql.NullTime)
@@ -75,6 +77,12 @@ func (pr *Project) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
 				pr.ID = value.String
+			}
+		case project.FieldGismoID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field gismo_id", values[i])
+			} else if value.Valid {
+				pr.GismoID = value.String
 			}
 		case project.FieldIdentifier:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -180,6 +188,9 @@ func (pr *Project) String() string {
 	var builder strings.Builder
 	builder.WriteString("Project(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", pr.ID))
+	builder.WriteString("gismo_id=")
+	builder.WriteString(pr.GismoID)
+	builder.WriteString(", ")
 	builder.WriteString("identifier=")
 	builder.WriteString(fmt.Sprintf("%v", pr.Identifier))
 	builder.WriteString(", ")

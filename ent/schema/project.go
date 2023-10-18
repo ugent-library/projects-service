@@ -40,6 +40,8 @@ func (Project) Fields() []ent.Field {
 			DefaultFunc(func() string {
 				return ulid.Make().String()
 			}),
+		field.String("gismo_id").
+			Unique(),
 		field.JSON("identifier", Identifier{}).
 			Default(Identifier{}),
 		field.String("name").

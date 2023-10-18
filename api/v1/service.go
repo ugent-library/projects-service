@@ -20,22 +20,13 @@ func NewService(repo *repositories.Repo) *Service {
 }
 
 func (s *Service) AddProject(ctx context.Context, req *AddProject) (AddProjectRes, error) {
-	var p *models.Project
+	p := &models.Project{}
 
 	if v, ok := req.GetID().Get(); ok {
 		tmp, err := s.repo.GetProject(ctx, v)
-		if errors.Is(err, repositories.ErrNotFound) {
-			return &ErrorStatusCode{
-				StatusCode: 404,
-				Response: Error{
-					Code:    404,
-					Message: fmt.Sprintf("Project not found: %s", v),
-				},
-			}, nil
+		if !errors.Is(err, repositories.ErrNotFound) {
+			p = tmp
 		}
-		p = tmp
-	} else {
-		p = &models.Project{}
 	}
 
 	if v, ok := req.GetID().Get(); ok {

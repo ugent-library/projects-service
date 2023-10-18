@@ -64,6 +64,11 @@ func IDContainsFold(id string) predicate.Project {
 	return predicate.Project(sql.FieldContainsFold(FieldID, id))
 }
 
+// GismoID applies equality check predicate on the "gismo_id" field. It's identical to GismoIDEQ.
+func GismoID(v string) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldGismoID, v))
+}
+
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.Project {
 	return predicate.Project(sql.FieldEQ(FieldName, v))
@@ -112,6 +117,71 @@ func Modified(v time.Time) predicate.Project {
 // Ts applies equality check predicate on the "ts" field. It's identical to TsEQ.
 func Ts(v string) predicate.Project {
 	return predicate.Project(sql.FieldEQ(FieldTs, v))
+}
+
+// GismoIDEQ applies the EQ predicate on the "gismo_id" field.
+func GismoIDEQ(v string) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldGismoID, v))
+}
+
+// GismoIDNEQ applies the NEQ predicate on the "gismo_id" field.
+func GismoIDNEQ(v string) predicate.Project {
+	return predicate.Project(sql.FieldNEQ(FieldGismoID, v))
+}
+
+// GismoIDIn applies the In predicate on the "gismo_id" field.
+func GismoIDIn(vs ...string) predicate.Project {
+	return predicate.Project(sql.FieldIn(FieldGismoID, vs...))
+}
+
+// GismoIDNotIn applies the NotIn predicate on the "gismo_id" field.
+func GismoIDNotIn(vs ...string) predicate.Project {
+	return predicate.Project(sql.FieldNotIn(FieldGismoID, vs...))
+}
+
+// GismoIDGT applies the GT predicate on the "gismo_id" field.
+func GismoIDGT(v string) predicate.Project {
+	return predicate.Project(sql.FieldGT(FieldGismoID, v))
+}
+
+// GismoIDGTE applies the GTE predicate on the "gismo_id" field.
+func GismoIDGTE(v string) predicate.Project {
+	return predicate.Project(sql.FieldGTE(FieldGismoID, v))
+}
+
+// GismoIDLT applies the LT predicate on the "gismo_id" field.
+func GismoIDLT(v string) predicate.Project {
+	return predicate.Project(sql.FieldLT(FieldGismoID, v))
+}
+
+// GismoIDLTE applies the LTE predicate on the "gismo_id" field.
+func GismoIDLTE(v string) predicate.Project {
+	return predicate.Project(sql.FieldLTE(FieldGismoID, v))
+}
+
+// GismoIDContains applies the Contains predicate on the "gismo_id" field.
+func GismoIDContains(v string) predicate.Project {
+	return predicate.Project(sql.FieldContains(FieldGismoID, v))
+}
+
+// GismoIDHasPrefix applies the HasPrefix predicate on the "gismo_id" field.
+func GismoIDHasPrefix(v string) predicate.Project {
+	return predicate.Project(sql.FieldHasPrefix(FieldGismoID, v))
+}
+
+// GismoIDHasSuffix applies the HasSuffix predicate on the "gismo_id" field.
+func GismoIDHasSuffix(v string) predicate.Project {
+	return predicate.Project(sql.FieldHasSuffix(FieldGismoID, v))
+}
+
+// GismoIDEqualFold applies the EqualFold predicate on the "gismo_id" field.
+func GismoIDEqualFold(v string) predicate.Project {
+	return predicate.Project(sql.FieldEqualFold(FieldGismoID, v))
+}
+
+// GismoIDContainsFold applies the ContainsFold predicate on the "gismo_id" field.
+func GismoIDContainsFold(v string) predicate.Project {
+	return predicate.Project(sql.FieldContainsFold(FieldGismoID, v))
 }
 
 // NameEQ applies the EQ predicate on the "name" field.

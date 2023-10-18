@@ -47,14 +47,13 @@ func New(c Config) (*Repo, error) {
 }
 
 func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
-	var err error
-
 	dp, err := r.client.Project.Query().
-		Where(project.IDEQ(p.ID)).
+		Where(project.GismoIDEQ(p.ID)).
 		Only(ctx)
 
 	if ent.IsNotFound(err) {
 		err = r.client.Project.Create().
+			SetGismoID(p.ID).
 			SetIdentifier(schema.Identifier{
 				Value: p.Identifier,
 			}).
