@@ -64,6 +64,8 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 			SetGrantID(p.Grant).
 			SetFundingProgramme(p.FundingProgramme).
 			SetAcronym(p.Acronym).
+			SetCreated(p.DateCreated).
+			SetModified(p.DateModified).
 			Exec(ctx)
 	} else {
 		err = dp.Update().
@@ -77,6 +79,7 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 			SetGrantID(p.Grant).
 			SetFundingProgramme(p.FundingProgramme).
 			SetAcronym(p.Acronym).
+			SetModified(p.DateModified).
 			Exec(ctx)
 	}
 
