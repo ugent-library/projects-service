@@ -31,8 +31,15 @@ type cerifProcessor struct {
 func (c *cerifProcessor) Process(ctx context.Context, m *service.Message) (service.MessageBatch, error) {
 	msg, _ := m.AsBytes()
 
-	p, _ := cerif.CerifParseProject(msg)
-	k, _ := json.Marshal(p)
+	p, err := cerif.ParseProject(msg)
+	if err != nil {
+		return nil, err
+	}
+
+	k, err := json.Marshal(p)
+	if err != nil {
+		return nil, err
+	}
 
 	m.SetBytes(k)
 
