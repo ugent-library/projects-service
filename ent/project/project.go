@@ -72,6 +72,8 @@ func ValidColumn(column string) bool {
 var (
 	// DefaultIdentifier holds the default value on creation for the "identifier" field.
 	DefaultIdentifier schema.Identifier
+	// DefaultName holds the default value on creation for the "name" field.
+	DefaultName schema.TranslatedString
 	// DefaultCreated holds the default value on creation for the "created" field.
 	DefaultCreated func() time.Time
 	// DefaultModified holds the default value on creation for the "modified" field.
@@ -93,11 +95,6 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 // ByGismoID orders the results by the gismo_id field.
 func ByGismoID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldGismoID, opts...).ToFunc()
-}
-
-// ByName orders the results by the name field.
-func ByName(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
 // ByDescription orders the results by the description field.

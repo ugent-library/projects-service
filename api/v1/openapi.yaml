@@ -201,7 +201,15 @@ components:
         hasAcronym:
           type: string
         name:
-          type: string
+          type: array
+          items:
+            type: object
+            properties:
+              language:
+                type: string
+              value:
+                type: string
+            required: [language, value]
         description:
           type: string
         foundingDate:

@@ -45,15 +45,15 @@ func (pc *ProjectCreate) SetNillableIdentifier(s *schema.Identifier) *ProjectCre
 }
 
 // SetName sets the "name" field.
-func (pc *ProjectCreate) SetName(s string) *ProjectCreate {
-	pc.mutation.SetName(s)
+func (pc *ProjectCreate) SetName(ss schema.TranslatedString) *ProjectCreate {
+	pc.mutation.SetName(ss)
 	return pc
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (pc *ProjectCreate) SetNillableName(s *string) *ProjectCreate {
-	if s != nil {
-		pc.SetName(*s)
+func (pc *ProjectCreate) SetNillableName(ss *schema.TranslatedString) *ProjectCreate {
+	if ss != nil {
+		pc.SetName(*ss)
 	}
 	return pc
 }
@@ -237,6 +237,10 @@ func (pc *ProjectCreate) defaults() {
 		v := project.DefaultIdentifier
 		pc.mutation.SetIdentifier(v)
 	}
+	if _, ok := pc.mutation.Name(); !ok {
+		v := project.DefaultName
+		pc.mutation.SetName(v)
+	}
 	if _, ok := pc.mutation.Created(); !ok {
 		v := project.DefaultCreated()
 		pc.mutation.SetCreated(v)
@@ -258,6 +262,9 @@ func (pc *ProjectCreate) check() error {
 	}
 	if _, ok := pc.mutation.Identifier(); !ok {
 		return &ValidationError{Name: "identifier", err: errors.New(`ent: missing required field "Project.identifier"`)}
+	}
+	if _, ok := pc.mutation.Name(); !ok {
+		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Project.name"`)}
 	}
 	if _, ok := pc.mutation.Created(); !ok {
 		return &ValidationError{Name: "created", err: errors.New(`ent: missing required field "Project.created"`)}
@@ -310,7 +317,7 @@ func (pc *ProjectCreate) createSpec() (*Project, *sqlgraph.CreateSpec) {
 		_node.Identifier = value
 	}
 	if value, ok := pc.mutation.Name(); ok {
-		_spec.SetField(project.FieldName, field.TypeString, value)
+		_spec.SetField(project.FieldName, field.TypeJSON, value)
 		_node.Name = value
 	}
 	if value, ok := pc.mutation.Description(); ok {
@@ -426,7 +433,7 @@ func (u *ProjectUpsert) UpdateIdentifier() *ProjectUpsert {
 }
 
 // SetName sets the "name" field.
-func (u *ProjectUpsert) SetName(v string) *ProjectUpsert {
+func (u *ProjectUpsert) SetName(v schema.TranslatedString) *ProjectUpsert {
 	u.Set(project.FieldName, v)
 	return u
 }
@@ -434,12 +441,6 @@ func (u *ProjectUpsert) SetName(v string) *ProjectUpsert {
 // UpdateName sets the "name" field to the value that was provided on create.
 func (u *ProjectUpsert) UpdateName() *ProjectUpsert {
 	u.SetExcluded(project.FieldName)
-	return u
-}
-
-// ClearName clears the value of the "name" field.
-func (u *ProjectUpsert) ClearName() *ProjectUpsert {
-	u.SetNull(project.FieldName)
 	return u
 }
 
@@ -661,7 +662,7 @@ func (u *ProjectUpsertOne) UpdateIdentifier() *ProjectUpsertOne {
 }
 
 // SetName sets the "name" field.
-func (u *ProjectUpsertOne) SetName(v string) *ProjectUpsertOne {
+func (u *ProjectUpsertOne) SetName(v schema.TranslatedString) *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
 		s.SetName(v)
 	})
@@ -671,13 +672,6 @@ func (u *ProjectUpsertOne) SetName(v string) *ProjectUpsertOne {
 func (u *ProjectUpsertOne) UpdateName() *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
 		s.UpdateName()
-	})
-}
-
-// ClearName clears the value of the "name" field.
-func (u *ProjectUpsertOne) ClearName() *ProjectUpsertOne {
-	return u.Update(func(s *ProjectUpsert) {
-		s.ClearName()
 	})
 }
 
@@ -1085,7 +1079,7 @@ func (u *ProjectUpsertBulk) UpdateIdentifier() *ProjectUpsertBulk {
 }
 
 // SetName sets the "name" field.
-func (u *ProjectUpsertBulk) SetName(v string) *ProjectUpsertBulk {
+func (u *ProjectUpsertBulk) SetName(v schema.TranslatedString) *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
 		s.SetName(v)
 	})
@@ -1095,13 +1089,6 @@ func (u *ProjectUpsertBulk) SetName(v string) *ProjectUpsertBulk {
 func (u *ProjectUpsertBulk) UpdateName() *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
 		s.UpdateName()
-	})
-}
-
-// ClearName clears the value of the "name" field.
-func (u *ProjectUpsertBulk) ClearName() *ProjectUpsertBulk {
-	return u.Update(func(s *ProjectUpsert) {
-		s.ClearName()
 	})
 }
 

@@ -21,7 +21,7 @@ type AddProject struct {
 	Identifier      []AddProjectIdentifierItem `json:"identifier"`
 	IsFundedBy      OptAddProjectIsFundedBy    `json:"isFundedBy"`
 	HasAcronym      OptString                  `json:"hasAcronym"`
-	Name            OptString                  `json:"name"`
+	Name            []AddProjectNameItem       `json:"name"`
 	Description     OptString                  `json:"description"`
 	FoundingDate    OptString                  `json:"foundingDate"`
 	DissolutionDate OptString                  `json:"dissolutionDate"`
@@ -63,7 +63,7 @@ func (s *AddProject) GetHasAcronym() OptString {
 }
 
 // GetName returns the value of Name.
-func (s *AddProject) GetName() OptString {
+func (s *AddProject) GetName() []AddProjectNameItem {
 	return s.Name
 }
 
@@ -118,7 +118,7 @@ func (s *AddProject) SetHasAcronym(val OptString) {
 }
 
 // SetName sets the value of Name.
-func (s *AddProject) SetName(val OptString) {
+func (s *AddProject) SetName(val []AddProjectNameItem) {
 	s.Name = val
 }
 
@@ -234,6 +234,31 @@ func (s *AddProjectIsFundedByIsAwardedBy) SetName(val string) {
 	s.Name = val
 }
 
+type AddProjectNameItem struct {
+	Language string `json:"language"`
+	Value    string `json:"value"`
+}
+
+// GetLanguage returns the value of Language.
+func (s *AddProjectNameItem) GetLanguage() string {
+	return s.Language
+}
+
+// GetValue returns the value of Value.
+func (s *AddProjectNameItem) GetValue() string {
+	return s.Value
+}
+
+// SetLanguage sets the value of Language.
+func (s *AddProjectNameItem) SetLanguage(val string) {
+	s.Language = val
+}
+
+// SetValue sets the value of Value.
+func (s *AddProjectNameItem) SetValue(val string) {
+	s.Value = val
+}
+
 // AddProjectOK is response for AddProject operation.
 type AddProjectOK struct{}
 
@@ -339,7 +364,7 @@ type GetProject struct {
 	Identifier      []GetProjectIdentifierItem `json:"identifier"`
 	IsFundedBy      OptGetProjectIsFundedBy    `json:"isFundedBy"`
 	HasAcronym      OptString                  `json:"hasAcronym"`
-	Name            OptString                  `json:"name"`
+	Name            []GetProjectNameItem       `json:"name"`
 	Description     OptString                  `json:"description"`
 	FoundingDate    OptString                  `json:"foundingDate"`
 	DissolutionDate OptString                  `json:"dissolutionDate"`
@@ -381,7 +406,7 @@ func (s *GetProject) GetHasAcronym() OptString {
 }
 
 // GetName returns the value of Name.
-func (s *GetProject) GetName() OptString {
+func (s *GetProject) GetName() []GetProjectNameItem {
 	return s.Name
 }
 
@@ -436,7 +461,7 @@ func (s *GetProject) SetHasAcronym(val OptString) {
 }
 
 // SetName sets the value of Name.
-func (s *GetProject) SetName(val OptString) {
+func (s *GetProject) SetName(val []GetProjectNameItem) {
 	s.Name = val
 }
 
@@ -552,6 +577,31 @@ func (s *GetProjectIsFundedByIsAwardedBy) SetType(val string) {
 // SetName sets the value of Name.
 func (s *GetProjectIsFundedByIsAwardedBy) SetName(val string) {
 	s.Name = val
+}
+
+type GetProjectNameItem struct {
+	Language string `json:"language"`
+	Value    string `json:"value"`
+}
+
+// GetLanguage returns the value of Language.
+func (s *GetProjectNameItem) GetLanguage() string {
+	return s.Language
+}
+
+// GetValue returns the value of Value.
+func (s *GetProjectNameItem) GetValue() string {
+	return s.Value
+}
+
+// SetLanguage sets the value of Language.
+func (s *GetProjectNameItem) SetLanguage(val string) {
+	s.Language = val
+}
+
+// SetValue sets the value of Value.
+func (s *GetProjectNameItem) SetValue(val string) {
+	s.Value = val
 }
 
 // Ref: #/components/schemas/GetProjectRequest

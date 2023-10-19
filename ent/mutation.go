@@ -36,7 +36,7 @@ type ProjectMutation struct {
 	id                *string
 	gismo_id          *string
 	identifier        *schema.Identifier
-	name              *string
+	name              *schema.TranslatedString
 	description       *string
 	founding_date     *string
 	dissolution_date  *string
@@ -229,12 +229,12 @@ func (m *ProjectMutation) ResetIdentifier() {
 }
 
 // SetName sets the "name" field.
-func (m *ProjectMutation) SetName(s string) {
-	m.name = &s
+func (m *ProjectMutation) SetName(ss schema.TranslatedString) {
+	m.name = &ss
 }
 
 // Name returns the value of the "name" field in the mutation.
-func (m *ProjectMutation) Name() (r string, exists bool) {
+func (m *ProjectMutation) Name() (r schema.TranslatedString, exists bool) {
 	v := m.name
 	if v == nil {
 		return
@@ -245,7 +245,7 @@ func (m *ProjectMutation) Name() (r string, exists bool) {
 // OldName returns the old "name" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldName(ctx context.Context) (v string, err error) {
+func (m *ProjectMutation) OldName(ctx context.Context) (v schema.TranslatedString, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldName is only allowed on UpdateOne operations")
 	}
@@ -259,22 +259,9 @@ func (m *ProjectMutation) OldName(ctx context.Context) (v string, err error) {
 	return oldValue.Name, nil
 }
 
-// ClearName clears the value of the "name" field.
-func (m *ProjectMutation) ClearName() {
-	m.name = nil
-	m.clearedFields[project.FieldName] = struct{}{}
-}
-
-// NameCleared returns if the "name" field was cleared in this mutation.
-func (m *ProjectMutation) NameCleared() bool {
-	_, ok := m.clearedFields[project.FieldName]
-	return ok
-}
-
 // ResetName resets all changes to the "name" field.
 func (m *ProjectMutation) ResetName() {
 	m.name = nil
-	delete(m.clearedFields, project.FieldName)
 }
 
 // SetDescription sets the "description" field.
@@ -852,7 +839,7 @@ func (m *ProjectMutation) SetField(name string, value ent.Value) error {
 		m.SetIdentifier(v)
 		return nil
 	case project.FieldName:
-		v, ok := value.(string)
+		v, ok := value.(schema.TranslatedString)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -951,9 +938,6 @@ func (m *ProjectMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *ProjectMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(project.FieldName) {
-		fields = append(fields, project.FieldName)
-	}
 	if m.FieldCleared(project.FieldDescription) {
 		fields = append(fields, project.FieldDescription)
 	}
@@ -989,9 +973,6 @@ func (m *ProjectMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *ProjectMutation) ClearField(name string) error {
 	switch name {
-	case project.FieldName:
-		m.ClearName()
-		return nil
 	case project.FieldDescription:
 		m.ClearDescription()
 		return nil

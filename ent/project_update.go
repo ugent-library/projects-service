@@ -50,22 +50,16 @@ func (pu *ProjectUpdate) SetNillableIdentifier(s *schema.Identifier) *ProjectUpd
 }
 
 // SetName sets the "name" field.
-func (pu *ProjectUpdate) SetName(s string) *ProjectUpdate {
-	pu.mutation.SetName(s)
+func (pu *ProjectUpdate) SetName(ss schema.TranslatedString) *ProjectUpdate {
+	pu.mutation.SetName(ss)
 	return pu
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (pu *ProjectUpdate) SetNillableName(s *string) *ProjectUpdate {
-	if s != nil {
-		pu.SetName(*s)
+func (pu *ProjectUpdate) SetNillableName(ss *schema.TranslatedString) *ProjectUpdate {
+	if ss != nil {
+		pu.SetName(*ss)
 	}
-	return pu
-}
-
-// ClearName clears the value of the "name" field.
-func (pu *ProjectUpdate) ClearName() *ProjectUpdate {
-	pu.mutation.ClearName()
 	return pu
 }
 
@@ -272,10 +266,7 @@ func (pu *ProjectUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.SetField(project.FieldIdentifier, field.TypeJSON, value)
 	}
 	if value, ok := pu.mutation.Name(); ok {
-		_spec.SetField(project.FieldName, field.TypeString, value)
-	}
-	if pu.mutation.NameCleared() {
-		_spec.ClearField(project.FieldName, field.TypeString)
+		_spec.SetField(project.FieldName, field.TypeJSON, value)
 	}
 	if value, ok := pu.mutation.Description(); ok {
 		_spec.SetField(project.FieldDescription, field.TypeString, value)
@@ -363,22 +354,16 @@ func (puo *ProjectUpdateOne) SetNillableIdentifier(s *schema.Identifier) *Projec
 }
 
 // SetName sets the "name" field.
-func (puo *ProjectUpdateOne) SetName(s string) *ProjectUpdateOne {
-	puo.mutation.SetName(s)
+func (puo *ProjectUpdateOne) SetName(ss schema.TranslatedString) *ProjectUpdateOne {
+	puo.mutation.SetName(ss)
 	return puo
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (puo *ProjectUpdateOne) SetNillableName(s *string) *ProjectUpdateOne {
-	if s != nil {
-		puo.SetName(*s)
+func (puo *ProjectUpdateOne) SetNillableName(ss *schema.TranslatedString) *ProjectUpdateOne {
+	if ss != nil {
+		puo.SetName(*ss)
 	}
-	return puo
-}
-
-// ClearName clears the value of the "name" field.
-func (puo *ProjectUpdateOne) ClearName() *ProjectUpdateOne {
-	puo.mutation.ClearName()
 	return puo
 }
 
@@ -615,10 +600,7 @@ func (puo *ProjectUpdateOne) sqlSave(ctx context.Context) (_node *Project, err e
 		_spec.SetField(project.FieldIdentifier, field.TypeJSON, value)
 	}
 	if value, ok := puo.mutation.Name(); ok {
-		_spec.SetField(project.FieldName, field.TypeString, value)
-	}
-	if puo.mutation.NameCleared() {
-		_spec.ClearField(project.FieldName, field.TypeString)
+		_spec.SetField(project.FieldName, field.TypeJSON, value)
 	}
 	if value, ok := puo.mutation.Description(); ok {
 		_spec.SetField(project.FieldDescription, field.TypeString, value)

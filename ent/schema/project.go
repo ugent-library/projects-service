@@ -23,6 +23,10 @@ type Identifier struct {
 	Value map[string][]string `json:"Value"`
 }
 
+type TranslatedString struct {
+	Value map[string]string `json:"value"`
+}
+
 type Grant struct {
 	Identifier  string           `json:"identifier"`
 	IsAwardedBy FundingProgramme `json:"isAwardedBy"`
@@ -44,8 +48,8 @@ func (Project) Fields() []ent.Field {
 			Unique(),
 		field.JSON("identifier", Identifier{}).
 			Default(Identifier{}),
-		field.String("name").
-			Optional(),
+		field.JSON("name", TranslatedString{}).
+			Default(TranslatedString{}),
 		field.Text("description").
 			Optional(),
 		field.String("founding_date").

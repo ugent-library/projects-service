@@ -57,7 +57,9 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 			SetIdentifier(schema.Identifier{
 				Value: p.Identifier,
 			}).
-			SetName(p.Name).
+			SetName(schema.TranslatedString{
+				Value: p.Name,
+			}).
 			SetDescription(p.Description).
 			SetFoundingDate(p.FoundingDate).
 			SetDissolutionDate(p.DissolutionDate).
@@ -72,7 +74,9 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 			SetIdentifier(schema.Identifier{
 				Value: p.Identifier,
 			}).
-			SetName(p.Name).
+			SetName(schema.TranslatedString{
+				Value: p.Name,
+			}).
 			SetDescription(p.Description).
 			SetFoundingDate(p.FoundingDate).
 			SetDissolutionDate(p.DissolutionDate).
@@ -145,7 +149,7 @@ func rowToProject(row *ent.Project) *models.Project {
 		Identifier:      row.Identifier.Value,
 		DateCreated:     row.Created,
 		DateModified:    row.Modified,
-		Name:            row.Name,
+		Name:            row.Name.Value,
 		Description:     row.Description,
 		FoundingDate:    row.FoundingDate,
 		DissolutionDate: row.DissolutionDate,

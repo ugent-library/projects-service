@@ -24,7 +24,7 @@ type Project struct {
 	// Identifier holds the value of the "identifier" field.
 	Identifier schema.Identifier `json:"identifier,omitempty"`
 	// Name holds the value of the "name" field.
-	Name string `json:"name,omitempty"`
+	Name schema.TranslatedString `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
 	// FoundingDate holds the value of the "founding_date" field.
@@ -51,9 +51,9 @@ func (*Project) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case project.FieldIdentifier:
+		case project.FieldIdentifier, project.FieldName:
 			values[i] = new([]byte)
-		case project.FieldID, project.FieldGismoID, project.FieldName, project.FieldDescription, project.FieldFoundingDate, project.FieldDissolutionDate, project.FieldAcronym, project.FieldGrantID, project.FieldFundingProgramme, project.FieldTs:
+		case project.FieldID, project.FieldGismoID, project.FieldDescription, project.FieldFoundingDate, project.FieldDissolutionDate, project.FieldAcronym, project.FieldGrantID, project.FieldFundingProgramme, project.FieldTs:
 			values[i] = new(sql.NullString)
 		case project.FieldCreated, project.FieldModified:
 			values[i] = new(sql.NullTime)
@@ -93,10 +93,12 @@ func (pr *Project) assignValues(columns []string, values []any) error {
 				}
 			}
 		case project.FieldName:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
-			} else if value.Valid {
-				pr.Name = value.String
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &pr.Name); err != nil {
+					return fmt.Errorf("unmarshal field name: %w", err)
+				}
 			}
 		case project.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -195,7 +197,7 @@ func (pr *Project) String() string {
 	builder.WriteString(fmt.Sprintf("%v", pr.Identifier))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(pr.Name)
+	builder.WriteString(fmt.Sprintf("%v", pr.Name))
 	builder.WriteString(", ")
 	builder.WriteString("description=")
 	builder.WriteString(pr.Description)
