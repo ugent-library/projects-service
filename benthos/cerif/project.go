@@ -12,56 +12,56 @@ import (
 
 var ErrNonCompliantXml = errors.New("non compliant cerif xml")
 
-type CERIFProject struct {
-	ID             string                           `json:"id,omitempty"`
-	StartDate      string                           `json:"start_date,omitempty"`
-	EndDate        string                           `json:"end_date,omitempty"`
-	Acronym        string                           `json:"acronym,omitempty"`
-	Title          []CERIFTranslatedString          `json:"title,omitempty"`
-	Abstract       []CERIFTranslatedString          `json:"abstract,omitempty"`
-	Keyword        []CERIFTranslatedString          `json:"keyword,omitempty"`
-	Classification []CERIFClassification            `json:"classfication,omitempty"`
-	FederatedIDS   []CERIFFederatedIDClassification `json:"federated_ids,omitempty"`
-	SentDateTime   time.Time                        `json:"sent_date_time,omitempty"`
-	Action         string                           `json:"action,omitempty"`
+type Project struct {
+	ID             string                      `json:"id,omitempty"`
+	StartDate      string                      `json:"start_date,omitempty"`
+	EndDate        string                      `json:"end_date,omitempty"`
+	Acronym        string                      `json:"acronym,omitempty"`
+	Title          []TranslatedString          `json:"title,omitempty"`
+	Abstract       []TranslatedString          `json:"abstract,omitempty"`
+	Keyword        []TranslatedString          `json:"keyword,omitempty"`
+	Classification []Classification            `json:"classfication,omitempty"`
+	FederatedIDS   []FederatedIDClassification `json:"federated_ids,omitempty"`
+	SentDateTime   time.Time                   `json:"sent_date_time,omitempty"`
+	Action         string                      `json:"action,omitempty"`
 }
 
-type CERIFTranslatedString struct {
+type TranslatedString struct {
 	Translation string `json:"translation,omitempty"`
 	Lang        string `json:"lang,omitempty"`
 	Value       string `json:"value,omitempty"`
 }
 
-type CERIFClassification struct {
-	URI         string                    `json:"uri,omitempty"`
-	Name        []CERIFTranslatedString   `json:"name,omitempty"`
-	Description []CERIFTranslatedString   `json:"description,omitempty"`
-	Terms       []CERIFClassificationTerm `json:"terms,omitempty"`
+type Classification struct {
+	URI         string               `json:"uri,omitempty"`
+	Name        []TranslatedString   `json:"name,omitempty"`
+	Description []TranslatedString   `json:"description,omitempty"`
+	Terms       []ClassificationTerm `json:"terms,omitempty"`
 }
 
-type CERIFClassificationTerm struct {
-	URI       string                  `json:"uri,omitempty"`
-	Term      []CERIFTranslatedString `json:"term,omitempty"`
-	StartDate time.Time               `json:"start_date,omitempty"`
-	EndDate   time.Time               `json:"end_date,omitempty"`
+type ClassificationTerm struct {
+	URI       string             `json:"uri,omitempty"`
+	Term      []TranslatedString `json:"term,omitempty"`
+	StartDate time.Time          `json:"start_date,omitempty"`
+	EndDate   time.Time          `json:"end_date,omitempty"`
 }
 
-type CERIFFederatedIDClassification struct {
-	URI         string                  `json:"uri,omitempty"`
-	Name        []CERIFTranslatedString `json:"name,omitempty"`
-	Description []CERIFTranslatedString `json:"description,omitempty"`
-	IDS         []CERIFFederatedID      `json:"ids,omitempty"`
+type FederatedIDClassification struct {
+	URI         string             `json:"uri,omitempty"`
+	Name        []TranslatedString `json:"name,omitempty"`
+	Description []TranslatedString `json:"description,omitempty"`
+	IDS         []FederatedID      `json:"ids,omitempty"`
 }
 
-type CERIFFederatedID struct {
-	ID        string                  `json:"id,omitempty"`
-	URI       string                  `json:"uri,omitempty"`
-	Term      []CERIFTranslatedString `json:"term,omitempty"`
-	StartDate time.Time               `json:"start_date,omitempty"`
-	EndDate   time.Time               `json:"end_date,omitempty"`
+type FederatedID struct {
+	ID        string             `json:"id,omitempty"`
+	URI       string             `json:"uri,omitempty"`
+	Term      []TranslatedString `json:"term,omitempty"`
+	StartDate time.Time          `json:"start_date,omitempty"`
+	EndDate   time.Time          `json:"end_date,omitempty"`
 }
 
-func CerifParseProject(buf []byte) (*CERIFProject, error) {
+func CerifParseProject(buf []byte) (*Project, error) {
 	doc, err := xmlquery.Parse(bytes.NewReader(buf))
 	if err != nil {
 		return nil, err
@@ -77,7 +77,7 @@ func CerifParseProject(buf []byte) (*CERIFProject, error) {
 		return nil, fmt.Errorf("not a valid cerif document")
 	}
 
-	p := &CERIFProject{}
+	p := &Project{}
 
 	for _, n := range node.SelectElements("*") {
 		// log.Println(n.Data)
@@ -120,15 +120,15 @@ func parseDateTimeField(dt string) (time.Time, error) {
 	return time.Parse(time.RFC3339, strings.TrimSpace(dt))
 }
 
-func parseTranslatedField(f []CERIFTranslatedString, n *xmlquery.Node) []CERIFTranslatedString {
-	s := CERIFTranslatedString{
+func parseTranslatedField(f []TranslatedString, n *xmlquery.Node) []TranslatedString {
+	s := TranslatedString{
 		Translation: n.SelectAttr("cfTrans"),
 		Lang:        n.SelectAttr("cfLangCode"),
 		Value:       n.InnerText(),
 	}
 
 	if f == nil {
-		f = []CERIFTranslatedString{s}
+		f = []TranslatedString{s}
 	} else {
 		f = append(f, s)
 	}
@@ -136,13 +136,13 @@ func parseTranslatedField(f []CERIFTranslatedString, n *xmlquery.Node) []CERIFTr
 	return f
 }
 
-func parseClassification(field []CERIFClassification, term *xmlquery.Node, doc *xmlquery.Node) []CERIFClassification {
+func parseClassification(field []Classification, term *xmlquery.Node, doc *xmlquery.Node) []Classification {
 	// Resolve the classification for the term
 	classSchemeId := xmlquery.FindOne(term, "/ns1:cfClassSchemeId").InnerText()
 	path := fmt.Sprintf("//ns0:cfClassScheme/ns1:cfClassSchemeId[.='%s']/..", classSchemeId)
 	xmlClass := xmlquery.FindOne(doc, path)
 
-	tmp := CERIFClassification{}
+	tmp := Classification{}
 	for _, v := range xmlClass.SelectElements("*") {
 		switch v.Data {
 		case "cfURI":
@@ -155,7 +155,7 @@ func parseClassification(field []CERIFClassification, term *xmlquery.Node, doc *
 	}
 
 	// Fetch if classification already was added to project
-	var class *CERIFClassification
+	var class *Classification
 	for k, v := range field {
 		if v.URI == tmp.URI {
 			class = &field[k]
@@ -168,8 +168,8 @@ func parseClassification(field []CERIFClassification, term *xmlquery.Node, doc *
 		class = &tmp
 	}
 
-	// Transform term to a CERIFClassificationTerm
-	t := CERIFClassificationTerm{}
+	// Transform term to a ClassificationTerm
+	t := ClassificationTerm{}
 
 	// Resolve the term for the term id
 	tid := xmlquery.FindOne(term, "/ns1:cfClassId").InnerText()
@@ -198,7 +198,7 @@ func parseClassification(field []CERIFClassification, term *xmlquery.Node, doc *
 		}
 	}
 
-	// Add or replace CERIFClassificationTerm to / in CERIFClassification
+	// Add or replace ClassificationTerm to / in Classification
 	found := false
 	for k, v := range class.Terms {
 		if v.URI == t.URI {
@@ -222,13 +222,13 @@ func parseClassification(field []CERIFClassification, term *xmlquery.Node, doc *
 	return field
 }
 
-func parseFederatedIDClassification(field []CERIFFederatedIDClassification, term *xmlquery.Node, doc *xmlquery.Node) []CERIFFederatedIDClassification {
+func parseFederatedIDClassification(field []FederatedIDClassification, term *xmlquery.Node, doc *xmlquery.Node) []FederatedIDClassification {
 	// Resolve the classification for the term
 	classSchemeId := xmlquery.FindOne(term, "/ns1:cfClassSchemeId").InnerText()
 	path := fmt.Sprintf("//ns0:cfClassScheme/ns1:cfClassSchemeId[.='%s']/..", classSchemeId)
 	xmlClass := xmlquery.FindOne(doc, path)
 
-	tmp := CERIFFederatedIDClassification{}
+	tmp := FederatedIDClassification{}
 	for _, v := range xmlClass.SelectElements("*") {
 		//log.Println(v.Data)
 		switch v.Data {
@@ -242,7 +242,7 @@ func parseFederatedIDClassification(field []CERIFFederatedIDClassification, term
 	}
 
 	// Fetch if classification already was added to project
-	var class *CERIFFederatedIDClassification
+	var class *FederatedIDClassification
 	for k, v := range field {
 		if v.URI == tmp.URI {
 			class = &field[k]
@@ -255,8 +255,8 @@ func parseFederatedIDClassification(field []CERIFFederatedIDClassification, term
 		class = &tmp
 	}
 
-	// Transform term to a CERIFFederatedID
-	c := CERIFFederatedID{}
+	// Transform term to a FederatedID
+	c := FederatedID{}
 
 	// Resolve the term for the term id
 	fedId := xmlquery.FindOne(term, "/ns1:cfClassId").InnerText()
@@ -289,7 +289,7 @@ func parseFederatedIDClassification(field []CERIFFederatedIDClassification, term
 		}
 	}
 
-	// Add or replace CERIFFederatedID to / in CERIFFederatedIDClassification
+	// Add or replace FederatedID to / in FederatedIDClassification
 	found := false
 	for k, v := range class.IDS {
 		if v.ID == c.ID && v.URI == c.URI {
