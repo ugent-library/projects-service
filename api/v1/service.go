@@ -185,6 +185,7 @@ func mapToOASProject(p *models.Project) *GetProject {
 			Value:    val,
 		})
 	}
+	r.SetName(name)
 
 	desc := make([]GetProjectDescriptionItem, 0)
 	for lang, val := range p.Description {
@@ -193,10 +194,12 @@ func mapToOASProject(p *models.Project) *GetProject {
 			Value:    val,
 		})
 	}
+	r.SetDescription(desc)
 
 	if p.FoundingDate != "" {
 		r.SetFoundingDate(NewOptString(p.FoundingDate))
 	}
+
 	if p.DissolutionDate != "" {
 		r.SetDissolutionDate(NewOptString(p.DissolutionDate))
 	}
