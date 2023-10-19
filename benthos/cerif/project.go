@@ -61,7 +61,7 @@ type FederatedID struct {
 	EndDate   time.Time          `json:"end_date,omitempty"`
 }
 
-func CerifParseProject(buf []byte) (*Project, error) {
+func ParseProject(buf []byte) (*Project, error) {
 	doc, err := xmlquery.Parse(bytes.NewReader(buf))
 	if err != nil {
 		return nil, err
@@ -140,10 +140,10 @@ func parseClassification(field []Classification, term *xmlquery.Node, doc *xmlqu
 	// Resolve the classification for the term
 	classSchemeId := xmlquery.FindOne(term, "/ns1:cfClassSchemeId").InnerText()
 	path := fmt.Sprintf("//ns0:cfClassScheme/ns1:cfClassSchemeId[.='%s']/..", classSchemeId)
-	xmlClass := xmlquery.FindOne(doc, path)
+	classScheme := xmlquery.FindOne(doc, path)
 
 	tmp := Classification{}
-	for _, v := range xmlClass.SelectElements("*") {
+	for _, v := range classScheme.SelectElements("*") {
 		switch v.Data {
 		case "cfURI":
 			tmp.URI = v.InnerText()
@@ -155,26 +155,26 @@ func parseClassification(field []Classification, term *xmlquery.Node, doc *xmlqu
 	}
 
 	// Fetch if classification already was added to project
-	var class *Classification
+	var classification *Classification
 	for k, v := range field {
 		if v.URI == tmp.URI {
-			class = &field[k]
+			classification = &field[k]
 			break
 		}
 	}
 
-	if class == nil {
+	if classification == nil {
 		field = append(field, tmp)
-		class = &tmp
+		classification = &tmp
 	}
 
 	// Transform term to a ClassificationTerm
 	t := ClassificationTerm{}
 
 	// Resolve the term for the term id
-	tid := xmlquery.FindOne(term, "/ns1:cfClassId").InnerText()
-	path = fmt.Sprintf("//ns0:cfClass/ns1:cfClassId[.='%s']/..", tid)
-	xmlTerm := xmlquery.FindOne(doc, path)
+	classId := xmlquery.FindOne(term, "/ns1:cfClassId").InnerText()
+	path = fmt.Sprintf("//ns0:cfClass/ns1:cfClassId[.='%s']/..", classId)
+	class := xmlquery.FindOne(doc, path)
 
 	for _, v := range term.SelectElements("*") {
 		switch v.Data {
@@ -189,7 +189,7 @@ func parseClassification(field []Classification, term *xmlquery.Node, doc *xmlqu
 		}
 	}
 
-	for _, v := range xmlTerm.SelectElements("*") {
+	for _, v := range class.SelectElements("*") {
 		switch v.Data {
 		case "cfURI":
 			t.URI = v.InnerText()
@@ -200,22 +200,22 @@ func parseClassification(field []Classification, term *xmlquery.Node, doc *xmlqu
 
 	// Add or replace ClassificationTerm to / in Classification
 	found := false
-	for k, v := range class.Terms {
+	for k, v := range classification.Terms {
 		if v.URI == t.URI {
 			found = true
-			class.Terms[k] = t
+			classification.Terms[k] = t
 			break
 		}
 	}
 
 	if !found {
-		class.Terms = append(class.Terms, t)
+		classification.Terms = append(classification.Terms, t)
 	}
 
 	// Update the field & return the entire value
 	for k, cc := range field {
-		if cc.URI == class.URI {
-			field[k] = *class
+		if cc.URI == classification.URI {
+			field[k] = *classification
 		}
 	}
 
@@ -226,10 +226,10 @@ func parseFederatedIDClassification(field []FederatedIDClassification, term *xml
 	// Resolve the classification for the term
 	classSchemeId := xmlquery.FindOne(term, "/ns1:cfClassSchemeId").InnerText()
 	path := fmt.Sprintf("//ns0:cfClassScheme/ns1:cfClassSchemeId[.='%s']/..", classSchemeId)
-	xmlClass := xmlquery.FindOne(doc, path)
+	classScheme := xmlquery.FindOne(doc, path)
 
 	tmp := FederatedIDClassification{}
-	for _, v := range xmlClass.SelectElements("*") {
+	for _, v := range classScheme.SelectElements("*") {
 		//log.Println(v.Data)
 		switch v.Data {
 		case "cfURI":
@@ -242,26 +242,26 @@ func parseFederatedIDClassification(field []FederatedIDClassification, term *xml
 	}
 
 	// Fetch if classification already was added to project
-	var class *FederatedIDClassification
+	var fedIdclassification *FederatedIDClassification
 	for k, v := range field {
 		if v.URI == tmp.URI {
-			class = &field[k]
+			fedIdclassification = &field[k]
 			break
 		}
 	}
 
-	if class == nil {
+	if fedIdclassification == nil {
 		field = append(field, tmp)
-		class = &tmp
+		fedIdclassification = &tmp
 	}
 
 	// Transform term to a FederatedID
 	c := FederatedID{}
 
 	// Resolve the term for the term id
-	fedId := xmlquery.FindOne(term, "/ns1:cfClassId").InnerText()
-	path = fmt.Sprintf("//ns0:cfClass/ns1:cfClassId[.='%s']/..", fedId)
-	xmlTerm := xmlquery.FindOne(doc, path)
+	classId := xmlquery.FindOne(term, "/ns1:cfClassId").InnerText()
+	path = fmt.Sprintf("//ns0:cfClass/ns1:cfClassId[.='%s']/..", classId)
+	class := xmlquery.FindOne(doc, path)
 
 	for _, v := range term.SelectElements("*") {
 		// log.Printf("** %s", v.Data)
@@ -279,7 +279,7 @@ func parseFederatedIDClassification(field []FederatedIDClassification, term *xml
 		}
 	}
 
-	for _, v := range xmlTerm.SelectElements("*") {
+	for _, v := range class.SelectElements("*") {
 		// log.Printf("-- %s", v.Data)
 		switch v.Data {
 		case "cfURI":
@@ -291,22 +291,22 @@ func parseFederatedIDClassification(field []FederatedIDClassification, term *xml
 
 	// Add or replace FederatedID to / in FederatedIDClassification
 	found := false
-	for k, v := range class.IDS {
+	for k, v := range fedIdclassification.IDS {
 		if v.ID == c.ID && v.URI == c.URI {
 			found = true
-			class.IDS[k] = c
+			fedIdclassification.IDS[k] = c
 			break
 		}
 	}
 
 	if !found {
-		class.IDS = append(class.IDS, c)
+		fedIdclassification.IDS = append(fedIdclassification.IDS, c)
 	}
 
 	// Update the field & return the entire value
 	for k, cc := range field {
-		if cc.URI == class.URI {
-			field[k] = *class
+		if cc.URI == fedIdclassification.URI {
+			field[k] = *fedIdclassification
 		}
 	}
 
