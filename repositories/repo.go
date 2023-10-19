@@ -115,12 +115,16 @@ func (r *Repo) GetProject(ctx context.Context, id string) (*models.Project, erro
 }
 
 func (r *Repo) DeleteProject(ctx context.Context, id string) error {
-	err := r.client.Project.
-		DeleteOneID(id).
+	res, err := r.client.Project.Delete().
+		Where(project.GismoIDEQ(id)).
 		Exec(ctx)
 
-	if ent.IsNotFound(err) {
+	if res == 0 {
 		return ErrNotFound
+	}
+
+	if ent.IsConstraintError(err) {
+		return ErrConstraint
 	}
 
 	return err
