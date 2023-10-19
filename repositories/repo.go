@@ -47,49 +47,27 @@ func New(c Config) (*Repo, error) {
 }
 
 func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
-	dp, err := r.client.Project.Query().
-		Where(project.GismoIDEQ(p.ID)).
-		Only(ctx)
-
-	if ent.IsNotFound(err) {
-		err = r.client.Project.Create().
-			SetGismoID(p.ID).
-			SetIdentifier(schema.Identifier{
-				Value: p.Identifier,
-			}).
-			SetName(schema.TranslatedString{
-				Value: p.Name,
-			}).
-			SetDescription(schema.TranslatedString{
-				Value: p.Description,
-			}).
-			SetFoundingDate(p.FoundingDate).
-			SetDissolutionDate(p.DissolutionDate).
-			SetGrantID(p.Grant).
-			SetFundingProgramme(p.FundingProgramme).
-			SetAcronym(p.Acronym).
-			SetCreated(p.DateCreated).
-			SetModified(p.DateModified).
-			Exec(ctx)
-	} else {
-		err = dp.Update().
-			SetIdentifier(schema.Identifier{
-				Value: p.Identifier,
-			}).
-			SetName(schema.TranslatedString{
-				Value: p.Name,
-			}).
-			SetDescription(schema.TranslatedString{
-				Value: p.Description,
-			}).
-			SetFoundingDate(p.FoundingDate).
-			SetDissolutionDate(p.DissolutionDate).
-			SetGrantID(p.Grant).
-			SetFundingProgramme(p.FundingProgramme).
-			SetAcronym(p.Acronym).
-			SetModified(p.DateModified).
-			Exec(ctx)
-	}
+	err := r.client.Project.Create().
+		SetGismoID(p.ID).
+		SetIdentifier(schema.Identifier{
+			Value: p.Identifier,
+		}).
+		SetName(schema.TranslatedString{
+			Value: p.Name,
+		}).
+		SetDescription(schema.TranslatedString{
+			Value: p.Description,
+		}).
+		SetFoundingDate(p.FoundingDate).
+		SetDissolutionDate(p.DissolutionDate).
+		SetGrantID(p.Grant).
+		SetFundingProgramme(p.FundingProgramme).
+		SetAcronym(p.Acronym).
+		SetCreated(p.DateCreated).
+		SetModified(p.DateModified).
+		OnConflictColumns(project.FieldGismoID).
+		UpdateNewValues().
+		Exec(ctx)
 
 	return err
 }
