@@ -52,10 +52,10 @@ paths:
         default:
           $ref: "#/components/responses/Error"
 
-  /delete-record:
+  /delete-project:
     post:
       summary: Delete a project
-      description: Delete a record
+      description: Delete a project
       operationId: deleteProject
       requestBody:
         content:

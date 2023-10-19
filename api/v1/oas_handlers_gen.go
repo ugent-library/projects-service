@@ -185,14 +185,14 @@ func (s *Server) handleAddProjectRequest(args [0]string, argsEscaped bool, w htt
 
 // handleDeleteProjectRequest handles deleteProject operation.
 //
-// Delete a record.
+// Delete a project.
 //
-// POST /delete-record
+// POST /delete-project
 func (s *Server) handleDeleteProjectRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("deleteProject"),
 		semconv.HTTPMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/delete-record"),
+		semconv.HTTPRouteKey.String("/delete-project"),
 	}
 
 	// Start a span for this request.

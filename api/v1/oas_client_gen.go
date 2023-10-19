@@ -31,9 +31,9 @@ type Invoker interface {
 	AddProject(ctx context.Context, request *AddProject) (AddProjectRes, error)
 	// DeleteProject invokes deleteProject operation.
 	//
-	// Delete a record.
+	// Delete a project.
 	//
-	// POST /delete-record
+	// POST /delete-project
 	DeleteProject(ctx context.Context, request *DeleteProjectRequest) (DeleteProjectRes, error)
 	// GetProject invokes getProject operation.
 	//
@@ -222,9 +222,9 @@ func (c *Client) sendAddProject(ctx context.Context, request *AddProject) (res A
 
 // DeleteProject invokes deleteProject operation.
 //
-// Delete a record.
+// Delete a project.
 //
-// POST /delete-record
+// POST /delete-project
 func (c *Client) DeleteProject(ctx context.Context, request *DeleteProjectRequest) (DeleteProjectRes, error) {
 	res, err := c.sendDeleteProject(ctx, request)
 	return res, err
@@ -234,7 +234,7 @@ func (c *Client) sendDeleteProject(ctx context.Context, request *DeleteProjectRe
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("deleteProject"),
 		semconv.HTTPMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/delete-record"),
+		semconv.HTTPRouteKey.String("/delete-project"),
 	}
 	// Validate request before sending.
 	if err := func() error {
@@ -276,7 +276,7 @@ func (c *Client) sendDeleteProject(ctx context.Context, request *DeleteProjectRe
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/delete-record"
+	pathParts[0] = "/delete-project"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"

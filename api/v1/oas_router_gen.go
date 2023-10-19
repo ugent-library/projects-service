@@ -77,8 +77,8 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					return
 				}
-			case 'd': // Prefix: "delete-record"
-				if l := len("delete-record"); len(elem) >= l && elem[0:l] == "delete-record" {
+			case 'd': // Prefix: "delete-project"
+				if l := len("delete-project"); len(elem) >= l && elem[0:l] == "delete-project" {
 					elem = elem[l:]
 				} else {
 					break
@@ -245,8 +245,8 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						return
 					}
 				}
-			case 'd': // Prefix: "delete-record"
-				if l := len("delete-record"); len(elem) >= l && elem[0:l] == "delete-record" {
+			case 'd': // Prefix: "delete-project"
+				if l := len("delete-project"); len(elem) >= l && elem[0:l] == "delete-project" {
 					elem = elem[l:]
 				} else {
 					break
@@ -259,7 +259,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.name = "DeleteProject"
 						r.summary = "Delete a project"
 						r.operationID = "deleteProject"
-						r.pathPattern = "/delete-record"
+						r.pathPattern = "/delete-project"
 						r.args = args
 						r.count = 0
 						return r, true

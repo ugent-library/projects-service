@@ -24,9 +24,9 @@ func (UnimplementedHandler) AddProject(ctx context.Context, req *AddProject) (r 
 
 // DeleteProject implements deleteProject operation.
 //
-// Delete a record.
+// Delete a project.
 //
-// POST /delete-record
+// POST /delete-project
 func (UnimplementedHandler) DeleteProject(ctx context.Context, req *DeleteProjectRequest) (r DeleteProjectRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
