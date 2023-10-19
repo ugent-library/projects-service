@@ -5,7 +5,6 @@ import (
 
 	"github.com/benthosdev/benthos/v4/public/service"
 
-	// _ "github.com/benthosdev/benthos/v4/public/components/all"
 	_ "github.com/benthosdev/benthos/v4/public/components/io"
 	_ "github.com/benthosdev/benthos/v4/public/components/mongodb"
 	_ "github.com/benthosdev/benthos/v4/public/components/pure"
