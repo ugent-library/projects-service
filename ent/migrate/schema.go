@@ -15,7 +15,7 @@ var (
 		{Name: "gismo_id", Type: field.TypeString, Unique: true},
 		{Name: "identifier", Type: field.TypeJSON},
 		{Name: "name", Type: field.TypeJSON},
-		{Name: "description", Type: field.TypeString, Nullable: true, Size: 2147483647},
+		{Name: "description", Type: field.TypeJSON},
 		{Name: "founding_date", Type: field.TypeString, Nullable: true},
 		{Name: "dissolution_date", Type: field.TypeString, Nullable: true},
 		{Name: "acronym", Type: field.TypeString, Nullable: true},

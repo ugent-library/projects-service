@@ -59,15 +59,15 @@ func (pc *ProjectCreate) SetNillableName(ss *schema.TranslatedString) *ProjectCr
 }
 
 // SetDescription sets the "description" field.
-func (pc *ProjectCreate) SetDescription(s string) *ProjectCreate {
-	pc.mutation.SetDescription(s)
+func (pc *ProjectCreate) SetDescription(ss schema.TranslatedString) *ProjectCreate {
+	pc.mutation.SetDescription(ss)
 	return pc
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (pc *ProjectCreate) SetNillableDescription(s *string) *ProjectCreate {
-	if s != nil {
-		pc.SetDescription(*s)
+func (pc *ProjectCreate) SetNillableDescription(ss *schema.TranslatedString) *ProjectCreate {
+	if ss != nil {
+		pc.SetDescription(*ss)
 	}
 	return pc
 }
@@ -241,6 +241,10 @@ func (pc *ProjectCreate) defaults() {
 		v := project.DefaultName
 		pc.mutation.SetName(v)
 	}
+	if _, ok := pc.mutation.Description(); !ok {
+		v := project.DefaultDescription
+		pc.mutation.SetDescription(v)
+	}
 	if _, ok := pc.mutation.Created(); !ok {
 		v := project.DefaultCreated()
 		pc.mutation.SetCreated(v)
@@ -265,6 +269,9 @@ func (pc *ProjectCreate) check() error {
 	}
 	if _, ok := pc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Project.name"`)}
+	}
+	if _, ok := pc.mutation.Description(); !ok {
+		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "Project.description"`)}
 	}
 	if _, ok := pc.mutation.Created(); !ok {
 		return &ValidationError{Name: "created", err: errors.New(`ent: missing required field "Project.created"`)}
@@ -321,7 +328,7 @@ func (pc *ProjectCreate) createSpec() (*Project, *sqlgraph.CreateSpec) {
 		_node.Name = value
 	}
 	if value, ok := pc.mutation.Description(); ok {
-		_spec.SetField(project.FieldDescription, field.TypeString, value)
+		_spec.SetField(project.FieldDescription, field.TypeJSON, value)
 		_node.Description = value
 	}
 	if value, ok := pc.mutation.FoundingDate(); ok {
@@ -445,7 +452,7 @@ func (u *ProjectUpsert) UpdateName() *ProjectUpsert {
 }
 
 // SetDescription sets the "description" field.
-func (u *ProjectUpsert) SetDescription(v string) *ProjectUpsert {
+func (u *ProjectUpsert) SetDescription(v schema.TranslatedString) *ProjectUpsert {
 	u.Set(project.FieldDescription, v)
 	return u
 }
@@ -453,12 +460,6 @@ func (u *ProjectUpsert) SetDescription(v string) *ProjectUpsert {
 // UpdateDescription sets the "description" field to the value that was provided on create.
 func (u *ProjectUpsert) UpdateDescription() *ProjectUpsert {
 	u.SetExcluded(project.FieldDescription)
-	return u
-}
-
-// ClearDescription clears the value of the "description" field.
-func (u *ProjectUpsert) ClearDescription() *ProjectUpsert {
-	u.SetNull(project.FieldDescription)
 	return u
 }
 
@@ -676,7 +677,7 @@ func (u *ProjectUpsertOne) UpdateName() *ProjectUpsertOne {
 }
 
 // SetDescription sets the "description" field.
-func (u *ProjectUpsertOne) SetDescription(v string) *ProjectUpsertOne {
+func (u *ProjectUpsertOne) SetDescription(v schema.TranslatedString) *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
 		s.SetDescription(v)
 	})
@@ -686,13 +687,6 @@ func (u *ProjectUpsertOne) SetDescription(v string) *ProjectUpsertOne {
 func (u *ProjectUpsertOne) UpdateDescription() *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
 		s.UpdateDescription()
-	})
-}
-
-// ClearDescription clears the value of the "description" field.
-func (u *ProjectUpsertOne) ClearDescription() *ProjectUpsertOne {
-	return u.Update(func(s *ProjectUpsert) {
-		s.ClearDescription()
 	})
 }
 
@@ -1093,7 +1087,7 @@ func (u *ProjectUpsertBulk) UpdateName() *ProjectUpsertBulk {
 }
 
 // SetDescription sets the "description" field.
-func (u *ProjectUpsertBulk) SetDescription(v string) *ProjectUpsertBulk {
+func (u *ProjectUpsertBulk) SetDescription(v schema.TranslatedString) *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
 		s.SetDescription(v)
 	})
@@ -1103,13 +1097,6 @@ func (u *ProjectUpsertBulk) SetDescription(v string) *ProjectUpsertBulk {
 func (u *ProjectUpsertBulk) UpdateDescription() *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
 		s.UpdateDescription()
-	})
-}
-
-// ClearDescription clears the value of the "description" field.
-func (u *ProjectUpsertBulk) ClearDescription() *ProjectUpsertBulk {
-	return u.Update(func(s *ProjectUpsert) {
-		s.ClearDescription()
 	})
 }
 

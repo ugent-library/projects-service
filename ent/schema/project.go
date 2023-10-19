@@ -50,8 +50,8 @@ func (Project) Fields() []ent.Field {
 			Default(Identifier{}),
 		field.JSON("name", TranslatedString{}).
 			Default(TranslatedString{}),
-		field.Text("description").
-			Optional(),
+		field.JSON("description", TranslatedString{}).
+			Default(TranslatedString{}),
 		field.String("founding_date").
 			Optional(),
 		field.String("dissolution_date").

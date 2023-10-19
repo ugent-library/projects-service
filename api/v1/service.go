@@ -58,8 +58,13 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) (AddProjectRe
 		p.Name = tmp
 	}
 
-	if v, ok := req.GetDescription().Get(); ok {
-		p.Description = v
+	if strs := req.GetDescription(); len(strs) > 0 {
+		tmp := make(map[string]string)
+		for _, str := range strs {
+			tmp[str.GetLanguage()] = str.GetValue()
+		}
+
+		p.Description = tmp
 	}
 
 	if v, ok := req.GetFoundingDate().Get(); ok {
@@ -173,16 +178,20 @@ func mapToOASProject(p *models.Project) *GetProject {
 
 	r.ID = p.ID
 
-	strs := make([]GetProjectNameItem, 0)
+	name := make([]GetProjectNameItem, 0)
 	for lang, val := range p.Name {
-		strs = append(strs, GetProjectNameItem{
+		name = append(name, GetProjectNameItem{
 			Language: lang,
 			Value:    val,
 		})
 	}
 
-	if p.Description != "" {
-		r.SetDescription(NewOptString(p.Description))
+	desc := make([]GetProjectDescriptionItem, 0)
+	for lang, val := range p.Description {
+		desc = append(desc, GetProjectDescriptionItem{
+			Language: lang,
+			Value:    val,
+		})
 	}
 
 	if p.FoundingDate != "" {

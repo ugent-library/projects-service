@@ -26,7 +26,7 @@ type Project struct {
 	// Name holds the value of the "name" field.
 	Name schema.TranslatedString `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
-	Description string `json:"description,omitempty"`
+	Description schema.TranslatedString `json:"description,omitempty"`
 	// FoundingDate holds the value of the "founding_date" field.
 	FoundingDate string `json:"founding_date,omitempty"`
 	// DissolutionDate holds the value of the "dissolution_date" field.
@@ -51,9 +51,9 @@ func (*Project) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case project.FieldIdentifier, project.FieldName:
+		case project.FieldIdentifier, project.FieldName, project.FieldDescription:
 			values[i] = new([]byte)
-		case project.FieldID, project.FieldGismoID, project.FieldDescription, project.FieldFoundingDate, project.FieldDissolutionDate, project.FieldAcronym, project.FieldGrantID, project.FieldFundingProgramme, project.FieldTs:
+		case project.FieldID, project.FieldGismoID, project.FieldFoundingDate, project.FieldDissolutionDate, project.FieldAcronym, project.FieldGrantID, project.FieldFundingProgramme, project.FieldTs:
 			values[i] = new(sql.NullString)
 		case project.FieldCreated, project.FieldModified:
 			values[i] = new(sql.NullTime)
@@ -101,10 +101,12 @@ func (pr *Project) assignValues(columns []string, values []any) error {
 				}
 			}
 		case project.FieldDescription:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
-			} else if value.Valid {
-				pr.Description = value.String
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &pr.Description); err != nil {
+					return fmt.Errorf("unmarshal field description: %w", err)
+				}
 			}
 		case project.FieldFoundingDate:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -200,7 +202,7 @@ func (pr *Project) String() string {
 	builder.WriteString(fmt.Sprintf("%v", pr.Name))
 	builder.WriteString(", ")
 	builder.WriteString("description=")
-	builder.WriteString(pr.Description)
+	builder.WriteString(fmt.Sprintf("%v", pr.Description))
 	builder.WriteString(", ")
 	builder.WriteString("founding_date=")
 	builder.WriteString(pr.FoundingDate)

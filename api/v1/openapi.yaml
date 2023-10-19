@@ -211,7 +211,15 @@ components:
                 type: string
             required: [language, value]
         description:
-          type: string
+          type: array
+          items:
+            type: object
+            properties:
+              language:
+                type: string
+              value:
+                type: string
+            required: [language, value]
         foundingDate:
           type: string
         dissolutionDate:

@@ -14,17 +14,17 @@ func (s *ErrorStatusCode) Error() string {
 // Merged schema.
 // Ref: #/components/schemas/AddProject
 type AddProject struct {
-	ID              OptString                  `json:"id"`
-	Created         OptDateTime                `json:"created"`
-	Modified        OptDateTime                `json:"modified"`
-	Type            string                     `json:"type"`
-	Identifier      []AddProjectIdentifierItem `json:"identifier"`
-	IsFundedBy      OptAddProjectIsFundedBy    `json:"isFundedBy"`
-	HasAcronym      OptString                  `json:"hasAcronym"`
-	Name            []AddProjectNameItem       `json:"name"`
-	Description     OptString                  `json:"description"`
-	FoundingDate    OptString                  `json:"foundingDate"`
-	DissolutionDate OptString                  `json:"dissolutionDate"`
+	ID              OptString                   `json:"id"`
+	Created         OptDateTime                 `json:"created"`
+	Modified        OptDateTime                 `json:"modified"`
+	Type            string                      `json:"type"`
+	Identifier      []AddProjectIdentifierItem  `json:"identifier"`
+	IsFundedBy      OptAddProjectIsFundedBy     `json:"isFundedBy"`
+	HasAcronym      OptString                   `json:"hasAcronym"`
+	Name            []AddProjectNameItem        `json:"name"`
+	Description     []AddProjectDescriptionItem `json:"description"`
+	FoundingDate    OptString                   `json:"foundingDate"`
+	DissolutionDate OptString                   `json:"dissolutionDate"`
 }
 
 // GetID returns the value of ID.
@@ -68,7 +68,7 @@ func (s *AddProject) GetName() []AddProjectNameItem {
 }
 
 // GetDescription returns the value of Description.
-func (s *AddProject) GetDescription() OptString {
+func (s *AddProject) GetDescription() []AddProjectDescriptionItem {
 	return s.Description
 }
 
@@ -123,7 +123,7 @@ func (s *AddProject) SetName(val []AddProjectNameItem) {
 }
 
 // SetDescription sets the value of Description.
-func (s *AddProject) SetDescription(val OptString) {
+func (s *AddProject) SetDescription(val []AddProjectDescriptionItem) {
 	s.Description = val
 }
 
@@ -135,6 +135,31 @@ func (s *AddProject) SetFoundingDate(val OptString) {
 // SetDissolutionDate sets the value of DissolutionDate.
 func (s *AddProject) SetDissolutionDate(val OptString) {
 	s.DissolutionDate = val
+}
+
+type AddProjectDescriptionItem struct {
+	Language string `json:"language"`
+	Value    string `json:"value"`
+}
+
+// GetLanguage returns the value of Language.
+func (s *AddProjectDescriptionItem) GetLanguage() string {
+	return s.Language
+}
+
+// GetValue returns the value of Value.
+func (s *AddProjectDescriptionItem) GetValue() string {
+	return s.Value
+}
+
+// SetLanguage sets the value of Language.
+func (s *AddProjectDescriptionItem) SetLanguage(val string) {
+	s.Language = val
+}
+
+// SetValue sets the value of Value.
+func (s *AddProjectDescriptionItem) SetValue(val string) {
+	s.Value = val
 }
 
 type AddProjectIdentifierItem struct {
@@ -357,17 +382,17 @@ func (*ErrorStatusCode) getProjectRes()    {}
 // Merged schema.
 // Ref: #/components/schemas/GetProject
 type GetProject struct {
-	ID              string                     `json:"id"`
-	Created         time.Time                  `json:"created"`
-	Modified        time.Time                  `json:"modified"`
-	Type            string                     `json:"type"`
-	Identifier      []GetProjectIdentifierItem `json:"identifier"`
-	IsFundedBy      OptGetProjectIsFundedBy    `json:"isFundedBy"`
-	HasAcronym      OptString                  `json:"hasAcronym"`
-	Name            []GetProjectNameItem       `json:"name"`
-	Description     OptString                  `json:"description"`
-	FoundingDate    OptString                  `json:"foundingDate"`
-	DissolutionDate OptString                  `json:"dissolutionDate"`
+	ID              string                      `json:"id"`
+	Created         time.Time                   `json:"created"`
+	Modified        time.Time                   `json:"modified"`
+	Type            string                      `json:"type"`
+	Identifier      []GetProjectIdentifierItem  `json:"identifier"`
+	IsFundedBy      OptGetProjectIsFundedBy     `json:"isFundedBy"`
+	HasAcronym      OptString                   `json:"hasAcronym"`
+	Name            []GetProjectNameItem        `json:"name"`
+	Description     []GetProjectDescriptionItem `json:"description"`
+	FoundingDate    OptString                   `json:"foundingDate"`
+	DissolutionDate OptString                   `json:"dissolutionDate"`
 }
 
 // GetID returns the value of ID.
@@ -411,7 +436,7 @@ func (s *GetProject) GetName() []GetProjectNameItem {
 }
 
 // GetDescription returns the value of Description.
-func (s *GetProject) GetDescription() OptString {
+func (s *GetProject) GetDescription() []GetProjectDescriptionItem {
 	return s.Description
 }
 
@@ -466,7 +491,7 @@ func (s *GetProject) SetName(val []GetProjectNameItem) {
 }
 
 // SetDescription sets the value of Description.
-func (s *GetProject) SetDescription(val OptString) {
+func (s *GetProject) SetDescription(val []GetProjectDescriptionItem) {
 	s.Description = val
 }
 
@@ -481,6 +506,31 @@ func (s *GetProject) SetDissolutionDate(val OptString) {
 }
 
 func (*GetProject) getProjectRes() {}
+
+type GetProjectDescriptionItem struct {
+	Language string `json:"language"`
+	Value    string `json:"value"`
+}
+
+// GetLanguage returns the value of Language.
+func (s *GetProjectDescriptionItem) GetLanguage() string {
+	return s.Language
+}
+
+// GetValue returns the value of Value.
+func (s *GetProjectDescriptionItem) GetValue() string {
+	return s.Value
+}
+
+// SetLanguage sets the value of Language.
+func (s *GetProjectDescriptionItem) SetLanguage(val string) {
+	s.Language = val
+}
+
+// SetValue sets the value of Value.
+func (s *GetProjectDescriptionItem) SetValue(val string) {
+	s.Value = val
+}
 
 type GetProjectIdentifierItem struct {
 	Type       string `json:"type"`

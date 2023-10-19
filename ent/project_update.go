@@ -64,22 +64,16 @@ func (pu *ProjectUpdate) SetNillableName(ss *schema.TranslatedString) *ProjectUp
 }
 
 // SetDescription sets the "description" field.
-func (pu *ProjectUpdate) SetDescription(s string) *ProjectUpdate {
-	pu.mutation.SetDescription(s)
+func (pu *ProjectUpdate) SetDescription(ss schema.TranslatedString) *ProjectUpdate {
+	pu.mutation.SetDescription(ss)
 	return pu
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (pu *ProjectUpdate) SetNillableDescription(s *string) *ProjectUpdate {
-	if s != nil {
-		pu.SetDescription(*s)
+func (pu *ProjectUpdate) SetNillableDescription(ss *schema.TranslatedString) *ProjectUpdate {
+	if ss != nil {
+		pu.SetDescription(*ss)
 	}
-	return pu
-}
-
-// ClearDescription clears the value of the "description" field.
-func (pu *ProjectUpdate) ClearDescription() *ProjectUpdate {
-	pu.mutation.ClearDescription()
 	return pu
 }
 
@@ -269,10 +263,7 @@ func (pu *ProjectUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.SetField(project.FieldName, field.TypeJSON, value)
 	}
 	if value, ok := pu.mutation.Description(); ok {
-		_spec.SetField(project.FieldDescription, field.TypeString, value)
-	}
-	if pu.mutation.DescriptionCleared() {
-		_spec.ClearField(project.FieldDescription, field.TypeString)
+		_spec.SetField(project.FieldDescription, field.TypeJSON, value)
 	}
 	if value, ok := pu.mutation.FoundingDate(); ok {
 		_spec.SetField(project.FieldFoundingDate, field.TypeString, value)
@@ -368,22 +359,16 @@ func (puo *ProjectUpdateOne) SetNillableName(ss *schema.TranslatedString) *Proje
 }
 
 // SetDescription sets the "description" field.
-func (puo *ProjectUpdateOne) SetDescription(s string) *ProjectUpdateOne {
-	puo.mutation.SetDescription(s)
+func (puo *ProjectUpdateOne) SetDescription(ss schema.TranslatedString) *ProjectUpdateOne {
+	puo.mutation.SetDescription(ss)
 	return puo
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (puo *ProjectUpdateOne) SetNillableDescription(s *string) *ProjectUpdateOne {
-	if s != nil {
-		puo.SetDescription(*s)
+func (puo *ProjectUpdateOne) SetNillableDescription(ss *schema.TranslatedString) *ProjectUpdateOne {
+	if ss != nil {
+		puo.SetDescription(*ss)
 	}
-	return puo
-}
-
-// ClearDescription clears the value of the "description" field.
-func (puo *ProjectUpdateOne) ClearDescription() *ProjectUpdateOne {
-	puo.mutation.ClearDescription()
 	return puo
 }
 
@@ -603,10 +588,7 @@ func (puo *ProjectUpdateOne) sqlSave(ctx context.Context) (_node *Project, err e
 		_spec.SetField(project.FieldName, field.TypeJSON, value)
 	}
 	if value, ok := puo.mutation.Description(); ok {
-		_spec.SetField(project.FieldDescription, field.TypeString, value)
-	}
-	if puo.mutation.DescriptionCleared() {
-		_spec.ClearField(project.FieldDescription, field.TypeString)
+		_spec.SetField(project.FieldDescription, field.TypeJSON, value)
 	}
 	if value, ok := puo.mutation.FoundingDate(); ok {
 		_spec.SetField(project.FieldFoundingDate, field.TypeString, value)

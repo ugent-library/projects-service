@@ -6,7 +6,7 @@ type Project struct {
 	ID               string
 	Identifier       map[string][]string
 	Name             map[string]string
-	Description      string
+	Description      map[string]string
 	FoundingDate     string
 	DissolutionDate  string
 	Grant            string

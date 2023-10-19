@@ -74,6 +74,8 @@ var (
 	DefaultIdentifier schema.Identifier
 	// DefaultName holds the default value on creation for the "name" field.
 	DefaultName schema.TranslatedString
+	// DefaultDescription holds the default value on creation for the "description" field.
+	DefaultDescription schema.TranslatedString
 	// DefaultCreated holds the default value on creation for the "created" field.
 	DefaultCreated func() time.Time
 	// DefaultModified holds the default value on creation for the "modified" field.
@@ -95,11 +97,6 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 // ByGismoID orders the results by the gismo_id field.
 func ByGismoID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldGismoID, opts...).ToFunc()
-}
-
-// ByDescription orders the results by the description field.
-func ByDescription(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDescription, opts...).ToFunc()
 }
 
 // ByFoundingDate orders the results by the founding_date field.

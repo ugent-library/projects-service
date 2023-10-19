@@ -23,6 +23,10 @@ func init() {
 	projectDescName := projectFields[3].Descriptor()
 	// project.DefaultName holds the default value on creation for the name field.
 	project.DefaultName = projectDescName.Default.(schema.TranslatedString)
+	// projectDescDescription is the schema descriptor for description field.
+	projectDescDescription := projectFields[4].Descriptor()
+	// project.DefaultDescription holds the default value on creation for the description field.
+	project.DefaultDescription = projectDescDescription.Default.(schema.TranslatedString)
 	// projectDescCreated is the schema descriptor for created field.
 	projectDescCreated := projectFields[10].Descriptor()
 	// project.DefaultCreated holds the default value on creation for the created field.

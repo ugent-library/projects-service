@@ -69,11 +69,6 @@ func GismoID(v string) predicate.Project {
 	return predicate.Project(sql.FieldEQ(FieldGismoID, v))
 }
 
-// Description applies equality check predicate on the "description" field. It's identical to DescriptionEQ.
-func Description(v string) predicate.Project {
-	return predicate.Project(sql.FieldEQ(FieldDescription, v))
-}
-
 // FoundingDate applies equality check predicate on the "founding_date" field. It's identical to FoundingDateEQ.
 func FoundingDate(v string) predicate.Project {
 	return predicate.Project(sql.FieldEQ(FieldFoundingDate, v))
@@ -177,81 +172,6 @@ func GismoIDEqualFold(v string) predicate.Project {
 // GismoIDContainsFold applies the ContainsFold predicate on the "gismo_id" field.
 func GismoIDContainsFold(v string) predicate.Project {
 	return predicate.Project(sql.FieldContainsFold(FieldGismoID, v))
-}
-
-// DescriptionEQ applies the EQ predicate on the "description" field.
-func DescriptionEQ(v string) predicate.Project {
-	return predicate.Project(sql.FieldEQ(FieldDescription, v))
-}
-
-// DescriptionNEQ applies the NEQ predicate on the "description" field.
-func DescriptionNEQ(v string) predicate.Project {
-	return predicate.Project(sql.FieldNEQ(FieldDescription, v))
-}
-
-// DescriptionIn applies the In predicate on the "description" field.
-func DescriptionIn(vs ...string) predicate.Project {
-	return predicate.Project(sql.FieldIn(FieldDescription, vs...))
-}
-
-// DescriptionNotIn applies the NotIn predicate on the "description" field.
-func DescriptionNotIn(vs ...string) predicate.Project {
-	return predicate.Project(sql.FieldNotIn(FieldDescription, vs...))
-}
-
-// DescriptionGT applies the GT predicate on the "description" field.
-func DescriptionGT(v string) predicate.Project {
-	return predicate.Project(sql.FieldGT(FieldDescription, v))
-}
-
-// DescriptionGTE applies the GTE predicate on the "description" field.
-func DescriptionGTE(v string) predicate.Project {
-	return predicate.Project(sql.FieldGTE(FieldDescription, v))
-}
-
-// DescriptionLT applies the LT predicate on the "description" field.
-func DescriptionLT(v string) predicate.Project {
-	return predicate.Project(sql.FieldLT(FieldDescription, v))
-}
-
-// DescriptionLTE applies the LTE predicate on the "description" field.
-func DescriptionLTE(v string) predicate.Project {
-	return predicate.Project(sql.FieldLTE(FieldDescription, v))
-}
-
-// DescriptionContains applies the Contains predicate on the "description" field.
-func DescriptionContains(v string) predicate.Project {
-	return predicate.Project(sql.FieldContains(FieldDescription, v))
-}
-
-// DescriptionHasPrefix applies the HasPrefix predicate on the "description" field.
-func DescriptionHasPrefix(v string) predicate.Project {
-	return predicate.Project(sql.FieldHasPrefix(FieldDescription, v))
-}
-
-// DescriptionHasSuffix applies the HasSuffix predicate on the "description" field.
-func DescriptionHasSuffix(v string) predicate.Project {
-	return predicate.Project(sql.FieldHasSuffix(FieldDescription, v))
-}
-
-// DescriptionIsNil applies the IsNil predicate on the "description" field.
-func DescriptionIsNil() predicate.Project {
-	return predicate.Project(sql.FieldIsNull(FieldDescription))
-}
-
-// DescriptionNotNil applies the NotNil predicate on the "description" field.
-func DescriptionNotNil() predicate.Project {
-	return predicate.Project(sql.FieldNotNull(FieldDescription))
-}
-
-// DescriptionEqualFold applies the EqualFold predicate on the "description" field.
-func DescriptionEqualFold(v string) predicate.Project {
-	return predicate.Project(sql.FieldEqualFold(FieldDescription, v))
-}
-
-// DescriptionContainsFold applies the ContainsFold predicate on the "description" field.
-func DescriptionContainsFold(v string) predicate.Project {
-	return predicate.Project(sql.FieldContainsFold(FieldDescription, v))
 }
 
 // FoundingDateEQ applies the EQ predicate on the "founding_date" field.
