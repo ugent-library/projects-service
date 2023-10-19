@@ -26,7 +26,6 @@ func init() {
 
 type cerifProcessor struct {
 	log *service.Logger
-	key string
 }
 
 func (c *cerifProcessor) Process(ctx context.Context, m *service.Message) (service.MessageBatch, error) {
