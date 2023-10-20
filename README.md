@@ -17,24 +17,6 @@ CREATE TEXT SEARCH CONFIGURATION usimple ( COPY = simple );
 ALTER TEXT SEARCH CONFIGURATION usimple ALTER MAPPING FOR hword, hword_part, word WITH unaccent, simple;
 ```
 
-The database is managed with [atlas](https://atlasgo.io/).
-
-Copy the `atlas.hcl.example` to `atlas.hcl`. 
-
-Atlas requires you to have two databases when developing, both are referenced in the `atlas.hcl` file:
-
-* a [dev-database](https://atlasgo.io/concepts/dev-database) used to check the state 
-of the database against the schema and migrations in order to generate a migration path.
-* The target database containing data, on which migrations are applied.
-
-In production, using a `dev-database` to verify the migration path and allow rollbacks is optional.
-
-Initialize the database with the `env` flag:
-
-```
-atlas migrate apply --env local
-```
-
 ### Environment variables
 
 Copy `.env.example` to `.env` and ensure these variables are present:
@@ -66,10 +48,10 @@ docker run ugentlib/projects /dist/app server
 Use [tern](https://github.com/jackc/tern) to initalize the database:
 
 ```
-cd migrations && tern migrate apply
+cd etc/migrations && tern migrate apply
 ```
 
-Either create a `tern.conf` file in the `migrations` directory, or use `tern` with 
+Either create a `tern.conf` file in the `etc/migrations` directory, or use `tern` with 
 [PG environment variables](https://www.postgresql.org/docs/current/libpq-envars.html).
 
 ## Development
@@ -90,12 +72,6 @@ If you make a change to the schema files in `ent/schema/`, you will need to run 
 * `tern migrate new` to create a new migration file.
 * Add SQL code to the migration file.
 * `tern migrate apply` to apply pending migrations to the database.
-
-**Experimental: atlas**
-
-[atlas](https://atlasgo.io) is a companion to `ent`. It calculates a migration path by diffing
-the schema in Go against the migrations. It then generates a new migration in SQL. This project
-supports atlas, but prefers tern as atlas relies on [lib/pq](https://github.com/lib/pq).
 
 ## OpenAPI
 
