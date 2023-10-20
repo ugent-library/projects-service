@@ -27,15 +27,6 @@ type TranslatedString struct {
 	Value map[string]string `json:"value"`
 }
 
-type Grant struct {
-	Identifier  string           `json:"identifier"`
-	IsAwardedBy FundingProgramme `json:"isAwardedBy"`
-}
-
-type FundingProgramme struct {
-	Name string `json:"name"`
-}
-
 func (Project) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id").
