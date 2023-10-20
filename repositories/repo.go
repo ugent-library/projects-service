@@ -63,6 +63,7 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 		SetGrantID(p.Grant).
 		SetFundingProgramme(p.FundingProgramme).
 		SetAcronym(p.Acronym).
+		SetDeleted(p.Deleted).
 		SetCreated(p.DateCreated).
 		SetModified(p.DateModified).
 		OnConflictColumns(project.FieldGismoID).
@@ -93,15 +94,28 @@ func (r *Repo) GetProject(ctx context.Context, id string) (*models.Project, erro
 }
 
 func (r *Repo) DeleteProject(ctx context.Context, id string) error {
-	_, err := r.client.Project.Delete().
-		Where(project.GismoIDEQ(id)).
-		Exec(ctx)
+	p, err := r.client.Project.Query().
+		Where(project.GismoID(id)).
+		Only(ctx)
 
-	if ent.IsConstraintError(err) {
+	switch {
+	case ent.IsNotFound(err):
+		return nil
+	case ent.IsConstraintError(err):
 		return ErrConstraint
+	case err != nil:
+		return err
 	}
 
-	return err
+	err = p.Update().
+		SetDeleted(true).
+		Exec(ctx)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r *Repo) SuggestProjects(ctx context.Context, query string) ([]*models.Project, error) {

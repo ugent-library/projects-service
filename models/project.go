@@ -12,6 +12,7 @@ type Project struct {
 	Grant            string
 	FundingProgramme string
 	Acronym          string
+	Deleted          bool
 	DateCreated      time.Time
 	DateModified     time.Time
 }

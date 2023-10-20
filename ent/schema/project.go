@@ -62,6 +62,8 @@ func (Project) Fields() []ent.Field {
 			Optional(),
 		field.String("funding_programme").
 			Optional(),
+		field.Bool("deleted").
+			Default(false),
 		field.Time("created").
 			Default(timeUTC).
 			Immutable(),

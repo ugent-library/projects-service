@@ -94,6 +94,11 @@ func FundingProgramme(v string) predicate.Project {
 	return predicate.Project(sql.FieldEQ(FieldFundingProgramme, v))
 }
 
+// Deleted applies equality check predicate on the "deleted" field. It's identical to DeletedEQ.
+func Deleted(v bool) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldDeleted, v))
+}
+
 // Created applies equality check predicate on the "created" field. It's identical to CreatedEQ.
 func Created(v time.Time) predicate.Project {
 	return predicate.Project(sql.FieldEQ(FieldCreated, v))
@@ -547,6 +552,16 @@ func FundingProgrammeEqualFold(v string) predicate.Project {
 // FundingProgrammeContainsFold applies the ContainsFold predicate on the "funding_programme" field.
 func FundingProgrammeContainsFold(v string) predicate.Project {
 	return predicate.Project(sql.FieldContainsFold(FieldFundingProgramme, v))
+}
+
+// DeletedEQ applies the EQ predicate on the "deleted" field.
+func DeletedEQ(v bool) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldDeleted, v))
+}
+
+// DeletedNEQ applies the NEQ predicate on the "deleted" field.
+func DeletedNEQ(v bool) predicate.Project {
+	return predicate.Project(sql.FieldNEQ(FieldDeleted, v))
 }
 
 // CreatedEQ applies the EQ predicate on the "created" field.

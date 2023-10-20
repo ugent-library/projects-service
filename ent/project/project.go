@@ -32,6 +32,8 @@ const (
 	FieldGrantID = "grant_id"
 	// FieldFundingProgramme holds the string denoting the funding_programme field in the database.
 	FieldFundingProgramme = "funding_programme"
+	// FieldDeleted holds the string denoting the deleted field in the database.
+	FieldDeleted = "deleted"
 	// FieldCreated holds the string denoting the created field in the database.
 	FieldCreated = "created"
 	// FieldModified holds the string denoting the modified field in the database.
@@ -54,6 +56,7 @@ var Columns = []string{
 	FieldAcronym,
 	FieldGrantID,
 	FieldFundingProgramme,
+	FieldDeleted,
 	FieldCreated,
 	FieldModified,
 	FieldTs,
@@ -76,6 +79,8 @@ var (
 	DefaultName schema.TranslatedString
 	// DefaultDescription holds the default value on creation for the "description" field.
 	DefaultDescription schema.TranslatedString
+	// DefaultDeleted holds the default value on creation for the "deleted" field.
+	DefaultDeleted bool
 	// DefaultCreated holds the default value on creation for the "created" field.
 	DefaultCreated func() time.Time
 	// DefaultModified holds the default value on creation for the "modified" field.
@@ -122,6 +127,11 @@ func ByGrantID(opts ...sql.OrderTermOption) OrderOption {
 // ByFundingProgramme orders the results by the funding_programme field.
 func ByFundingProgramme(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldFundingProgramme, opts...).ToFunc()
+}
+
+// ByDeleted orders the results by the deleted field.
+func ByDeleted(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeleted, opts...).ToFunc()
 }
 
 // ByCreated orders the results by the created field.

@@ -142,6 +142,20 @@ func (pc *ProjectCreate) SetNillableFundingProgramme(s *string) *ProjectCreate {
 	return pc
 }
 
+// SetDeleted sets the "deleted" field.
+func (pc *ProjectCreate) SetDeleted(b bool) *ProjectCreate {
+	pc.mutation.SetDeleted(b)
+	return pc
+}
+
+// SetNillableDeleted sets the "deleted" field if the given value is not nil.
+func (pc *ProjectCreate) SetNillableDeleted(b *bool) *ProjectCreate {
+	if b != nil {
+		pc.SetDeleted(*b)
+	}
+	return pc
+}
+
 // SetCreated sets the "created" field.
 func (pc *ProjectCreate) SetCreated(t time.Time) *ProjectCreate {
 	pc.mutation.SetCreated(t)
@@ -245,6 +259,10 @@ func (pc *ProjectCreate) defaults() {
 		v := project.DefaultDescription
 		pc.mutation.SetDescription(v)
 	}
+	if _, ok := pc.mutation.Deleted(); !ok {
+		v := project.DefaultDeleted
+		pc.mutation.SetDeleted(v)
+	}
 	if _, ok := pc.mutation.Created(); !ok {
 		v := project.DefaultCreated()
 		pc.mutation.SetCreated(v)
@@ -272,6 +290,9 @@ func (pc *ProjectCreate) check() error {
 	}
 	if _, ok := pc.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "Project.description"`)}
+	}
+	if _, ok := pc.mutation.Deleted(); !ok {
+		return &ValidationError{Name: "deleted", err: errors.New(`ent: missing required field "Project.deleted"`)}
 	}
 	if _, ok := pc.mutation.Created(); !ok {
 		return &ValidationError{Name: "created", err: errors.New(`ent: missing required field "Project.created"`)}
@@ -350,6 +371,10 @@ func (pc *ProjectCreate) createSpec() (*Project, *sqlgraph.CreateSpec) {
 	if value, ok := pc.mutation.FundingProgramme(); ok {
 		_spec.SetField(project.FieldFundingProgramme, field.TypeString, value)
 		_node.FundingProgramme = value
+	}
+	if value, ok := pc.mutation.Deleted(); ok {
+		_spec.SetField(project.FieldDeleted, field.TypeBool, value)
+		_node.Deleted = value
 	}
 	if value, ok := pc.mutation.Created(); ok {
 		_spec.SetField(project.FieldCreated, field.TypeTime, value)
@@ -550,6 +575,18 @@ func (u *ProjectUpsert) UpdateFundingProgramme() *ProjectUpsert {
 // ClearFundingProgramme clears the value of the "funding_programme" field.
 func (u *ProjectUpsert) ClearFundingProgramme() *ProjectUpsert {
 	u.SetNull(project.FieldFundingProgramme)
+	return u
+}
+
+// SetDeleted sets the "deleted" field.
+func (u *ProjectUpsert) SetDeleted(v bool) *ProjectUpsert {
+	u.Set(project.FieldDeleted, v)
+	return u
+}
+
+// UpdateDeleted sets the "deleted" field to the value that was provided on create.
+func (u *ProjectUpsert) UpdateDeleted() *ProjectUpsert {
+	u.SetExcluded(project.FieldDeleted)
 	return u
 }
 
@@ -792,6 +829,20 @@ func (u *ProjectUpsertOne) UpdateFundingProgramme() *ProjectUpsertOne {
 func (u *ProjectUpsertOne) ClearFundingProgramme() *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
 		s.ClearFundingProgramme()
+	})
+}
+
+// SetDeleted sets the "deleted" field.
+func (u *ProjectUpsertOne) SetDeleted(v bool) *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.SetDeleted(v)
+	})
+}
+
+// UpdateDeleted sets the "deleted" field to the value that was provided on create.
+func (u *ProjectUpsertOne) UpdateDeleted() *ProjectUpsertOne {
+	return u.Update(func(s *ProjectUpsert) {
+		s.UpdateDeleted()
 	})
 }
 
@@ -1202,6 +1253,20 @@ func (u *ProjectUpsertBulk) UpdateFundingProgramme() *ProjectUpsertBulk {
 func (u *ProjectUpsertBulk) ClearFundingProgramme() *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
 		s.ClearFundingProgramme()
+	})
+}
+
+// SetDeleted sets the "deleted" field.
+func (u *ProjectUpsertBulk) SetDeleted(v bool) *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.SetDeleted(v)
+	})
+}
+
+// UpdateDeleted sets the "deleted" field to the value that was provided on create.
+func (u *ProjectUpsertBulk) UpdateDeleted() *ProjectUpsertBulk {
+	return u.Update(func(s *ProjectUpsert) {
+		s.UpdateDeleted()
 	})
 }
 

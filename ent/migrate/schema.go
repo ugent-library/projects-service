@@ -21,6 +21,7 @@ var (
 		{Name: "acronym", Type: field.TypeString, Nullable: true},
 		{Name: "grant_id", Type: field.TypeString, Nullable: true},
 		{Name: "funding_programme", Type: field.TypeString, Nullable: true},
+		{Name: "deleted", Type: field.TypeBool, Default: false},
 		{Name: "created", Type: field.TypeTime},
 		{Name: "modified", Type: field.TypeTime},
 		{Name: "ts", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"postgres": "tsvector NULL GENERATED ALWAYS AS(to_tsvector('simple', jsonb_path_query_array(identifier,'$.**{2}')) || to_tsvector('simple', id) || to_tsvector('usimple',name)) STORED"}},
@@ -34,7 +35,7 @@ var (
 			{
 				Name:    "project_ts",
 				Unique:  false,
-				Columns: []*schema.Column{ProjectsColumns[12]},
+				Columns: []*schema.Column{ProjectsColumns[13]},
 				Annotation: &entsql.IndexAnnotation{
 					Type: "GIN",
 				},

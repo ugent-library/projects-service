@@ -177,6 +177,20 @@ func (pu *ProjectUpdate) ClearFundingProgramme() *ProjectUpdate {
 	return pu
 }
 
+// SetDeleted sets the "deleted" field.
+func (pu *ProjectUpdate) SetDeleted(b bool) *ProjectUpdate {
+	pu.mutation.SetDeleted(b)
+	return pu
+}
+
+// SetNillableDeleted sets the "deleted" field if the given value is not nil.
+func (pu *ProjectUpdate) SetNillableDeleted(b *bool) *ProjectUpdate {
+	if b != nil {
+		pu.SetDeleted(*b)
+	}
+	return pu
+}
+
 // SetModified sets the "modified" field.
 func (pu *ProjectUpdate) SetModified(t time.Time) *ProjectUpdate {
 	pu.mutation.SetModified(t)
@@ -294,6 +308,9 @@ func (pu *ProjectUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if pu.mutation.FundingProgrammeCleared() {
 		_spec.ClearField(project.FieldFundingProgramme, field.TypeString)
+	}
+	if value, ok := pu.mutation.Deleted(); ok {
+		_spec.SetField(project.FieldDeleted, field.TypeBool, value)
 	}
 	if value, ok := pu.mutation.Modified(); ok {
 		_spec.SetField(project.FieldModified, field.TypeTime, value)
@@ -472,6 +489,20 @@ func (puo *ProjectUpdateOne) ClearFundingProgramme() *ProjectUpdateOne {
 	return puo
 }
 
+// SetDeleted sets the "deleted" field.
+func (puo *ProjectUpdateOne) SetDeleted(b bool) *ProjectUpdateOne {
+	puo.mutation.SetDeleted(b)
+	return puo
+}
+
+// SetNillableDeleted sets the "deleted" field if the given value is not nil.
+func (puo *ProjectUpdateOne) SetNillableDeleted(b *bool) *ProjectUpdateOne {
+	if b != nil {
+		puo.SetDeleted(*b)
+	}
+	return puo
+}
+
 // SetModified sets the "modified" field.
 func (puo *ProjectUpdateOne) SetModified(t time.Time) *ProjectUpdateOne {
 	puo.mutation.SetModified(t)
@@ -619,6 +650,9 @@ func (puo *ProjectUpdateOne) sqlSave(ctx context.Context) (_node *Project, err e
 	}
 	if puo.mutation.FundingProgrammeCleared() {
 		_spec.ClearField(project.FieldFundingProgramme, field.TypeString)
+	}
+	if value, ok := puo.mutation.Deleted(); ok {
+		_spec.SetField(project.FieldDeleted, field.TypeBool, value)
 	}
 	if value, ok := puo.mutation.Modified(); ok {
 		_spec.SetField(project.FieldModified, field.TypeTime, value)

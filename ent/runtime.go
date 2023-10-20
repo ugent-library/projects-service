@@ -27,12 +27,16 @@ func init() {
 	projectDescDescription := projectFields[4].Descriptor()
 	// project.DefaultDescription holds the default value on creation for the description field.
 	project.DefaultDescription = projectDescDescription.Default.(schema.TranslatedString)
+	// projectDescDeleted is the schema descriptor for deleted field.
+	projectDescDeleted := projectFields[10].Descriptor()
+	// project.DefaultDeleted holds the default value on creation for the deleted field.
+	project.DefaultDeleted = projectDescDeleted.Default.(bool)
 	// projectDescCreated is the schema descriptor for created field.
-	projectDescCreated := projectFields[10].Descriptor()
+	projectDescCreated := projectFields[11].Descriptor()
 	// project.DefaultCreated holds the default value on creation for the created field.
 	project.DefaultCreated = projectDescCreated.Default.(func() time.Time)
 	// projectDescModified is the schema descriptor for modified field.
-	projectDescModified := projectFields[11].Descriptor()
+	projectDescModified := projectFields[12].Descriptor()
 	// project.DefaultModified holds the default value on creation for the modified field.
 	project.DefaultModified = projectDescModified.Default.(func() time.Time)
 	// project.UpdateDefaultModified holds the default value on update for the modified field.

@@ -37,6 +37,8 @@ type Project struct {
 	GrantID string `json:"grant_id,omitempty"`
 	// FundingProgramme holds the value of the "funding_programme" field.
 	FundingProgramme string `json:"funding_programme,omitempty"`
+	// Deleted holds the value of the "deleted" field.
+	Deleted bool `json:"deleted,omitempty"`
 	// Created holds the value of the "created" field.
 	Created time.Time `json:"created,omitempty"`
 	// Modified holds the value of the "modified" field.
@@ -53,6 +55,8 @@ func (*Project) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case project.FieldIdentifier, project.FieldName, project.FieldDescription:
 			values[i] = new([]byte)
+		case project.FieldDeleted:
+			values[i] = new(sql.NullBool)
 		case project.FieldID, project.FieldGismoID, project.FieldFoundingDate, project.FieldDissolutionDate, project.FieldAcronym, project.FieldGrantID, project.FieldFundingProgramme, project.FieldTs:
 			values[i] = new(sql.NullString)
 		case project.FieldCreated, project.FieldModified:
@@ -138,6 +142,12 @@ func (pr *Project) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				pr.FundingProgramme = value.String
 			}
+		case project.FieldDeleted:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted", values[i])
+			} else if value.Valid {
+				pr.Deleted = value.Bool
+			}
 		case project.FieldCreated:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created", values[i])
@@ -218,6 +228,9 @@ func (pr *Project) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("funding_programme=")
 	builder.WriteString(pr.FundingProgramme)
+	builder.WriteString(", ")
+	builder.WriteString("deleted=")
+	builder.WriteString(fmt.Sprintf("%v", pr.Deleted))
 	builder.WriteString(", ")
 	builder.WriteString("created=")
 	builder.WriteString(pr.Created.Format(time.ANSIC))

@@ -43,6 +43,7 @@ type ProjectMutation struct {
 	acronym           *string
 	grant_id          *string
 	funding_programme *string
+	deleted           *bool
 	created           *time.Time
 	modified          *time.Time
 	ts                *string
@@ -545,6 +546,42 @@ func (m *ProjectMutation) ResetFundingProgramme() {
 	delete(m.clearedFields, project.FieldFundingProgramme)
 }
 
+// SetDeleted sets the "deleted" field.
+func (m *ProjectMutation) SetDeleted(b bool) {
+	m.deleted = &b
+}
+
+// Deleted returns the value of the "deleted" field in the mutation.
+func (m *ProjectMutation) Deleted() (r bool, exists bool) {
+	v := m.deleted
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeleted returns the old "deleted" field's value of the Project entity.
+// If the Project object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ProjectMutation) OldDeleted(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeleted is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeleted requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeleted: %w", err)
+	}
+	return oldValue.Deleted, nil
+}
+
+// ResetDeleted resets all changes to the "deleted" field.
+func (m *ProjectMutation) ResetDeleted() {
+	m.deleted = nil
+}
+
 // SetCreated sets the "created" field.
 func (m *ProjectMutation) SetCreated(t time.Time) {
 	m.created = &t
@@ -700,7 +737,7 @@ func (m *ProjectMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ProjectMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 13)
 	if m.gismo_id != nil {
 		fields = append(fields, project.FieldGismoID)
 	}
@@ -727,6 +764,9 @@ func (m *ProjectMutation) Fields() []string {
 	}
 	if m.funding_programme != nil {
 		fields = append(fields, project.FieldFundingProgramme)
+	}
+	if m.deleted != nil {
+		fields = append(fields, project.FieldDeleted)
 	}
 	if m.created != nil {
 		fields = append(fields, project.FieldCreated)
@@ -763,6 +803,8 @@ func (m *ProjectMutation) Field(name string) (ent.Value, bool) {
 		return m.GrantID()
 	case project.FieldFundingProgramme:
 		return m.FundingProgramme()
+	case project.FieldDeleted:
+		return m.Deleted()
 	case project.FieldCreated:
 		return m.Created()
 	case project.FieldModified:
@@ -796,6 +838,8 @@ func (m *ProjectMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldGrantID(ctx)
 	case project.FieldFundingProgramme:
 		return m.OldFundingProgramme(ctx)
+	case project.FieldDeleted:
+		return m.OldDeleted(ctx)
 	case project.FieldCreated:
 		return m.OldCreated(ctx)
 	case project.FieldModified:
@@ -873,6 +917,13 @@ func (m *ProjectMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetFundingProgramme(v)
+		return nil
+	case project.FieldDeleted:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeleted(v)
 		return nil
 	case project.FieldCreated:
 		v, ok := value.(time.Time)
@@ -1009,6 +1060,9 @@ func (m *ProjectMutation) ResetField(name string) error {
 		return nil
 	case project.FieldFundingProgramme:
 		m.ResetFundingProgramme()
+		return nil
+	case project.FieldDeleted:
+		m.ResetDeleted()
 		return nil
 	case project.FieldCreated:
 		m.ResetCreated()
