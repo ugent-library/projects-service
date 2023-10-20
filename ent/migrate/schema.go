@@ -24,7 +24,7 @@ var (
 		{Name: "deleted", Type: field.TypeBool, Default: false},
 		{Name: "created", Type: field.TypeTime},
 		{Name: "modified", Type: field.TypeTime},
-		{Name: "ts", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"postgres": "tsvector NULL GENERATED ALWAYS AS(to_tsvector('simple', jsonb_path_query_array(identifier,'$.**{2}')) || to_tsvector('simple', id) || to_tsvector('usimple',name)) STORED"}},
+		{Name: "ts", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"postgres": "tsvector NULL GENERATED ALWAYS AS ((to_tsvector('simple'::regconfig, jsonb_path_query_array(identifier, '$.**{2}'::jsonpath)) || to_tsvector('simple'::regconfig, (id)::text)) || to_tsvector('usimple'::regconfig, jsonb_path_query_array(name, '$.**{2}'::jsonpath))) STORED"}},
 	}
 	// ProjectsTable holds the schema information for the "projects" table.
 	ProjectsTable = &schema.Table{
