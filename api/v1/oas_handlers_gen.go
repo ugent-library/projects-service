@@ -124,7 +124,7 @@ func (s *Server) handleAddProjectRequest(args [0]string, argsEscaped bool, w htt
 		}
 	}()
 
-	var response AddProjectRes
+	var response *AddProjectOK
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -139,7 +139,7 @@ func (s *Server) handleAddProjectRequest(args [0]string, argsEscaped bool, w htt
 		type (
 			Request  = *AddProject
 			Params   = struct{}
-			Response = AddProjectRes
+			Response = *AddProjectOK
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -150,12 +150,12 @@ func (s *Server) handleAddProjectRequest(args [0]string, argsEscaped bool, w htt
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.AddProject(ctx, request)
+				err = s.h.AddProject(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.AddProject(ctx, request)
+		err = s.h.AddProject(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
@@ -287,7 +287,7 @@ func (s *Server) handleDeleteProjectRequest(args [0]string, argsEscaped bool, w 
 		}
 	}()
 
-	var response DeleteProjectRes
+	var response *DeleteProjectOK
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -302,7 +302,7 @@ func (s *Server) handleDeleteProjectRequest(args [0]string, argsEscaped bool, w 
 		type (
 			Request  = *DeleteProjectRequest
 			Params   = struct{}
-			Response = DeleteProjectRes
+			Response = *DeleteProjectOK
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -313,12 +313,12 @@ func (s *Server) handleDeleteProjectRequest(args [0]string, argsEscaped bool, w 
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.DeleteProject(ctx, request)
+				err = s.h.DeleteProject(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.DeleteProject(ctx, request)
+		err = s.h.DeleteProject(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {

@@ -19,7 +19,7 @@ func NewService(repo *repositories.Repo) *Service {
 	}
 }
 
-func (s *Service) AddProject(ctx context.Context, req *AddProject) (AddProjectRes, error) {
+func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
 	p := &models.Project{}
 
 	if v, ok := req.GetID().Get(); ok {
@@ -90,26 +90,20 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) (AddProjectRe
 	}
 
 	if err := s.repo.AddProject(ctx, p); err != nil {
-		return nil, err
+		return err
 	}
 
-	return &AddProjectOK{}, nil
+	return nil
 }
 
-func (s *Service) DeleteProject(ctx context.Context, req *DeleteProjectRequest) (DeleteProjectRes, error) {
+func (s *Service) DeleteProject(ctx context.Context, req *DeleteProjectRequest) error {
 	v := req.GetID()
 	err := s.repo.DeleteProject(ctx, v)
-	if errors.Is(err, repositories.ErrNotFound) {
-		return &ErrorStatusCode{
-			StatusCode: 404,
-			Response: Error{
-				Code:    404,
-				Message: fmt.Sprintf("Project not found: %s", v),
-			},
-		}, nil
+	if err != nil {
+		return err
 	}
 
-	return &DeleteProjectOK{}, nil
+	return nil
 }
 
 func (s *Service) GetProject(ctx context.Context, req *GetProjectRequest) (GetProjectRes, error) {

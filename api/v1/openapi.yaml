@@ -22,9 +22,6 @@ paths:
       responses:
         '200':
           description: Success
-        '404':
-          description: Project not found
-          $ref: "#/components/responses/Error"
         default:
           $ref: "#/components/responses/Error"
 
@@ -66,9 +63,6 @@ paths:
       responses:
         '200':
           description: Success
-        '404':
-          description: Project not found
-          $ref: "#/components/responses/Error"
         default:
           $ref: '#/components/responses/Error'
 

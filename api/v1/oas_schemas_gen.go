@@ -287,8 +287,6 @@ func (s *AddProjectNameItem) SetValue(val string) {
 // AddProjectOK is response for AddProject operation.
 type AddProjectOK struct{}
 
-func (*AddProjectOK) addProjectRes() {}
-
 type ApiKey struct {
 	APIKey string
 }
@@ -305,8 +303,6 @@ func (s *ApiKey) SetAPIKey(val string) {
 
 // DeleteProjectOK is response for DeleteProject operation.
 type DeleteProjectOK struct{}
-
-func (*DeleteProjectOK) deleteProjectRes() {}
 
 // Ref: #/components/schemas/DeleteProjectRequest
 type DeleteProjectRequest struct {
@@ -375,9 +371,7 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 	s.Response = val
 }
 
-func (*ErrorStatusCode) addProjectRes()    {}
-func (*ErrorStatusCode) deleteProjectRes() {}
-func (*ErrorStatusCode) getProjectRes()    {}
+func (*ErrorStatusCode) getProjectRes() {}
 
 // Merged schema.
 // Ref: #/components/schemas/GetProject

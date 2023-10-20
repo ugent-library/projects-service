@@ -28,13 +28,13 @@ type Invoker interface {
 	// Add a single project.
 	//
 	// POST /add-project
-	AddProject(ctx context.Context, request *AddProject) (AddProjectRes, error)
+	AddProject(ctx context.Context, request *AddProject) error
 	// DeleteProject invokes deleteProject operation.
 	//
 	// Delete a project.
 	//
 	// POST /delete-project
-	DeleteProject(ctx context.Context, request *DeleteProjectRequest) (DeleteProjectRes, error)
+	DeleteProject(ctx context.Context, request *DeleteProjectRequest) error
 	// GetProject invokes getProject operation.
 	//
 	// Get a project.
@@ -108,12 +108,12 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 // Add a single project.
 //
 // POST /add-project
-func (c *Client) AddProject(ctx context.Context, request *AddProject) (AddProjectRes, error) {
-	res, err := c.sendAddProject(ctx, request)
-	return res, err
+func (c *Client) AddProject(ctx context.Context, request *AddProject) error {
+	_, err := c.sendAddProject(ctx, request)
+	return err
 }
 
-func (c *Client) sendAddProject(ctx context.Context, request *AddProject) (res AddProjectRes, err error) {
+func (c *Client) sendAddProject(ctx context.Context, request *AddProject) (res *AddProjectOK, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("addProject"),
 		semconv.HTTPMethodKey.String("POST"),
@@ -225,12 +225,12 @@ func (c *Client) sendAddProject(ctx context.Context, request *AddProject) (res A
 // Delete a project.
 //
 // POST /delete-project
-func (c *Client) DeleteProject(ctx context.Context, request *DeleteProjectRequest) (DeleteProjectRes, error) {
-	res, err := c.sendDeleteProject(ctx, request)
-	return res, err
+func (c *Client) DeleteProject(ctx context.Context, request *DeleteProjectRequest) error {
+	_, err := c.sendDeleteProject(ctx, request)
+	return err
 }
 
-func (c *Client) sendDeleteProject(ctx context.Context, request *DeleteProjectRequest) (res DeleteProjectRes, err error) {
+func (c *Client) sendDeleteProject(ctx context.Context, request *DeleteProjectRequest) (res *DeleteProjectOK, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("deleteProject"),
 		semconv.HTTPMethodKey.String("POST"),

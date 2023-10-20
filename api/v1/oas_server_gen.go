@@ -13,13 +13,13 @@ type Handler interface {
 	// Add a single project.
 	//
 	// POST /add-project
-	AddProject(ctx context.Context, req *AddProject) (AddProjectRes, error)
+	AddProject(ctx context.Context, req *AddProject) error
 	// DeleteProject implements deleteProject operation.
 	//
 	// Delete a project.
 	//
 	// POST /delete-project
-	DeleteProject(ctx context.Context, req *DeleteProjectRequest) (DeleteProjectRes, error)
+	DeleteProject(ctx context.Context, req *DeleteProjectRequest) error
 	// GetProject implements getProject operation.
 	//
 	// Get a project.
