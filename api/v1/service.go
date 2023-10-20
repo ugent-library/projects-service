@@ -38,6 +38,13 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
 	}
 
 	if v, ok := req.GetModified().Get(); ok {
+		// Drop the update if it's older then the last modified datetime in the database.
+		if !p.DateModified.IsZero() {
+			if v.Compare(p.DateModified) != 1 {
+				return nil
+			}
+		}
+
 		p.DateModified = v
 	}
 

@@ -75,7 +75,7 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 
 func (r *Repo) GetProject(ctx context.Context, id string) (*models.Project, error) {
 	row, err := r.client.Project.Query().
-		Where(project.IDEQ(id)).
+		Where(project.GismoID(id)).
 		Only(ctx)
 
 	if ent.IsNotFound(err) {
