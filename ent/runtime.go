@@ -31,16 +31,16 @@ func init() {
 	projectDescDeleted := projectFields[10].Descriptor()
 	// project.DefaultDeleted holds the default value on creation for the deleted field.
 	project.DefaultDeleted = projectDescDeleted.Default.(bool)
-	// projectDescCreated is the schema descriptor for created field.
-	projectDescCreated := projectFields[11].Descriptor()
-	// project.DefaultCreated holds the default value on creation for the created field.
-	project.DefaultCreated = projectDescCreated.Default.(func() time.Time)
-	// projectDescModified is the schema descriptor for modified field.
-	projectDescModified := projectFields[12].Descriptor()
-	// project.DefaultModified holds the default value on creation for the modified field.
-	project.DefaultModified = projectDescModified.Default.(func() time.Time)
-	// project.UpdateDefaultModified holds the default value on update for the modified field.
-	project.UpdateDefaultModified = projectDescModified.UpdateDefault.(func() time.Time)
+	// projectDescCreatedAt is the schema descriptor for created_at field.
+	projectDescCreatedAt := projectFields[11].Descriptor()
+	// project.DefaultCreatedAt holds the default value on creation for the created_at field.
+	project.DefaultCreatedAt = projectDescCreatedAt.Default.(func() time.Time)
+	// projectDescUpdatedAt is the schema descriptor for updated_at field.
+	projectDescUpdatedAt := projectFields[12].Descriptor()
+	// project.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	project.DefaultUpdatedAt = projectDescUpdatedAt.Default.(func() time.Time)
+	// project.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	project.UpdateDefaultUpdatedAt = projectDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// projectDescID is the schema descriptor for id field.
 	projectDescID := projectFields[0].Descriptor()
 	// project.DefaultID holds the default value on creation for the id field.

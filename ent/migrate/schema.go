@@ -22,8 +22,8 @@ var (
 		{Name: "grant_id", Type: field.TypeString, Nullable: true},
 		{Name: "funding_programme", Type: field.TypeString, Nullable: true},
 		{Name: "deleted", Type: field.TypeBool, Default: false},
-		{Name: "created", Type: field.TypeTime},
-		{Name: "modified", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "ts", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"postgres": "tsvector NULL GENERATED ALWAYS AS ((to_tsvector('simple'::regconfig, jsonb_path_query_array(identifier, '$.**{2}'::jsonpath)) || to_tsvector('simple'::regconfig, (id)::text)) || to_tsvector('usimple'::regconfig, jsonb_path_query_array(name, '$.**{2}'::jsonpath))) STORED"}},
 	}
 	// ProjectsTable holds the schema information for the "projects" table.

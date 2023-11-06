@@ -34,10 +34,10 @@ const (
 	FieldFundingProgramme = "funding_programme"
 	// FieldDeleted holds the string denoting the deleted field in the database.
 	FieldDeleted = "deleted"
-	// FieldCreated holds the string denoting the created field in the database.
-	FieldCreated = "created"
-	// FieldModified holds the string denoting the modified field in the database.
-	FieldModified = "modified"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// FieldTs holds the string denoting the ts field in the database.
 	FieldTs = "ts"
 	// Table holds the table name of the project in the database.
@@ -57,8 +57,8 @@ var Columns = []string{
 	FieldGrantID,
 	FieldFundingProgramme,
 	FieldDeleted,
-	FieldCreated,
-	FieldModified,
+	FieldCreatedAt,
+	FieldUpdatedAt,
 	FieldTs,
 }
 
@@ -81,12 +81,12 @@ var (
 	DefaultDescription schema.TranslatedString
 	// DefaultDeleted holds the default value on creation for the "deleted" field.
 	DefaultDeleted bool
-	// DefaultCreated holds the default value on creation for the "created" field.
-	DefaultCreated func() time.Time
-	// DefaultModified holds the default value on creation for the "modified" field.
-	DefaultModified func() time.Time
-	// UpdateDefaultModified holds the default value on update for the "modified" field.
-	UpdateDefaultModified func() time.Time
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt func() time.Time
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
+	UpdateDefaultUpdatedAt func() time.Time
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() string
 )
@@ -134,14 +134,14 @@ func ByDeleted(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeleted, opts...).ToFunc()
 }
 
-// ByCreated orders the results by the created field.
-func ByCreated(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldCreated, opts...).ToFunc()
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
-// ByModified orders the results by the modified field.
-func ByModified(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldModified, opts...).ToFunc()
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // ByTs orders the results by the ts field.

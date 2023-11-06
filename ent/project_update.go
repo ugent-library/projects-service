@@ -191,9 +191,9 @@ func (pu *ProjectUpdate) SetNillableDeleted(b *bool) *ProjectUpdate {
 	return pu
 }
 
-// SetModified sets the "modified" field.
-func (pu *ProjectUpdate) SetModified(t time.Time) *ProjectUpdate {
-	pu.mutation.SetModified(t)
+// SetUpdatedAt sets the "updated_at" field.
+func (pu *ProjectUpdate) SetUpdatedAt(t time.Time) *ProjectUpdate {
+	pu.mutation.SetUpdatedAt(t)
 	return pu
 }
 
@@ -252,9 +252,9 @@ func (pu *ProjectUpdate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (pu *ProjectUpdate) defaults() {
-	if _, ok := pu.mutation.Modified(); !ok {
-		v := project.UpdateDefaultModified()
-		pu.mutation.SetModified(v)
+	if _, ok := pu.mutation.UpdatedAt(); !ok {
+		v := project.UpdateDefaultUpdatedAt()
+		pu.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -312,8 +312,8 @@ func (pu *ProjectUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := pu.mutation.Deleted(); ok {
 		_spec.SetField(project.FieldDeleted, field.TypeBool, value)
 	}
-	if value, ok := pu.mutation.Modified(); ok {
-		_spec.SetField(project.FieldModified, field.TypeTime, value)
+	if value, ok := pu.mutation.UpdatedAt(); ok {
+		_spec.SetField(project.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := pu.mutation.Ts(); ok {
 		_spec.SetField(project.FieldTs, field.TypeString, value)
@@ -503,9 +503,9 @@ func (puo *ProjectUpdateOne) SetNillableDeleted(b *bool) *ProjectUpdateOne {
 	return puo
 }
 
-// SetModified sets the "modified" field.
-func (puo *ProjectUpdateOne) SetModified(t time.Time) *ProjectUpdateOne {
-	puo.mutation.SetModified(t)
+// SetUpdatedAt sets the "updated_at" field.
+func (puo *ProjectUpdateOne) SetUpdatedAt(t time.Time) *ProjectUpdateOne {
+	puo.mutation.SetUpdatedAt(t)
 	return puo
 }
 
@@ -577,9 +577,9 @@ func (puo *ProjectUpdateOne) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (puo *ProjectUpdateOne) defaults() {
-	if _, ok := puo.mutation.Modified(); !ok {
-		v := project.UpdateDefaultModified()
-		puo.mutation.SetModified(v)
+	if _, ok := puo.mutation.UpdatedAt(); !ok {
+		v := project.UpdateDefaultUpdatedAt()
+		puo.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -654,8 +654,8 @@ func (puo *ProjectUpdateOne) sqlSave(ctx context.Context) (_node *Project, err e
 	if value, ok := puo.mutation.Deleted(); ok {
 		_spec.SetField(project.FieldDeleted, field.TypeBool, value)
 	}
-	if value, ok := puo.mutation.Modified(); ok {
-		_spec.SetField(project.FieldModified, field.TypeTime, value)
+	if value, ok := puo.mutation.UpdatedAt(); ok {
+		_spec.SetField(project.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := puo.mutation.Ts(); ok {
 		_spec.SetField(project.FieldTs, field.TypeString, value)

@@ -55,10 +55,10 @@ func (Project) Fields() []ent.Field {
 			Optional(),
 		field.Bool("deleted").
 			Default(false),
-		field.Time("created").
+		field.Time("created_at").
 			Default(timeUTC).
 			Immutable(),
-		field.Time("modified").
+		field.Time("updated_at").
 			Default(timeUTC).
 			UpdateDefault(timeUTC),
 		field.String("ts").

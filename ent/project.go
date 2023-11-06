@@ -39,10 +39,10 @@ type Project struct {
 	FundingProgramme string `json:"funding_programme,omitempty"`
 	// Deleted holds the value of the "deleted" field.
 	Deleted bool `json:"deleted,omitempty"`
-	// Created holds the value of the "created" field.
-	Created time.Time `json:"created,omitempty"`
-	// Modified holds the value of the "modified" field.
-	Modified time.Time `json:"modified,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Ts holds the value of the "ts" field.
 	Ts           string `json:"ts,omitempty"`
 	selectValues sql.SelectValues
@@ -59,7 +59,7 @@ func (*Project) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case project.FieldID, project.FieldGismoID, project.FieldFoundingDate, project.FieldDissolutionDate, project.FieldAcronym, project.FieldGrantID, project.FieldFundingProgramme, project.FieldTs:
 			values[i] = new(sql.NullString)
-		case project.FieldCreated, project.FieldModified:
+		case project.FieldCreatedAt, project.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -148,17 +148,17 @@ func (pr *Project) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				pr.Deleted = value.Bool
 			}
-		case project.FieldCreated:
+		case project.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field created", values[i])
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				pr.Created = value.Time
+				pr.CreatedAt = value.Time
 			}
-		case project.FieldModified:
+		case project.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field modified", values[i])
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				pr.Modified = value.Time
+				pr.UpdatedAt = value.Time
 			}
 		case project.FieldTs:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -232,11 +232,11 @@ func (pr *Project) String() string {
 	builder.WriteString("deleted=")
 	builder.WriteString(fmt.Sprintf("%v", pr.Deleted))
 	builder.WriteString(", ")
-	builder.WriteString("created=")
-	builder.WriteString(pr.Created.Format(time.ANSIC))
+	builder.WriteString("created_at=")
+	builder.WriteString(pr.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("modified=")
-	builder.WriteString(pr.Modified.Format(time.ANSIC))
+	builder.WriteString("updated_at=")
+	builder.WriteString(pr.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("ts=")
 	builder.WriteString(pr.Ts)

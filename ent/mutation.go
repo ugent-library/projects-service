@@ -44,8 +44,8 @@ type ProjectMutation struct {
 	grant_id          *string
 	funding_programme *string
 	deleted           *bool
-	created           *time.Time
-	modified          *time.Time
+	created_at        *time.Time
+	updated_at        *time.Time
 	ts                *string
 	clearedFields     map[string]struct{}
 	done              bool
@@ -582,76 +582,76 @@ func (m *ProjectMutation) ResetDeleted() {
 	m.deleted = nil
 }
 
-// SetCreated sets the "created" field.
-func (m *ProjectMutation) SetCreated(t time.Time) {
-	m.created = &t
+// SetCreatedAt sets the "created_at" field.
+func (m *ProjectMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
 }
 
-// Created returns the value of the "created" field in the mutation.
-func (m *ProjectMutation) Created() (r time.Time, exists bool) {
-	v := m.created
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ProjectMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldCreated returns the old "created" field's value of the Project entity.
+// OldCreatedAt returns the old "created_at" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldCreated(ctx context.Context) (v time.Time, err error) {
+func (m *ProjectMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreated is only allowed on UpdateOne operations")
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreated requires an ID field in the mutation")
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreated: %w", err)
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
 	}
-	return oldValue.Created, nil
+	return oldValue.CreatedAt, nil
 }
 
-// ResetCreated resets all changes to the "created" field.
-func (m *ProjectMutation) ResetCreated() {
-	m.created = nil
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ProjectMutation) ResetCreatedAt() {
+	m.created_at = nil
 }
 
-// SetModified sets the "modified" field.
-func (m *ProjectMutation) SetModified(t time.Time) {
-	m.modified = &t
+// SetUpdatedAt sets the "updated_at" field.
+func (m *ProjectMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
 }
 
-// Modified returns the value of the "modified" field in the mutation.
-func (m *ProjectMutation) Modified() (r time.Time, exists bool) {
-	v := m.modified
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *ProjectMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldModified returns the old "modified" field's value of the Project entity.
+// OldUpdatedAt returns the old "updated_at" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldModified(ctx context.Context) (v time.Time, err error) {
+func (m *ProjectMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldModified is only allowed on UpdateOne operations")
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldModified requires an ID field in the mutation")
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldModified: %w", err)
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
 	}
-	return oldValue.Modified, nil
+	return oldValue.UpdatedAt, nil
 }
 
-// ResetModified resets all changes to the "modified" field.
-func (m *ProjectMutation) ResetModified() {
-	m.modified = nil
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *ProjectMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetTs sets the "ts" field.
@@ -768,11 +768,11 @@ func (m *ProjectMutation) Fields() []string {
 	if m.deleted != nil {
 		fields = append(fields, project.FieldDeleted)
 	}
-	if m.created != nil {
-		fields = append(fields, project.FieldCreated)
+	if m.created_at != nil {
+		fields = append(fields, project.FieldCreatedAt)
 	}
-	if m.modified != nil {
-		fields = append(fields, project.FieldModified)
+	if m.updated_at != nil {
+		fields = append(fields, project.FieldUpdatedAt)
 	}
 	if m.ts != nil {
 		fields = append(fields, project.FieldTs)
@@ -805,10 +805,10 @@ func (m *ProjectMutation) Field(name string) (ent.Value, bool) {
 		return m.FundingProgramme()
 	case project.FieldDeleted:
 		return m.Deleted()
-	case project.FieldCreated:
-		return m.Created()
-	case project.FieldModified:
-		return m.Modified()
+	case project.FieldCreatedAt:
+		return m.CreatedAt()
+	case project.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case project.FieldTs:
 		return m.Ts()
 	}
@@ -840,10 +840,10 @@ func (m *ProjectMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldFundingProgramme(ctx)
 	case project.FieldDeleted:
 		return m.OldDeleted(ctx)
-	case project.FieldCreated:
-		return m.OldCreated(ctx)
-	case project.FieldModified:
-		return m.OldModified(ctx)
+	case project.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case project.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case project.FieldTs:
 		return m.OldTs(ctx)
 	}
@@ -925,19 +925,19 @@ func (m *ProjectMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDeleted(v)
 		return nil
-	case project.FieldCreated:
+	case project.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetCreated(v)
+		m.SetCreatedAt(v)
 		return nil
-	case project.FieldModified:
+	case project.FieldUpdatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetModified(v)
+		m.SetUpdatedAt(v)
 		return nil
 	case project.FieldTs:
 		v, ok := value.(string)
@@ -1064,11 +1064,11 @@ func (m *ProjectMutation) ResetField(name string) error {
 	case project.FieldDeleted:
 		m.ResetDeleted()
 		return nil
-	case project.FieldCreated:
-		m.ResetCreated()
+	case project.FieldCreatedAt:
+		m.ResetCreatedAt()
 		return nil
-	case project.FieldModified:
-		m.ResetModified()
+	case project.FieldUpdatedAt:
+		m.ResetUpdatedAt()
 		return nil
 	case project.FieldTs:
 		m.ResetTs()

@@ -38,7 +38,7 @@ func New(c Config) (*Repo, error) {
 	}
 
 	driver := sqldialect.OpenDB(dialect.Postgres, db)
-	client := ent.NewClient(ent.Driver(driver))
+	client := ent.NewClient(ent.Driver(driver)).Debug()
 
 	return &Repo{
 		config: c,
@@ -64,8 +64,8 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 		SetFundingProgramme(p.FundingProgramme).
 		SetAcronym(p.Acronym).
 		SetDeleted(p.Deleted).
-		SetCreated(p.DateCreated).
-		SetModified(p.DateModified).
+		SetCreatedAt(p.DateCreated).
+		SetUpdatedAt(p.DateModified).
 		OnConflictColumns(project.FieldGismoID).
 		UpdateNewValues().
 		Exec(ctx)
@@ -143,8 +143,8 @@ func rowToProject(row *ent.Project) *models.Project {
 	p := &models.Project{
 		ID:              row.ID,
 		Identifier:      row.Identifier.Value,
-		DateCreated:     row.Created,
-		DateModified:    row.Modified,
+		DateCreated:     row.CreatedAt,
+		DateModified:    row.UpdatedAt,
 		Name:            row.Name.Value,
 		Description:     row.Description.Value,
 		FoundingDate:    row.FoundingDate,

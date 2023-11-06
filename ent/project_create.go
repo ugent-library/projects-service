@@ -156,30 +156,30 @@ func (pc *ProjectCreate) SetNillableDeleted(b *bool) *ProjectCreate {
 	return pc
 }
 
-// SetCreated sets the "created" field.
-func (pc *ProjectCreate) SetCreated(t time.Time) *ProjectCreate {
-	pc.mutation.SetCreated(t)
+// SetCreatedAt sets the "created_at" field.
+func (pc *ProjectCreate) SetCreatedAt(t time.Time) *ProjectCreate {
+	pc.mutation.SetCreatedAt(t)
 	return pc
 }
 
-// SetNillableCreated sets the "created" field if the given value is not nil.
-func (pc *ProjectCreate) SetNillableCreated(t *time.Time) *ProjectCreate {
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (pc *ProjectCreate) SetNillableCreatedAt(t *time.Time) *ProjectCreate {
 	if t != nil {
-		pc.SetCreated(*t)
+		pc.SetCreatedAt(*t)
 	}
 	return pc
 }
 
-// SetModified sets the "modified" field.
-func (pc *ProjectCreate) SetModified(t time.Time) *ProjectCreate {
-	pc.mutation.SetModified(t)
+// SetUpdatedAt sets the "updated_at" field.
+func (pc *ProjectCreate) SetUpdatedAt(t time.Time) *ProjectCreate {
+	pc.mutation.SetUpdatedAt(t)
 	return pc
 }
 
-// SetNillableModified sets the "modified" field if the given value is not nil.
-func (pc *ProjectCreate) SetNillableModified(t *time.Time) *ProjectCreate {
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (pc *ProjectCreate) SetNillableUpdatedAt(t *time.Time) *ProjectCreate {
 	if t != nil {
-		pc.SetModified(*t)
+		pc.SetUpdatedAt(*t)
 	}
 	return pc
 }
@@ -263,13 +263,13 @@ func (pc *ProjectCreate) defaults() {
 		v := project.DefaultDeleted
 		pc.mutation.SetDeleted(v)
 	}
-	if _, ok := pc.mutation.Created(); !ok {
-		v := project.DefaultCreated()
-		pc.mutation.SetCreated(v)
+	if _, ok := pc.mutation.CreatedAt(); !ok {
+		v := project.DefaultCreatedAt()
+		pc.mutation.SetCreatedAt(v)
 	}
-	if _, ok := pc.mutation.Modified(); !ok {
-		v := project.DefaultModified()
-		pc.mutation.SetModified(v)
+	if _, ok := pc.mutation.UpdatedAt(); !ok {
+		v := project.DefaultUpdatedAt()
+		pc.mutation.SetUpdatedAt(v)
 	}
 	if _, ok := pc.mutation.ID(); !ok {
 		v := project.DefaultID()
@@ -294,11 +294,11 @@ func (pc *ProjectCreate) check() error {
 	if _, ok := pc.mutation.Deleted(); !ok {
 		return &ValidationError{Name: "deleted", err: errors.New(`ent: missing required field "Project.deleted"`)}
 	}
-	if _, ok := pc.mutation.Created(); !ok {
-		return &ValidationError{Name: "created", err: errors.New(`ent: missing required field "Project.created"`)}
+	if _, ok := pc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Project.created_at"`)}
 	}
-	if _, ok := pc.mutation.Modified(); !ok {
-		return &ValidationError{Name: "modified", err: errors.New(`ent: missing required field "Project.modified"`)}
+	if _, ok := pc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Project.updated_at"`)}
 	}
 	return nil
 }
@@ -376,13 +376,13 @@ func (pc *ProjectCreate) createSpec() (*Project, *sqlgraph.CreateSpec) {
 		_spec.SetField(project.FieldDeleted, field.TypeBool, value)
 		_node.Deleted = value
 	}
-	if value, ok := pc.mutation.Created(); ok {
-		_spec.SetField(project.FieldCreated, field.TypeTime, value)
-		_node.Created = value
+	if value, ok := pc.mutation.CreatedAt(); ok {
+		_spec.SetField(project.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
 	}
-	if value, ok := pc.mutation.Modified(); ok {
-		_spec.SetField(project.FieldModified, field.TypeTime, value)
-		_node.Modified = value
+	if value, ok := pc.mutation.UpdatedAt(); ok {
+		_spec.SetField(project.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
 	}
 	if value, ok := pc.mutation.Ts(); ok {
 		_spec.SetField(project.FieldTs, field.TypeString, value)
@@ -590,15 +590,15 @@ func (u *ProjectUpsert) UpdateDeleted() *ProjectUpsert {
 	return u
 }
 
-// SetModified sets the "modified" field.
-func (u *ProjectUpsert) SetModified(v time.Time) *ProjectUpsert {
-	u.Set(project.FieldModified, v)
+// SetUpdatedAt sets the "updated_at" field.
+func (u *ProjectUpsert) SetUpdatedAt(v time.Time) *ProjectUpsert {
+	u.Set(project.FieldUpdatedAt, v)
 	return u
 }
 
-// UpdateModified sets the "modified" field to the value that was provided on create.
-func (u *ProjectUpsert) UpdateModified() *ProjectUpsert {
-	u.SetExcluded(project.FieldModified)
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *ProjectUpsert) UpdateUpdatedAt() *ProjectUpsert {
+	u.SetExcluded(project.FieldUpdatedAt)
 	return u
 }
 
@@ -637,8 +637,8 @@ func (u *ProjectUpsertOne) UpdateNewValues() *ProjectUpsertOne {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(project.FieldID)
 		}
-		if _, exists := u.create.mutation.Created(); exists {
-			s.SetIgnore(project.FieldCreated)
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(project.FieldCreatedAt)
 		}
 	}))
 	return u
@@ -846,17 +846,17 @@ func (u *ProjectUpsertOne) UpdateDeleted() *ProjectUpsertOne {
 	})
 }
 
-// SetModified sets the "modified" field.
-func (u *ProjectUpsertOne) SetModified(v time.Time) *ProjectUpsertOne {
+// SetUpdatedAt sets the "updated_at" field.
+func (u *ProjectUpsertOne) SetUpdatedAt(v time.Time) *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
-		s.SetModified(v)
+		s.SetUpdatedAt(v)
 	})
 }
 
-// UpdateModified sets the "modified" field to the value that was provided on create.
-func (u *ProjectUpsertOne) UpdateModified() *ProjectUpsertOne {
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *ProjectUpsertOne) UpdateUpdatedAt() *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
-		s.UpdateModified()
+		s.UpdateUpdatedAt()
 	})
 }
 
@@ -1060,8 +1060,8 @@ func (u *ProjectUpsertBulk) UpdateNewValues() *ProjectUpsertBulk {
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(project.FieldID)
 			}
-			if _, exists := b.mutation.Created(); exists {
-				s.SetIgnore(project.FieldCreated)
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(project.FieldCreatedAt)
 			}
 		}
 	}))
@@ -1270,17 +1270,17 @@ func (u *ProjectUpsertBulk) UpdateDeleted() *ProjectUpsertBulk {
 	})
 }
 
-// SetModified sets the "modified" field.
-func (u *ProjectUpsertBulk) SetModified(v time.Time) *ProjectUpsertBulk {
+// SetUpdatedAt sets the "updated_at" field.
+func (u *ProjectUpsertBulk) SetUpdatedAt(v time.Time) *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
-		s.SetModified(v)
+		s.SetUpdatedAt(v)
 	})
 }
 
-// UpdateModified sets the "modified" field to the value that was provided on create.
-func (u *ProjectUpsertBulk) UpdateModified() *ProjectUpsertBulk {
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *ProjectUpsertBulk) UpdateUpdatedAt() *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
-		s.UpdateModified()
+		s.UpdateUpdatedAt()
 	})
 }
 
