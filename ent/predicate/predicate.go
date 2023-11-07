@@ -8,3 +8,6 @@ import (
 
 // Project is the predicate function for project builders.
 type Project func(*sql.Selector)
+
+// ProjectIdentifier is the predicate function for projectidentifier builders.
+type ProjectIdentifier func(*sql.Selector)

@@ -6,67 +6,58 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/ugent-library/projects/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.
-func ID(id string) predicate.Project {
+func ID(id int) predicate.Project {
 	return predicate.Project(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id string) predicate.Project {
+func IDEQ(id int) predicate.Project {
 	return predicate.Project(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id string) predicate.Project {
+func IDNEQ(id int) predicate.Project {
 	return predicate.Project(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...string) predicate.Project {
+func IDIn(ids ...int) predicate.Project {
 	return predicate.Project(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...string) predicate.Project {
+func IDNotIn(ids ...int) predicate.Project {
 	return predicate.Project(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id string) predicate.Project {
+func IDGT(id int) predicate.Project {
 	return predicate.Project(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id string) predicate.Project {
+func IDGTE(id int) predicate.Project {
 	return predicate.Project(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id string) predicate.Project {
+func IDLT(id int) predicate.Project {
 	return predicate.Project(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id string) predicate.Project {
+func IDLTE(id int) predicate.Project {
 	return predicate.Project(sql.FieldLTE(FieldID, id))
 }
 
-// IDEqualFold applies the EqualFold predicate on the ID field.
-func IDEqualFold(id string) predicate.Project {
-	return predicate.Project(sql.FieldEqualFold(FieldID, id))
-}
-
-// IDContainsFold applies the ContainsFold predicate on the ID field.
-func IDContainsFold(id string) predicate.Project {
-	return predicate.Project(sql.FieldContainsFold(FieldID, id))
-}
-
-// GismoID applies equality check predicate on the "gismo_id" field. It's identical to GismoIDEQ.
-func GismoID(v string) predicate.Project {
-	return predicate.Project(sql.FieldEQ(FieldGismoID, v))
+// ProjectIdentifierID applies equality check predicate on the "project_identifier_id" field. It's identical to ProjectIdentifierIDEQ.
+func ProjectIdentifierID(v int) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldProjectIdentifierID, v))
 }
 
 // FoundingDate applies equality check predicate on the "founding_date" field. It's identical to FoundingDateEQ.
@@ -109,74 +100,24 @@ func UpdatedAt(v time.Time) predicate.Project {
 	return predicate.Project(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
-// Ts applies equality check predicate on the "ts" field. It's identical to TsEQ.
-func Ts(v string) predicate.Project {
-	return predicate.Project(sql.FieldEQ(FieldTs, v))
+// ProjectIdentifierIDEQ applies the EQ predicate on the "project_identifier_id" field.
+func ProjectIdentifierIDEQ(v int) predicate.Project {
+	return predicate.Project(sql.FieldEQ(FieldProjectIdentifierID, v))
 }
 
-// GismoIDEQ applies the EQ predicate on the "gismo_id" field.
-func GismoIDEQ(v string) predicate.Project {
-	return predicate.Project(sql.FieldEQ(FieldGismoID, v))
+// ProjectIdentifierIDNEQ applies the NEQ predicate on the "project_identifier_id" field.
+func ProjectIdentifierIDNEQ(v int) predicate.Project {
+	return predicate.Project(sql.FieldNEQ(FieldProjectIdentifierID, v))
 }
 
-// GismoIDNEQ applies the NEQ predicate on the "gismo_id" field.
-func GismoIDNEQ(v string) predicate.Project {
-	return predicate.Project(sql.FieldNEQ(FieldGismoID, v))
+// ProjectIdentifierIDIn applies the In predicate on the "project_identifier_id" field.
+func ProjectIdentifierIDIn(vs ...int) predicate.Project {
+	return predicate.Project(sql.FieldIn(FieldProjectIdentifierID, vs...))
 }
 
-// GismoIDIn applies the In predicate on the "gismo_id" field.
-func GismoIDIn(vs ...string) predicate.Project {
-	return predicate.Project(sql.FieldIn(FieldGismoID, vs...))
-}
-
-// GismoIDNotIn applies the NotIn predicate on the "gismo_id" field.
-func GismoIDNotIn(vs ...string) predicate.Project {
-	return predicate.Project(sql.FieldNotIn(FieldGismoID, vs...))
-}
-
-// GismoIDGT applies the GT predicate on the "gismo_id" field.
-func GismoIDGT(v string) predicate.Project {
-	return predicate.Project(sql.FieldGT(FieldGismoID, v))
-}
-
-// GismoIDGTE applies the GTE predicate on the "gismo_id" field.
-func GismoIDGTE(v string) predicate.Project {
-	return predicate.Project(sql.FieldGTE(FieldGismoID, v))
-}
-
-// GismoIDLT applies the LT predicate on the "gismo_id" field.
-func GismoIDLT(v string) predicate.Project {
-	return predicate.Project(sql.FieldLT(FieldGismoID, v))
-}
-
-// GismoIDLTE applies the LTE predicate on the "gismo_id" field.
-func GismoIDLTE(v string) predicate.Project {
-	return predicate.Project(sql.FieldLTE(FieldGismoID, v))
-}
-
-// GismoIDContains applies the Contains predicate on the "gismo_id" field.
-func GismoIDContains(v string) predicate.Project {
-	return predicate.Project(sql.FieldContains(FieldGismoID, v))
-}
-
-// GismoIDHasPrefix applies the HasPrefix predicate on the "gismo_id" field.
-func GismoIDHasPrefix(v string) predicate.Project {
-	return predicate.Project(sql.FieldHasPrefix(FieldGismoID, v))
-}
-
-// GismoIDHasSuffix applies the HasSuffix predicate on the "gismo_id" field.
-func GismoIDHasSuffix(v string) predicate.Project {
-	return predicate.Project(sql.FieldHasSuffix(FieldGismoID, v))
-}
-
-// GismoIDEqualFold applies the EqualFold predicate on the "gismo_id" field.
-func GismoIDEqualFold(v string) predicate.Project {
-	return predicate.Project(sql.FieldEqualFold(FieldGismoID, v))
-}
-
-// GismoIDContainsFold applies the ContainsFold predicate on the "gismo_id" field.
-func GismoIDContainsFold(v string) predicate.Project {
-	return predicate.Project(sql.FieldContainsFold(FieldGismoID, v))
+// ProjectIdentifierIDNotIn applies the NotIn predicate on the "project_identifier_id" field.
+func ProjectIdentifierIDNotIn(vs ...int) predicate.Project {
+	return predicate.Project(sql.FieldNotIn(FieldProjectIdentifierID, vs...))
 }
 
 // FoundingDateEQ applies the EQ predicate on the "founding_date" field.
@@ -644,79 +585,27 @@ func UpdatedAtLTE(v time.Time) predicate.Project {
 	return predicate.Project(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
-// TsEQ applies the EQ predicate on the "ts" field.
-func TsEQ(v string) predicate.Project {
-	return predicate.Project(sql.FieldEQ(FieldTs, v))
+// HasIdentifiedBy applies the HasEdge predicate on the "identifiedBy" edge.
+func HasIdentifiedBy() predicate.Project {
+	return predicate.Project(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, IdentifiedByTable, IdentifiedByColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
 }
 
-// TsNEQ applies the NEQ predicate on the "ts" field.
-func TsNEQ(v string) predicate.Project {
-	return predicate.Project(sql.FieldNEQ(FieldTs, v))
-}
-
-// TsIn applies the In predicate on the "ts" field.
-func TsIn(vs ...string) predicate.Project {
-	return predicate.Project(sql.FieldIn(FieldTs, vs...))
-}
-
-// TsNotIn applies the NotIn predicate on the "ts" field.
-func TsNotIn(vs ...string) predicate.Project {
-	return predicate.Project(sql.FieldNotIn(FieldTs, vs...))
-}
-
-// TsGT applies the GT predicate on the "ts" field.
-func TsGT(v string) predicate.Project {
-	return predicate.Project(sql.FieldGT(FieldTs, v))
-}
-
-// TsGTE applies the GTE predicate on the "ts" field.
-func TsGTE(v string) predicate.Project {
-	return predicate.Project(sql.FieldGTE(FieldTs, v))
-}
-
-// TsLT applies the LT predicate on the "ts" field.
-func TsLT(v string) predicate.Project {
-	return predicate.Project(sql.FieldLT(FieldTs, v))
-}
-
-// TsLTE applies the LTE predicate on the "ts" field.
-func TsLTE(v string) predicate.Project {
-	return predicate.Project(sql.FieldLTE(FieldTs, v))
-}
-
-// TsContains applies the Contains predicate on the "ts" field.
-func TsContains(v string) predicate.Project {
-	return predicate.Project(sql.FieldContains(FieldTs, v))
-}
-
-// TsHasPrefix applies the HasPrefix predicate on the "ts" field.
-func TsHasPrefix(v string) predicate.Project {
-	return predicate.Project(sql.FieldHasPrefix(FieldTs, v))
-}
-
-// TsHasSuffix applies the HasSuffix predicate on the "ts" field.
-func TsHasSuffix(v string) predicate.Project {
-	return predicate.Project(sql.FieldHasSuffix(FieldTs, v))
-}
-
-// TsIsNil applies the IsNil predicate on the "ts" field.
-func TsIsNil() predicate.Project {
-	return predicate.Project(sql.FieldIsNull(FieldTs))
-}
-
-// TsNotNil applies the NotNil predicate on the "ts" field.
-func TsNotNil() predicate.Project {
-	return predicate.Project(sql.FieldNotNull(FieldTs))
-}
-
-// TsEqualFold applies the EqualFold predicate on the "ts" field.
-func TsEqualFold(v string) predicate.Project {
-	return predicate.Project(sql.FieldEqualFold(FieldTs, v))
-}
-
-// TsContainsFold applies the ContainsFold predicate on the "ts" field.
-func TsContainsFold(v string) predicate.Project {
-	return predicate.Project(sql.FieldContainsFold(FieldTs, v))
+// HasIdentifiedByWith applies the HasEdge predicate on the "identifiedBy" edge with a given conditions (other predicates).
+func HasIdentifiedByWith(preds ...predicate.ProjectIdentifier) predicate.Project {
+	return predicate.Project(func(s *sql.Selector) {
+		step := newIdentifiedByStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

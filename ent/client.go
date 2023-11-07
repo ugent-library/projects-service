@@ -13,7 +13,9 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/ugent-library/projects/ent/project"
+	"github.com/ugent-library/projects/ent/projectidentifier"
 
 	stdsql "database/sql"
 )
@@ -25,6 +27,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// Project is the client for interacting with the Project builders.
 	Project *ProjectClient
+	// ProjectIdentifier is the client for interacting with the ProjectIdentifier builders.
+	ProjectIdentifier *ProjectIdentifierClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -39,6 +43,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Project = NewProjectClient(c.config)
+	c.ProjectIdentifier = NewProjectIdentifierClient(c.config)
 }
 
 type (
@@ -119,9 +124,10 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:     ctx,
-		config:  cfg,
-		Project: NewProjectClient(cfg),
+		ctx:               ctx,
+		config:            cfg,
+		Project:           NewProjectClient(cfg),
+		ProjectIdentifier: NewProjectIdentifierClient(cfg),
 	}, nil
 }
 
@@ -139,9 +145,10 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:     ctx,
-		config:  cfg,
-		Project: NewProjectClient(cfg),
+		ctx:               ctx,
+		config:            cfg,
+		Project:           NewProjectClient(cfg),
+		ProjectIdentifier: NewProjectIdentifierClient(cfg),
 	}, nil
 }
 
@@ -171,12 +178,14 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.Project.Use(hooks...)
+	c.ProjectIdentifier.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.Project.Intercept(interceptors...)
+	c.ProjectIdentifier.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
@@ -184,6 +193,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
 	case *ProjectMutation:
 		return c.Project.mutate(ctx, m)
+	case *ProjectIdentifierMutation:
+		return c.ProjectIdentifier.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
@@ -235,7 +246,7 @@ func (c *ProjectClient) UpdateOne(pr *Project) *ProjectUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *ProjectClient) UpdateOneID(id string) *ProjectUpdateOne {
+func (c *ProjectClient) UpdateOneID(id int) *ProjectUpdateOne {
 	mutation := newProjectMutation(c.config, OpUpdateOne, withProjectID(id))
 	return &ProjectUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -252,7 +263,7 @@ func (c *ProjectClient) DeleteOne(pr *Project) *ProjectDeleteOne {
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *ProjectClient) DeleteOneID(id string) *ProjectDeleteOne {
+func (c *ProjectClient) DeleteOneID(id int) *ProjectDeleteOne {
 	builder := c.Delete().Where(project.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -269,17 +280,33 @@ func (c *ProjectClient) Query() *ProjectQuery {
 }
 
 // Get returns a Project entity by its id.
-func (c *ProjectClient) Get(ctx context.Context, id string) (*Project, error) {
+func (c *ProjectClient) Get(ctx context.Context, id int) (*Project, error) {
 	return c.Query().Where(project.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *ProjectClient) GetX(ctx context.Context, id string) *Project {
+func (c *ProjectClient) GetX(ctx context.Context, id int) *Project {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryIdentifiedBy queries the identifiedBy edge of a Project.
+func (c *ProjectClient) QueryIdentifiedBy(pr *Project) *ProjectIdentifierQuery {
+	query := (&ProjectIdentifierClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := pr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(project.Table, project.FieldID, id),
+			sqlgraph.To(projectidentifier.Table, projectidentifier.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, project.IdentifiedByTable, project.IdentifiedByColumn),
+		)
+		fromV = sqlgraph.Neighbors(pr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.
@@ -307,13 +334,147 @@ func (c *ProjectClient) mutate(ctx context.Context, m *ProjectMutation) (Value, 
 	}
 }
 
+// ProjectIdentifierClient is a client for the ProjectIdentifier schema.
+type ProjectIdentifierClient struct {
+	config
+}
+
+// NewProjectIdentifierClient returns a client for the ProjectIdentifier from the given config.
+func NewProjectIdentifierClient(c config) *ProjectIdentifierClient {
+	return &ProjectIdentifierClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `projectidentifier.Hooks(f(g(h())))`.
+func (c *ProjectIdentifierClient) Use(hooks ...Hook) {
+	c.hooks.ProjectIdentifier = append(c.hooks.ProjectIdentifier, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `projectidentifier.Intercept(f(g(h())))`.
+func (c *ProjectIdentifierClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ProjectIdentifier = append(c.inters.ProjectIdentifier, interceptors...)
+}
+
+// Create returns a builder for creating a ProjectIdentifier entity.
+func (c *ProjectIdentifierClient) Create() *ProjectIdentifierCreate {
+	mutation := newProjectIdentifierMutation(c.config, OpCreate)
+	return &ProjectIdentifierCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ProjectIdentifier entities.
+func (c *ProjectIdentifierClient) CreateBulk(builders ...*ProjectIdentifierCreate) *ProjectIdentifierCreateBulk {
+	return &ProjectIdentifierCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ProjectIdentifier.
+func (c *ProjectIdentifierClient) Update() *ProjectIdentifierUpdate {
+	mutation := newProjectIdentifierMutation(c.config, OpUpdate)
+	return &ProjectIdentifierUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ProjectIdentifierClient) UpdateOne(pi *ProjectIdentifier) *ProjectIdentifierUpdateOne {
+	mutation := newProjectIdentifierMutation(c.config, OpUpdateOne, withProjectIdentifier(pi))
+	return &ProjectIdentifierUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ProjectIdentifierClient) UpdateOneID(id int) *ProjectIdentifierUpdateOne {
+	mutation := newProjectIdentifierMutation(c.config, OpUpdateOne, withProjectIdentifierID(id))
+	return &ProjectIdentifierUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ProjectIdentifier.
+func (c *ProjectIdentifierClient) Delete() *ProjectIdentifierDelete {
+	mutation := newProjectIdentifierMutation(c.config, OpDelete)
+	return &ProjectIdentifierDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ProjectIdentifierClient) DeleteOne(pi *ProjectIdentifier) *ProjectIdentifierDeleteOne {
+	return c.DeleteOneID(pi.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ProjectIdentifierClient) DeleteOneID(id int) *ProjectIdentifierDeleteOne {
+	builder := c.Delete().Where(projectidentifier.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ProjectIdentifierDeleteOne{builder}
+}
+
+// Query returns a query builder for ProjectIdentifier.
+func (c *ProjectIdentifierClient) Query() *ProjectIdentifierQuery {
+	return &ProjectIdentifierQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeProjectIdentifier},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ProjectIdentifier entity by its id.
+func (c *ProjectIdentifierClient) Get(ctx context.Context, id int) (*ProjectIdentifier, error) {
+	return c.Query().Where(projectidentifier.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ProjectIdentifierClient) GetX(ctx context.Context, id int) *ProjectIdentifier {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryProjects queries the projects edge of a ProjectIdentifier.
+func (c *ProjectIdentifierClient) QueryProjects(pi *ProjectIdentifier) *ProjectQuery {
+	query := (&ProjectClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := pi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(projectidentifier.Table, projectidentifier.FieldID, id),
+			sqlgraph.To(project.Table, project.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, projectidentifier.ProjectsTable, projectidentifier.ProjectsColumn),
+		)
+		fromV = sqlgraph.Neighbors(pi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ProjectIdentifierClient) Hooks() []Hook {
+	return c.hooks.ProjectIdentifier
+}
+
+// Interceptors returns the client interceptors.
+func (c *ProjectIdentifierClient) Interceptors() []Interceptor {
+	return c.inters.ProjectIdentifier
+}
+
+func (c *ProjectIdentifierClient) mutate(ctx context.Context, m *ProjectIdentifierMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ProjectIdentifierCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ProjectIdentifierUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ProjectIdentifierUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ProjectIdentifierDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown ProjectIdentifier mutation op: %q", m.Op())
+	}
+}
+
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Project []ent.Hook
+		Project, ProjectIdentifier []ent.Hook
 	}
 	inters struct {
-		Project []ent.Interceptor
+		Project, ProjectIdentifier []ent.Interceptor
 	}
 )
 

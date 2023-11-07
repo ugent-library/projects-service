@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/ugent-library/projects/ent/project"
+	"github.com/ugent-library/projects/ent/projectidentifier"
 	"github.com/ugent-library/projects/ent/schema"
 )
 
@@ -18,9 +19,9 @@ import (
 type Project struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID string `json:"id,omitempty"`
-	// GismoID holds the value of the "gismo_id" field.
-	GismoID string `json:"gismo_id,omitempty"`
+	ID int `json:"id,omitempty"`
+	// ProjectIdentifierID holds the value of the "project_identifier_id" field.
+	ProjectIdentifierID int `json:"project_identifier_id,omitempty"`
 	// Identifier holds the value of the "identifier" field.
 	Identifier schema.Identifier `json:"identifier,omitempty"`
 	// Name holds the value of the "name" field.
@@ -43,9 +44,32 @@ type Project struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// Ts holds the value of the "ts" field.
-	Ts           string `json:"ts,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the ProjectQuery when eager-loading is set.
+	Edges        ProjectEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// ProjectEdges holds the relations/edges for other nodes in the graph.
+type ProjectEdges struct {
+	// IdentifiedBy holds the value of the identifiedBy edge.
+	IdentifiedBy *ProjectIdentifier `json:"identifiedBy,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// IdentifiedByOrErr returns the IdentifiedBy value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ProjectEdges) IdentifiedByOrErr() (*ProjectIdentifier, error) {
+	if e.loadedTypes[0] {
+		if e.IdentifiedBy == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: projectidentifier.Label}
+		}
+		return e.IdentifiedBy, nil
+	}
+	return nil, &NotLoadedError{edge: "identifiedBy"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -57,7 +81,9 @@ func (*Project) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case project.FieldDeleted:
 			values[i] = new(sql.NullBool)
-		case project.FieldID, project.FieldGismoID, project.FieldFoundingDate, project.FieldDissolutionDate, project.FieldAcronym, project.FieldGrantID, project.FieldFundingProgramme, project.FieldTs:
+		case project.FieldID, project.FieldProjectIdentifierID:
+			values[i] = new(sql.NullInt64)
+		case project.FieldFoundingDate, project.FieldDissolutionDate, project.FieldAcronym, project.FieldGrantID, project.FieldFundingProgramme:
 			values[i] = new(sql.NullString)
 		case project.FieldCreatedAt, project.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -77,16 +103,16 @@ func (pr *Project) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case project.FieldID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field id", values[i])
-			} else if value.Valid {
-				pr.ID = value.String
+			value, ok := values[i].(*sql.NullInt64)
+			if !ok {
+				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-		case project.FieldGismoID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field gismo_id", values[i])
+			pr.ID = int(value.Int64)
+		case project.FieldProjectIdentifierID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field project_identifier_id", values[i])
 			} else if value.Valid {
-				pr.GismoID = value.String
+				pr.ProjectIdentifierID = int(value.Int64)
 			}
 		case project.FieldIdentifier:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -160,12 +186,6 @@ func (pr *Project) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				pr.UpdatedAt = value.Time
 			}
-		case project.FieldTs:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field ts", values[i])
-			} else if value.Valid {
-				pr.Ts = value.String
-			}
 		default:
 			pr.selectValues.Set(columns[i], values[i])
 		}
@@ -177,6 +197,11 @@ func (pr *Project) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (pr *Project) Value(name string) (ent.Value, error) {
 	return pr.selectValues.Get(name)
+}
+
+// QueryIdentifiedBy queries the "identifiedBy" edge of the Project entity.
+func (pr *Project) QueryIdentifiedBy() *ProjectIdentifierQuery {
+	return NewProjectClient(pr.config).QueryIdentifiedBy(pr)
 }
 
 // Update returns a builder for updating this Project.
@@ -202,8 +227,8 @@ func (pr *Project) String() string {
 	var builder strings.Builder
 	builder.WriteString("Project(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", pr.ID))
-	builder.WriteString("gismo_id=")
-	builder.WriteString(pr.GismoID)
+	builder.WriteString("project_identifier_id=")
+	builder.WriteString(fmt.Sprintf("%v", pr.ProjectIdentifierID))
 	builder.WriteString(", ")
 	builder.WriteString("identifier=")
 	builder.WriteString(fmt.Sprintf("%v", pr.Identifier))
@@ -237,9 +262,6 @@ func (pr *Project) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(pr.UpdatedAt.Format(time.ANSIC))
-	builder.WriteString(", ")
-	builder.WriteString("ts=")
-	builder.WriteString(pr.Ts)
 	builder.WriteByte(')')
 	return builder.String()
 }

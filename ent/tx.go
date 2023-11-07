@@ -16,6 +16,8 @@ type Tx struct {
 	config
 	// Project is the client for interacting with the Project builders.
 	Project *ProjectClient
+	// ProjectIdentifier is the client for interacting with the ProjectIdentifier builders.
+	ProjectIdentifier *ProjectIdentifierClient
 
 	// lazily loaded.
 	client     *Client
@@ -148,6 +150,7 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.Project = NewProjectClient(tx.config)
+	tx.ProjectIdentifier = NewProjectIdentifierClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/ugent-library/projects/ent/predicate"
 	"github.com/ugent-library/projects/ent/project"
+	"github.com/ugent-library/projects/ent/projectidentifier"
 	"github.com/ugent-library/projects/ent/schema"
 )
 
@@ -25,32 +26,33 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeProject = "Project"
+	TypeProject           = "Project"
+	TypeProjectIdentifier = "ProjectIdentifier"
 )
 
 // ProjectMutation represents an operation that mutates the Project nodes in the graph.
 type ProjectMutation struct {
 	config
-	op                Op
-	typ               string
-	id                *string
-	gismo_id          *string
-	identifier        *schema.Identifier
-	name              *schema.TranslatedString
-	description       *schema.TranslatedString
-	founding_date     *string
-	dissolution_date  *string
-	acronym           *string
-	grant_id          *string
-	funding_programme *string
-	deleted           *bool
-	created_at        *time.Time
-	updated_at        *time.Time
-	ts                *string
-	clearedFields     map[string]struct{}
-	done              bool
-	oldValue          func(context.Context) (*Project, error)
-	predicates        []predicate.Project
+	op                  Op
+	typ                 string
+	id                  *int
+	identifier          *schema.Identifier
+	name                *schema.TranslatedString
+	description         *schema.TranslatedString
+	founding_date       *string
+	dissolution_date    *string
+	acronym             *string
+	grant_id            *string
+	funding_programme   *string
+	deleted             *bool
+	created_at          *time.Time
+	updated_at          *time.Time
+	clearedFields       map[string]struct{}
+	identifiedBy        *int
+	clearedidentifiedBy bool
+	done                bool
+	oldValue            func(context.Context) (*Project, error)
+	predicates          []predicate.Project
 }
 
 var _ ent.Mutation = (*ProjectMutation)(nil)
@@ -73,7 +75,7 @@ func newProjectMutation(c config, op Op, opts ...projectOption) *ProjectMutation
 }
 
 // withProjectID sets the ID field of the mutation.
-func withProjectID(id string) projectOption {
+func withProjectID(id int) projectOption {
 	return func(m *ProjectMutation) {
 		var (
 			err   error
@@ -123,15 +125,9 @@ func (m ProjectMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of Project entities.
-func (m *ProjectMutation) SetID(id string) {
-	m.id = &id
-}
-
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *ProjectMutation) ID() (id string, exists bool) {
+func (m *ProjectMutation) ID() (id int, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -142,12 +138,12 @@ func (m *ProjectMutation) ID() (id string, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *ProjectMutation) IDs(ctx context.Context) ([]string, error) {
+func (m *ProjectMutation) IDs(ctx context.Context) ([]int, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []string{id}, nil
+			return []int{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -157,40 +153,40 @@ func (m *ProjectMutation) IDs(ctx context.Context) ([]string, error) {
 	}
 }
 
-// SetGismoID sets the "gismo_id" field.
-func (m *ProjectMutation) SetGismoID(s string) {
-	m.gismo_id = &s
+// SetProjectIdentifierID sets the "project_identifier_id" field.
+func (m *ProjectMutation) SetProjectIdentifierID(i int) {
+	m.identifiedBy = &i
 }
 
-// GismoID returns the value of the "gismo_id" field in the mutation.
-func (m *ProjectMutation) GismoID() (r string, exists bool) {
-	v := m.gismo_id
+// ProjectIdentifierID returns the value of the "project_identifier_id" field in the mutation.
+func (m *ProjectMutation) ProjectIdentifierID() (r int, exists bool) {
+	v := m.identifiedBy
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldGismoID returns the old "gismo_id" field's value of the Project entity.
+// OldProjectIdentifierID returns the old "project_identifier_id" field's value of the Project entity.
 // If the Project object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldGismoID(ctx context.Context) (v string, err error) {
+func (m *ProjectMutation) OldProjectIdentifierID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldGismoID is only allowed on UpdateOne operations")
+		return v, errors.New("OldProjectIdentifierID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldGismoID requires an ID field in the mutation")
+		return v, errors.New("OldProjectIdentifierID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldGismoID: %w", err)
+		return v, fmt.Errorf("querying old value for OldProjectIdentifierID: %w", err)
 	}
-	return oldValue.GismoID, nil
+	return oldValue.ProjectIdentifierID, nil
 }
 
-// ResetGismoID resets all changes to the "gismo_id" field.
-func (m *ProjectMutation) ResetGismoID() {
-	m.gismo_id = nil
+// ResetProjectIdentifierID resets all changes to the "project_identifier_id" field.
+func (m *ProjectMutation) ResetProjectIdentifierID() {
+	m.identifiedBy = nil
 }
 
 // SetIdentifier sets the "identifier" field.
@@ -654,53 +650,43 @@ func (m *ProjectMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// SetTs sets the "ts" field.
-func (m *ProjectMutation) SetTs(s string) {
-	m.ts = &s
+// SetIdentifiedByID sets the "identifiedBy" edge to the ProjectIdentifier entity by id.
+func (m *ProjectMutation) SetIdentifiedByID(id int) {
+	m.identifiedBy = &id
 }
 
-// Ts returns the value of the "ts" field in the mutation.
-func (m *ProjectMutation) Ts() (r string, exists bool) {
-	v := m.ts
-	if v == nil {
-		return
+// ClearIdentifiedBy clears the "identifiedBy" edge to the ProjectIdentifier entity.
+func (m *ProjectMutation) ClearIdentifiedBy() {
+	m.clearedidentifiedBy = true
+}
+
+// IdentifiedByCleared reports if the "identifiedBy" edge to the ProjectIdentifier entity was cleared.
+func (m *ProjectMutation) IdentifiedByCleared() bool {
+	return m.clearedidentifiedBy
+}
+
+// IdentifiedByID returns the "identifiedBy" edge ID in the mutation.
+func (m *ProjectMutation) IdentifiedByID() (id int, exists bool) {
+	if m.identifiedBy != nil {
+		return *m.identifiedBy, true
 	}
-	return *v, true
+	return
 }
 
-// OldTs returns the old "ts" field's value of the Project entity.
-// If the Project object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProjectMutation) OldTs(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTs is only allowed on UpdateOne operations")
+// IdentifiedByIDs returns the "identifiedBy" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// IdentifiedByID instead. It exists only for internal usage by the builders.
+func (m *ProjectMutation) IdentifiedByIDs() (ids []int) {
+	if id := m.identifiedBy; id != nil {
+		ids = append(ids, *id)
 	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTs requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTs: %w", err)
-	}
-	return oldValue.Ts, nil
+	return
 }
 
-// ClearTs clears the value of the "ts" field.
-func (m *ProjectMutation) ClearTs() {
-	m.ts = nil
-	m.clearedFields[project.FieldTs] = struct{}{}
-}
-
-// TsCleared returns if the "ts" field was cleared in this mutation.
-func (m *ProjectMutation) TsCleared() bool {
-	_, ok := m.clearedFields[project.FieldTs]
-	return ok
-}
-
-// ResetTs resets all changes to the "ts" field.
-func (m *ProjectMutation) ResetTs() {
-	m.ts = nil
-	delete(m.clearedFields, project.FieldTs)
+// ResetIdentifiedBy resets all changes to the "identifiedBy" edge.
+func (m *ProjectMutation) ResetIdentifiedBy() {
+	m.identifiedBy = nil
+	m.clearedidentifiedBy = false
 }
 
 // Where appends a list predicates to the ProjectMutation builder.
@@ -737,9 +723,9 @@ func (m *ProjectMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ProjectMutation) Fields() []string {
-	fields := make([]string, 0, 13)
-	if m.gismo_id != nil {
-		fields = append(fields, project.FieldGismoID)
+	fields := make([]string, 0, 12)
+	if m.identifiedBy != nil {
+		fields = append(fields, project.FieldProjectIdentifierID)
 	}
 	if m.identifier != nil {
 		fields = append(fields, project.FieldIdentifier)
@@ -774,9 +760,6 @@ func (m *ProjectMutation) Fields() []string {
 	if m.updated_at != nil {
 		fields = append(fields, project.FieldUpdatedAt)
 	}
-	if m.ts != nil {
-		fields = append(fields, project.FieldTs)
-	}
 	return fields
 }
 
@@ -785,8 +768,8 @@ func (m *ProjectMutation) Fields() []string {
 // schema.
 func (m *ProjectMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case project.FieldGismoID:
-		return m.GismoID()
+	case project.FieldProjectIdentifierID:
+		return m.ProjectIdentifierID()
 	case project.FieldIdentifier:
 		return m.Identifier()
 	case project.FieldName:
@@ -809,8 +792,6 @@ func (m *ProjectMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case project.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case project.FieldTs:
-		return m.Ts()
 	}
 	return nil, false
 }
@@ -820,8 +801,8 @@ func (m *ProjectMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *ProjectMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case project.FieldGismoID:
-		return m.OldGismoID(ctx)
+	case project.FieldProjectIdentifierID:
+		return m.OldProjectIdentifierID(ctx)
 	case project.FieldIdentifier:
 		return m.OldIdentifier(ctx)
 	case project.FieldName:
@@ -844,8 +825,6 @@ func (m *ProjectMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldCreatedAt(ctx)
 	case project.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case project.FieldTs:
-		return m.OldTs(ctx)
 	}
 	return nil, fmt.Errorf("unknown Project field %s", name)
 }
@@ -855,12 +834,12 @@ func (m *ProjectMutation) OldField(ctx context.Context, name string) (ent.Value,
 // type.
 func (m *ProjectMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case project.FieldGismoID:
-		v, ok := value.(string)
+	case project.FieldProjectIdentifierID:
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetGismoID(v)
+		m.SetProjectIdentifierID(v)
 		return nil
 	case project.FieldIdentifier:
 		v, ok := value.(schema.Identifier)
@@ -939,13 +918,6 @@ func (m *ProjectMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case project.FieldTs:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTs(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Project field %s", name)
 }
@@ -953,13 +925,16 @@ func (m *ProjectMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *ProjectMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *ProjectMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
 	return nil, false
 }
 
@@ -991,9 +966,6 @@ func (m *ProjectMutation) ClearedFields() []string {
 	if m.FieldCleared(project.FieldFundingProgramme) {
 		fields = append(fields, project.FieldFundingProgramme)
 	}
-	if m.FieldCleared(project.FieldTs) {
-		fields = append(fields, project.FieldTs)
-	}
 	return fields
 }
 
@@ -1023,9 +995,6 @@ func (m *ProjectMutation) ClearField(name string) error {
 	case project.FieldFundingProgramme:
 		m.ClearFundingProgramme()
 		return nil
-	case project.FieldTs:
-		m.ClearTs()
-		return nil
 	}
 	return fmt.Errorf("unknown Project nullable field %s", name)
 }
@@ -1034,8 +1003,8 @@ func (m *ProjectMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *ProjectMutation) ResetField(name string) error {
 	switch name {
-	case project.FieldGismoID:
-		m.ResetGismoID()
+	case project.FieldProjectIdentifierID:
+		m.ResetProjectIdentifierID()
 		return nil
 	case project.FieldIdentifier:
 		m.ResetIdentifier()
@@ -1070,28 +1039,34 @@ func (m *ProjectMutation) ResetField(name string) error {
 	case project.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case project.FieldTs:
-		m.ResetTs()
-		return nil
 	}
 	return fmt.Errorf("unknown Project field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ProjectMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.identifiedBy != nil {
+		edges = append(edges, project.EdgeIdentifiedBy)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *ProjectMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case project.EdgeIdentifiedBy:
+		if id := m.identifiedBy; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ProjectMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -1103,24 +1078,460 @@ func (m *ProjectMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ProjectMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedidentifiedBy {
+		edges = append(edges, project.EdgeIdentifiedBy)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *ProjectMutation) EdgeCleared(name string) bool {
+	switch name {
+	case project.EdgeIdentifiedBy:
+		return m.clearedidentifiedBy
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *ProjectMutation) ClearEdge(name string) error {
+	switch name {
+	case project.EdgeIdentifiedBy:
+		m.ClearIdentifiedBy()
+		return nil
+	}
 	return fmt.Errorf("unknown Project unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *ProjectMutation) ResetEdge(name string) error {
+	switch name {
+	case project.EdgeIdentifiedBy:
+		m.ResetIdentifiedBy()
+		return nil
+	}
 	return fmt.Errorf("unknown Project edge %s", name)
+}
+
+// ProjectIdentifierMutation represents an operation that mutates the ProjectIdentifier nodes in the graph.
+type ProjectIdentifierMutation struct {
+	config
+	op              Op
+	typ             string
+	id              *int
+	external_id     *string
+	clearedFields   map[string]struct{}
+	projects        map[int]struct{}
+	removedprojects map[int]struct{}
+	clearedprojects bool
+	done            bool
+	oldValue        func(context.Context) (*ProjectIdentifier, error)
+	predicates      []predicate.ProjectIdentifier
+}
+
+var _ ent.Mutation = (*ProjectIdentifierMutation)(nil)
+
+// projectidentifierOption allows management of the mutation configuration using functional options.
+type projectidentifierOption func(*ProjectIdentifierMutation)
+
+// newProjectIdentifierMutation creates new mutation for the ProjectIdentifier entity.
+func newProjectIdentifierMutation(c config, op Op, opts ...projectidentifierOption) *ProjectIdentifierMutation {
+	m := &ProjectIdentifierMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeProjectIdentifier,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withProjectIdentifierID sets the ID field of the mutation.
+func withProjectIdentifierID(id int) projectidentifierOption {
+	return func(m *ProjectIdentifierMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ProjectIdentifier
+		)
+		m.oldValue = func(ctx context.Context) (*ProjectIdentifier, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ProjectIdentifier.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withProjectIdentifier sets the old ProjectIdentifier of the mutation.
+func withProjectIdentifier(node *ProjectIdentifier) projectidentifierOption {
+	return func(m *ProjectIdentifierMutation) {
+		m.oldValue = func(context.Context) (*ProjectIdentifier, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ProjectIdentifierMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ProjectIdentifierMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ProjectIdentifierMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ProjectIdentifierMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ProjectIdentifier.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetExternalID sets the "external_id" field.
+func (m *ProjectIdentifierMutation) SetExternalID(s string) {
+	m.external_id = &s
+}
+
+// ExternalID returns the value of the "external_id" field in the mutation.
+func (m *ProjectIdentifierMutation) ExternalID() (r string, exists bool) {
+	v := m.external_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldExternalID returns the old "external_id" field's value of the ProjectIdentifier entity.
+// If the ProjectIdentifier object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ProjectIdentifierMutation) OldExternalID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldExternalID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldExternalID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldExternalID: %w", err)
+	}
+	return oldValue.ExternalID, nil
+}
+
+// ResetExternalID resets all changes to the "external_id" field.
+func (m *ProjectIdentifierMutation) ResetExternalID() {
+	m.external_id = nil
+}
+
+// AddProjectIDs adds the "projects" edge to the Project entity by ids.
+func (m *ProjectIdentifierMutation) AddProjectIDs(ids ...int) {
+	if m.projects == nil {
+		m.projects = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.projects[ids[i]] = struct{}{}
+	}
+}
+
+// ClearProjects clears the "projects" edge to the Project entity.
+func (m *ProjectIdentifierMutation) ClearProjects() {
+	m.clearedprojects = true
+}
+
+// ProjectsCleared reports if the "projects" edge to the Project entity was cleared.
+func (m *ProjectIdentifierMutation) ProjectsCleared() bool {
+	return m.clearedprojects
+}
+
+// RemoveProjectIDs removes the "projects" edge to the Project entity by IDs.
+func (m *ProjectIdentifierMutation) RemoveProjectIDs(ids ...int) {
+	if m.removedprojects == nil {
+		m.removedprojects = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.projects, ids[i])
+		m.removedprojects[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedProjects returns the removed IDs of the "projects" edge to the Project entity.
+func (m *ProjectIdentifierMutation) RemovedProjectsIDs() (ids []int) {
+	for id := range m.removedprojects {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ProjectsIDs returns the "projects" edge IDs in the mutation.
+func (m *ProjectIdentifierMutation) ProjectsIDs() (ids []int) {
+	for id := range m.projects {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetProjects resets all changes to the "projects" edge.
+func (m *ProjectIdentifierMutation) ResetProjects() {
+	m.projects = nil
+	m.clearedprojects = false
+	m.removedprojects = nil
+}
+
+// Where appends a list predicates to the ProjectIdentifierMutation builder.
+func (m *ProjectIdentifierMutation) Where(ps ...predicate.ProjectIdentifier) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ProjectIdentifierMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ProjectIdentifierMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ProjectIdentifier, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ProjectIdentifierMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ProjectIdentifierMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ProjectIdentifier).
+func (m *ProjectIdentifierMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ProjectIdentifierMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.external_id != nil {
+		fields = append(fields, projectidentifier.FieldExternalID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ProjectIdentifierMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case projectidentifier.FieldExternalID:
+		return m.ExternalID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ProjectIdentifierMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case projectidentifier.FieldExternalID:
+		return m.OldExternalID(ctx)
+	}
+	return nil, fmt.Errorf("unknown ProjectIdentifier field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ProjectIdentifierMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case projectidentifier.FieldExternalID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetExternalID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ProjectIdentifier field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ProjectIdentifierMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ProjectIdentifierMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ProjectIdentifierMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ProjectIdentifier numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ProjectIdentifierMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ProjectIdentifierMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ProjectIdentifierMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown ProjectIdentifier nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ProjectIdentifierMutation) ResetField(name string) error {
+	switch name {
+	case projectidentifier.FieldExternalID:
+		m.ResetExternalID()
+		return nil
+	}
+	return fmt.Errorf("unknown ProjectIdentifier field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ProjectIdentifierMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.projects != nil {
+		edges = append(edges, projectidentifier.EdgeProjects)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ProjectIdentifierMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case projectidentifier.EdgeProjects:
+		ids := make([]ent.Value, 0, len(m.projects))
+		for id := range m.projects {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ProjectIdentifierMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.removedprojects != nil {
+		edges = append(edges, projectidentifier.EdgeProjects)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ProjectIdentifierMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case projectidentifier.EdgeProjects:
+		ids := make([]ent.Value, 0, len(m.removedprojects))
+		for id := range m.removedprojects {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ProjectIdentifierMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedprojects {
+		edges = append(edges, projectidentifier.EdgeProjects)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ProjectIdentifierMutation) EdgeCleared(name string) bool {
+	switch name {
+	case projectidentifier.EdgeProjects:
+		return m.clearedprojects
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ProjectIdentifierMutation) ClearEdge(name string) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ProjectIdentifier unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ProjectIdentifierMutation) ResetEdge(name string) error {
+	switch name {
+	case projectidentifier.EdgeProjects:
+		m.ResetProjects()
+		return nil
+	}
+	return fmt.Errorf("unknown ProjectIdentifier edge %s", name)
 }

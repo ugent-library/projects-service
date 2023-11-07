@@ -8,11 +8,11 @@ import (
 	"fmt"
 	"time"
 
-	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/ugent-library/projects/ent/project"
+	"github.com/ugent-library/projects/ent/projectidentifier"
 	"github.com/ugent-library/projects/ent/schema"
 )
 
@@ -24,9 +24,9 @@ type ProjectCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetGismoID sets the "gismo_id" field.
-func (pc *ProjectCreate) SetGismoID(s string) *ProjectCreate {
-	pc.mutation.SetGismoID(s)
+// SetProjectIdentifierID sets the "project_identifier_id" field.
+func (pc *ProjectCreate) SetProjectIdentifierID(i int) *ProjectCreate {
+	pc.mutation.SetProjectIdentifierID(i)
 	return pc
 }
 
@@ -184,32 +184,15 @@ func (pc *ProjectCreate) SetNillableUpdatedAt(t *time.Time) *ProjectCreate {
 	return pc
 }
 
-// SetTs sets the "ts" field.
-func (pc *ProjectCreate) SetTs(s string) *ProjectCreate {
-	pc.mutation.SetTs(s)
+// SetIdentifiedByID sets the "identifiedBy" edge to the ProjectIdentifier entity by ID.
+func (pc *ProjectCreate) SetIdentifiedByID(id int) *ProjectCreate {
+	pc.mutation.SetIdentifiedByID(id)
 	return pc
 }
 
-// SetNillableTs sets the "ts" field if the given value is not nil.
-func (pc *ProjectCreate) SetNillableTs(s *string) *ProjectCreate {
-	if s != nil {
-		pc.SetTs(*s)
-	}
-	return pc
-}
-
-// SetID sets the "id" field.
-func (pc *ProjectCreate) SetID(s string) *ProjectCreate {
-	pc.mutation.SetID(s)
-	return pc
-}
-
-// SetNillableID sets the "id" field if the given value is not nil.
-func (pc *ProjectCreate) SetNillableID(s *string) *ProjectCreate {
-	if s != nil {
-		pc.SetID(*s)
-	}
-	return pc
+// SetIdentifiedBy sets the "identifiedBy" edge to the ProjectIdentifier entity.
+func (pc *ProjectCreate) SetIdentifiedBy(p *ProjectIdentifier) *ProjectCreate {
+	return pc.SetIdentifiedByID(p.ID)
 }
 
 // Mutation returns the ProjectMutation object of the builder.
@@ -271,16 +254,12 @@ func (pc *ProjectCreate) defaults() {
 		v := project.DefaultUpdatedAt()
 		pc.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := pc.mutation.ID(); !ok {
-		v := project.DefaultID()
-		pc.mutation.SetID(v)
-	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (pc *ProjectCreate) check() error {
-	if _, ok := pc.mutation.GismoID(); !ok {
-		return &ValidationError{Name: "gismo_id", err: errors.New(`ent: missing required field "Project.gismo_id"`)}
+	if _, ok := pc.mutation.ProjectIdentifierID(); !ok {
+		return &ValidationError{Name: "project_identifier_id", err: errors.New(`ent: missing required field "Project.project_identifier_id"`)}
 	}
 	if _, ok := pc.mutation.Identifier(); !ok {
 		return &ValidationError{Name: "identifier", err: errors.New(`ent: missing required field "Project.identifier"`)}
@@ -300,6 +279,9 @@ func (pc *ProjectCreate) check() error {
 	if _, ok := pc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Project.updated_at"`)}
 	}
+	if _, ok := pc.mutation.IdentifiedByID(); !ok {
+		return &ValidationError{Name: "identifiedBy", err: errors.New(`ent: missing required edge "Project.identifiedBy"`)}
+	}
 	return nil
 }
 
@@ -314,13 +296,8 @@ func (pc *ProjectCreate) sqlSave(ctx context.Context) (*Project, error) {
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != nil {
-		if id, ok := _spec.ID.Value.(string); ok {
-			_node.ID = id
-		} else {
-			return nil, fmt.Errorf("unexpected Project.ID type: %T", _spec.ID.Value)
-		}
-	}
+	id := _spec.ID.Value.(int64)
+	_node.ID = int(id)
 	pc.mutation.id = &_node.ID
 	pc.mutation.done = true
 	return _node, nil
@@ -329,17 +306,9 @@ func (pc *ProjectCreate) sqlSave(ctx context.Context) (*Project, error) {
 func (pc *ProjectCreate) createSpec() (*Project, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Project{config: pc.config}
-		_spec = sqlgraph.NewCreateSpec(project.Table, sqlgraph.NewFieldSpec(project.FieldID, field.TypeString))
+		_spec = sqlgraph.NewCreateSpec(project.Table, sqlgraph.NewFieldSpec(project.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = pc.conflict
-	if id, ok := pc.mutation.ID(); ok {
-		_node.ID = id
-		_spec.ID.Value = id
-	}
-	if value, ok := pc.mutation.GismoID(); ok {
-		_spec.SetField(project.FieldGismoID, field.TypeString, value)
-		_node.GismoID = value
-	}
 	if value, ok := pc.mutation.Identifier(); ok {
 		_spec.SetField(project.FieldIdentifier, field.TypeJSON, value)
 		_node.Identifier = value
@@ -384,9 +353,22 @@ func (pc *ProjectCreate) createSpec() (*Project, *sqlgraph.CreateSpec) {
 		_spec.SetField(project.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := pc.mutation.Ts(); ok {
-		_spec.SetField(project.FieldTs, field.TypeString, value)
-		_node.Ts = value
+	if nodes := pc.mutation.IdentifiedByIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   project.IdentifiedByTable,
+			Columns: []string{project.IdentifiedByColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(projectidentifier.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.ProjectIdentifierID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }
@@ -395,7 +377,7 @@ func (pc *ProjectCreate) createSpec() (*Project, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.Project.Create().
-//		SetGismoID(v).
+//		SetProjectIdentifierID(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -404,7 +386,7 @@ func (pc *ProjectCreate) createSpec() (*Project, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.ProjectUpsert) {
-//			SetGismoID(v+v).
+//			SetProjectIdentifierID(v+v).
 //		}).
 //		Exec(ctx)
 func (pc *ProjectCreate) OnConflict(opts ...sql.ConflictOption) *ProjectUpsertOne {
@@ -440,15 +422,15 @@ type (
 	}
 )
 
-// SetGismoID sets the "gismo_id" field.
-func (u *ProjectUpsert) SetGismoID(v string) *ProjectUpsert {
-	u.Set(project.FieldGismoID, v)
+// SetProjectIdentifierID sets the "project_identifier_id" field.
+func (u *ProjectUpsert) SetProjectIdentifierID(v int) *ProjectUpsert {
+	u.Set(project.FieldProjectIdentifierID, v)
 	return u
 }
 
-// UpdateGismoID sets the "gismo_id" field to the value that was provided on create.
-func (u *ProjectUpsert) UpdateGismoID() *ProjectUpsert {
-	u.SetExcluded(project.FieldGismoID)
+// UpdateProjectIdentifierID sets the "project_identifier_id" field to the value that was provided on create.
+func (u *ProjectUpsert) UpdateProjectIdentifierID() *ProjectUpsert {
+	u.SetExcluded(project.FieldProjectIdentifierID)
 	return u
 }
 
@@ -602,41 +584,17 @@ func (u *ProjectUpsert) UpdateUpdatedAt() *ProjectUpsert {
 	return u
 }
 
-// SetTs sets the "ts" field.
-func (u *ProjectUpsert) SetTs(v string) *ProjectUpsert {
-	u.Set(project.FieldTs, v)
-	return u
-}
-
-// UpdateTs sets the "ts" field to the value that was provided on create.
-func (u *ProjectUpsert) UpdateTs() *ProjectUpsert {
-	u.SetExcluded(project.FieldTs)
-	return u
-}
-
-// ClearTs clears the value of the "ts" field.
-func (u *ProjectUpsert) ClearTs() *ProjectUpsert {
-	u.SetNull(project.FieldTs)
-	return u
-}
-
-// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
 //	client.Project.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
-//			sql.ResolveWith(func(u *sql.UpdateSet) {
-//				u.SetIgnore(project.FieldID)
-//			}),
 //		).
 //		Exec(ctx)
 func (u *ProjectUpsertOne) UpdateNewValues() *ProjectUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
-		if _, exists := u.create.mutation.ID(); exists {
-			s.SetIgnore(project.FieldID)
-		}
 		if _, exists := u.create.mutation.CreatedAt(); exists {
 			s.SetIgnore(project.FieldCreatedAt)
 		}
@@ -671,17 +629,17 @@ func (u *ProjectUpsertOne) Update(set func(*ProjectUpsert)) *ProjectUpsertOne {
 	return u
 }
 
-// SetGismoID sets the "gismo_id" field.
-func (u *ProjectUpsertOne) SetGismoID(v string) *ProjectUpsertOne {
+// SetProjectIdentifierID sets the "project_identifier_id" field.
+func (u *ProjectUpsertOne) SetProjectIdentifierID(v int) *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
-		s.SetGismoID(v)
+		s.SetProjectIdentifierID(v)
 	})
 }
 
-// UpdateGismoID sets the "gismo_id" field to the value that was provided on create.
-func (u *ProjectUpsertOne) UpdateGismoID() *ProjectUpsertOne {
+// UpdateProjectIdentifierID sets the "project_identifier_id" field to the value that was provided on create.
+func (u *ProjectUpsertOne) UpdateProjectIdentifierID() *ProjectUpsertOne {
 	return u.Update(func(s *ProjectUpsert) {
-		s.UpdateGismoID()
+		s.UpdateProjectIdentifierID()
 	})
 }
 
@@ -860,27 +818,6 @@ func (u *ProjectUpsertOne) UpdateUpdatedAt() *ProjectUpsertOne {
 	})
 }
 
-// SetTs sets the "ts" field.
-func (u *ProjectUpsertOne) SetTs(v string) *ProjectUpsertOne {
-	return u.Update(func(s *ProjectUpsert) {
-		s.SetTs(v)
-	})
-}
-
-// UpdateTs sets the "ts" field to the value that was provided on create.
-func (u *ProjectUpsertOne) UpdateTs() *ProjectUpsertOne {
-	return u.Update(func(s *ProjectUpsert) {
-		s.UpdateTs()
-	})
-}
-
-// ClearTs clears the value of the "ts" field.
-func (u *ProjectUpsertOne) ClearTs() *ProjectUpsertOne {
-	return u.Update(func(s *ProjectUpsert) {
-		s.ClearTs()
-	})
-}
-
 // Exec executes the query.
 func (u *ProjectUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -897,12 +834,7 @@ func (u *ProjectUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *ProjectUpsertOne) ID(ctx context.Context) (id string, err error) {
-	if u.create.driver.Dialect() == dialect.MySQL {
-		// In case of "ON CONFLICT", there is no way to get back non-numeric ID
-		// fields from the database since MySQL does not support the RETURNING clause.
-		return id, errors.New("ent: ProjectUpsertOne.ID is not supported by MySQL driver. Use ProjectUpsertOne.Exec instead")
-	}
+func (u *ProjectUpsertOne) ID(ctx context.Context) (id int, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -911,7 +843,7 @@ func (u *ProjectUpsertOne) ID(ctx context.Context) (id string, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *ProjectUpsertOne) IDX(ctx context.Context) string {
+func (u *ProjectUpsertOne) IDX(ctx context.Context) int {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -962,6 +894,10 @@ func (pcb *ProjectCreateBulk) Save(ctx context.Context) ([]*Project, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
+				if specs[i].ID.Value != nil {
+					id := specs[i].ID.Value.(int64)
+					nodes[i].ID = int(id)
+				}
 				mutation.done = true
 				return nodes[i], nil
 			})
@@ -1013,7 +949,7 @@ func (pcb *ProjectCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.ProjectUpsert) {
-//			SetGismoID(v+v).
+//			SetProjectIdentifierID(v+v).
 //		}).
 //		Exec(ctx)
 func (pcb *ProjectCreateBulk) OnConflict(opts ...sql.ConflictOption) *ProjectUpsertBulk {
@@ -1048,18 +984,12 @@ type ProjectUpsertBulk struct {
 //	client.Project.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
-//			sql.ResolveWith(func(u *sql.UpdateSet) {
-//				u.SetIgnore(project.FieldID)
-//			}),
 //		).
 //		Exec(ctx)
 func (u *ProjectUpsertBulk) UpdateNewValues() *ProjectUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		for _, b := range u.create.builders {
-			if _, exists := b.mutation.ID(); exists {
-				s.SetIgnore(project.FieldID)
-			}
 			if _, exists := b.mutation.CreatedAt(); exists {
 				s.SetIgnore(project.FieldCreatedAt)
 			}
@@ -1095,17 +1025,17 @@ func (u *ProjectUpsertBulk) Update(set func(*ProjectUpsert)) *ProjectUpsertBulk 
 	return u
 }
 
-// SetGismoID sets the "gismo_id" field.
-func (u *ProjectUpsertBulk) SetGismoID(v string) *ProjectUpsertBulk {
+// SetProjectIdentifierID sets the "project_identifier_id" field.
+func (u *ProjectUpsertBulk) SetProjectIdentifierID(v int) *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
-		s.SetGismoID(v)
+		s.SetProjectIdentifierID(v)
 	})
 }
 
-// UpdateGismoID sets the "gismo_id" field to the value that was provided on create.
-func (u *ProjectUpsertBulk) UpdateGismoID() *ProjectUpsertBulk {
+// UpdateProjectIdentifierID sets the "project_identifier_id" field to the value that was provided on create.
+func (u *ProjectUpsertBulk) UpdateProjectIdentifierID() *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
-		s.UpdateGismoID()
+		s.UpdateProjectIdentifierID()
 	})
 }
 
@@ -1281,27 +1211,6 @@ func (u *ProjectUpsertBulk) SetUpdatedAt(v time.Time) *ProjectUpsertBulk {
 func (u *ProjectUpsertBulk) UpdateUpdatedAt() *ProjectUpsertBulk {
 	return u.Update(func(s *ProjectUpsert) {
 		s.UpdateUpdatedAt()
-	})
-}
-
-// SetTs sets the "ts" field.
-func (u *ProjectUpsertBulk) SetTs(v string) *ProjectUpsertBulk {
-	return u.Update(func(s *ProjectUpsert) {
-		s.SetTs(v)
-	})
-}
-
-// UpdateTs sets the "ts" field to the value that was provided on create.
-func (u *ProjectUpsertBulk) UpdateTs() *ProjectUpsertBulk {
-	return u.Update(func(s *ProjectUpsert) {
-		s.UpdateTs()
-	})
-}
-
-// ClearTs clears the value of the "ts" field.
-func (u *ProjectUpsertBulk) ClearTs() *ProjectUpsertBulk {
-	return u.Update(func(s *ProjectUpsert) {
-		s.ClearTs()
 	})
 }
 

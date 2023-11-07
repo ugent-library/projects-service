@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type Project struct {
 	ID               string
@@ -15,4 +18,46 @@ type Project struct {
 	Deleted          bool
 	DateCreated      time.Time
 	DateModified     time.Time
+}
+
+func (p *Project) GetIdentifier() string {
+	d, err := json.Marshal(struct {
+		Value map[string][]string `json:"value"`
+	}{
+		Value: p.Identifier,
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	return string(d)
+}
+
+func (p *Project) GetName() string {
+	d, err := json.Marshal(struct {
+		Value map[string]string `json:"value"`
+	}{
+		Value: p.Name,
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	return string(d)
+}
+
+func (p *Project) GetDescription() string {
+	d, err := json.Marshal(struct {
+		Value map[string]string `json:"value"`
+	}{
+		Value: p.Description,
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	return string(d)
 }

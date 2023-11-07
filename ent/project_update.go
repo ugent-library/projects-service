@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/ugent-library/projects/ent/predicate"
 	"github.com/ugent-library/projects/ent/project"
+	"github.com/ugent-library/projects/ent/projectidentifier"
 	"github.com/ugent-library/projects/ent/schema"
 )
 
@@ -29,9 +30,9 @@ func (pu *ProjectUpdate) Where(ps ...predicate.Project) *ProjectUpdate {
 	return pu
 }
 
-// SetGismoID sets the "gismo_id" field.
-func (pu *ProjectUpdate) SetGismoID(s string) *ProjectUpdate {
-	pu.mutation.SetGismoID(s)
+// SetProjectIdentifierID sets the "project_identifier_id" field.
+func (pu *ProjectUpdate) SetProjectIdentifierID(i int) *ProjectUpdate {
+	pu.mutation.SetProjectIdentifierID(i)
 	return pu
 }
 
@@ -197,29 +198,26 @@ func (pu *ProjectUpdate) SetUpdatedAt(t time.Time) *ProjectUpdate {
 	return pu
 }
 
-// SetTs sets the "ts" field.
-func (pu *ProjectUpdate) SetTs(s string) *ProjectUpdate {
-	pu.mutation.SetTs(s)
+// SetIdentifiedByID sets the "identifiedBy" edge to the ProjectIdentifier entity by ID.
+func (pu *ProjectUpdate) SetIdentifiedByID(id int) *ProjectUpdate {
+	pu.mutation.SetIdentifiedByID(id)
 	return pu
 }
 
-// SetNillableTs sets the "ts" field if the given value is not nil.
-func (pu *ProjectUpdate) SetNillableTs(s *string) *ProjectUpdate {
-	if s != nil {
-		pu.SetTs(*s)
-	}
-	return pu
-}
-
-// ClearTs clears the value of the "ts" field.
-func (pu *ProjectUpdate) ClearTs() *ProjectUpdate {
-	pu.mutation.ClearTs()
-	return pu
+// SetIdentifiedBy sets the "identifiedBy" edge to the ProjectIdentifier entity.
+func (pu *ProjectUpdate) SetIdentifiedBy(p *ProjectIdentifier) *ProjectUpdate {
+	return pu.SetIdentifiedByID(p.ID)
 }
 
 // Mutation returns the ProjectMutation object of the builder.
 func (pu *ProjectUpdate) Mutation() *ProjectMutation {
 	return pu.mutation
+}
+
+// ClearIdentifiedBy clears the "identifiedBy" edge to the ProjectIdentifier entity.
+func (pu *ProjectUpdate) ClearIdentifiedBy() *ProjectUpdate {
+	pu.mutation.ClearIdentifiedBy()
+	return pu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -258,17 +256,25 @@ func (pu *ProjectUpdate) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (pu *ProjectUpdate) check() error {
+	if _, ok := pu.mutation.IdentifiedByID(); pu.mutation.IdentifiedByCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Project.identifiedBy"`)
+	}
+	return nil
+}
+
 func (pu *ProjectUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(project.Table, project.Columns, sqlgraph.NewFieldSpec(project.FieldID, field.TypeString))
+	if err := pu.check(); err != nil {
+		return n, err
+	}
+	_spec := sqlgraph.NewUpdateSpec(project.Table, project.Columns, sqlgraph.NewFieldSpec(project.FieldID, field.TypeInt))
 	if ps := pu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := pu.mutation.GismoID(); ok {
-		_spec.SetField(project.FieldGismoID, field.TypeString, value)
 	}
 	if value, ok := pu.mutation.Identifier(); ok {
 		_spec.SetField(project.FieldIdentifier, field.TypeJSON, value)
@@ -315,11 +321,34 @@ func (pu *ProjectUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := pu.mutation.UpdatedAt(); ok {
 		_spec.SetField(project.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := pu.mutation.Ts(); ok {
-		_spec.SetField(project.FieldTs, field.TypeString, value)
+	if pu.mutation.IdentifiedByCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   project.IdentifiedByTable,
+			Columns: []string{project.IdentifiedByColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(projectidentifier.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if pu.mutation.TsCleared() {
-		_spec.ClearField(project.FieldTs, field.TypeString)
+	if nodes := pu.mutation.IdentifiedByIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   project.IdentifiedByTable,
+			Columns: []string{project.IdentifiedByColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(projectidentifier.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, pu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -341,9 +370,9 @@ type ProjectUpdateOne struct {
 	mutation *ProjectMutation
 }
 
-// SetGismoID sets the "gismo_id" field.
-func (puo *ProjectUpdateOne) SetGismoID(s string) *ProjectUpdateOne {
-	puo.mutation.SetGismoID(s)
+// SetProjectIdentifierID sets the "project_identifier_id" field.
+func (puo *ProjectUpdateOne) SetProjectIdentifierID(i int) *ProjectUpdateOne {
+	puo.mutation.SetProjectIdentifierID(i)
 	return puo
 }
 
@@ -509,29 +538,26 @@ func (puo *ProjectUpdateOne) SetUpdatedAt(t time.Time) *ProjectUpdateOne {
 	return puo
 }
 
-// SetTs sets the "ts" field.
-func (puo *ProjectUpdateOne) SetTs(s string) *ProjectUpdateOne {
-	puo.mutation.SetTs(s)
+// SetIdentifiedByID sets the "identifiedBy" edge to the ProjectIdentifier entity by ID.
+func (puo *ProjectUpdateOne) SetIdentifiedByID(id int) *ProjectUpdateOne {
+	puo.mutation.SetIdentifiedByID(id)
 	return puo
 }
 
-// SetNillableTs sets the "ts" field if the given value is not nil.
-func (puo *ProjectUpdateOne) SetNillableTs(s *string) *ProjectUpdateOne {
-	if s != nil {
-		puo.SetTs(*s)
-	}
-	return puo
-}
-
-// ClearTs clears the value of the "ts" field.
-func (puo *ProjectUpdateOne) ClearTs() *ProjectUpdateOne {
-	puo.mutation.ClearTs()
-	return puo
+// SetIdentifiedBy sets the "identifiedBy" edge to the ProjectIdentifier entity.
+func (puo *ProjectUpdateOne) SetIdentifiedBy(p *ProjectIdentifier) *ProjectUpdateOne {
+	return puo.SetIdentifiedByID(p.ID)
 }
 
 // Mutation returns the ProjectMutation object of the builder.
 func (puo *ProjectUpdateOne) Mutation() *ProjectMutation {
 	return puo.mutation
+}
+
+// ClearIdentifiedBy clears the "identifiedBy" edge to the ProjectIdentifier entity.
+func (puo *ProjectUpdateOne) ClearIdentifiedBy() *ProjectUpdateOne {
+	puo.mutation.ClearIdentifiedBy()
+	return puo
 }
 
 // Where appends a list predicates to the ProjectUpdate builder.
@@ -583,8 +609,19 @@ func (puo *ProjectUpdateOne) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (puo *ProjectUpdateOne) check() error {
+	if _, ok := puo.mutation.IdentifiedByID(); puo.mutation.IdentifiedByCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Project.identifiedBy"`)
+	}
+	return nil
+}
+
 func (puo *ProjectUpdateOne) sqlSave(ctx context.Context) (_node *Project, err error) {
-	_spec := sqlgraph.NewUpdateSpec(project.Table, project.Columns, sqlgraph.NewFieldSpec(project.FieldID, field.TypeString))
+	if err := puo.check(); err != nil {
+		return _node, err
+	}
+	_spec := sqlgraph.NewUpdateSpec(project.Table, project.Columns, sqlgraph.NewFieldSpec(project.FieldID, field.TypeInt))
 	id, ok := puo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Project.id" for update`)}
@@ -608,9 +645,6 @@ func (puo *ProjectUpdateOne) sqlSave(ctx context.Context) (_node *Project, err e
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := puo.mutation.GismoID(); ok {
-		_spec.SetField(project.FieldGismoID, field.TypeString, value)
 	}
 	if value, ok := puo.mutation.Identifier(); ok {
 		_spec.SetField(project.FieldIdentifier, field.TypeJSON, value)
@@ -657,11 +691,34 @@ func (puo *ProjectUpdateOne) sqlSave(ctx context.Context) (_node *Project, err e
 	if value, ok := puo.mutation.UpdatedAt(); ok {
 		_spec.SetField(project.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := puo.mutation.Ts(); ok {
-		_spec.SetField(project.FieldTs, field.TypeString, value)
+	if puo.mutation.IdentifiedByCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   project.IdentifiedByTable,
+			Columns: []string{project.IdentifiedByColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(projectidentifier.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if puo.mutation.TsCleared() {
-		_spec.ClearField(project.FieldTs, field.TypeString)
+	if nodes := puo.mutation.IdentifiedByIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   project.IdentifiedByTable,
+			Columns: []string{project.IdentifiedByColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(projectidentifier.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Project{config: puo.config}
 	_spec.Assign = _node.assignValues

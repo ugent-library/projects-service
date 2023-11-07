@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/ugent-library/projects/ent/schema"
 )
 
@@ -14,8 +15,8 @@ const (
 	Label = "project"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldGismoID holds the string denoting the gismo_id field in the database.
-	FieldGismoID = "gismo_id"
+	// FieldProjectIdentifierID holds the string denoting the project_identifier_id field in the database.
+	FieldProjectIdentifierID = "project_identifier_id"
 	// FieldIdentifier holds the string denoting the identifier field in the database.
 	FieldIdentifier = "identifier"
 	// FieldName holds the string denoting the name field in the database.
@@ -38,16 +39,23 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldTs holds the string denoting the ts field in the database.
-	FieldTs = "ts"
+	// EdgeIdentifiedBy holds the string denoting the identifiedby edge name in mutations.
+	EdgeIdentifiedBy = "identifiedBy"
 	// Table holds the table name of the project in the database.
 	Table = "projects"
+	// IdentifiedByTable is the table that holds the identifiedBy relation/edge.
+	IdentifiedByTable = "projects"
+	// IdentifiedByInverseTable is the table name for the ProjectIdentifier entity.
+	// It exists in this package in order to avoid circular dependency with the "projectidentifier" package.
+	IdentifiedByInverseTable = "project_identifiers"
+	// IdentifiedByColumn is the table column denoting the identifiedBy relation/edge.
+	IdentifiedByColumn = "project_identifier_id"
 )
 
 // Columns holds all SQL columns for project fields.
 var Columns = []string{
 	FieldID,
-	FieldGismoID,
+	FieldProjectIdentifierID,
 	FieldIdentifier,
 	FieldName,
 	FieldDescription,
@@ -59,7 +67,6 @@ var Columns = []string{
 	FieldDeleted,
 	FieldCreatedAt,
 	FieldUpdatedAt,
-	FieldTs,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -87,8 +94,6 @@ var (
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
 	UpdateDefaultUpdatedAt func() time.Time
-	// DefaultID holds the default value on creation for the "id" field.
-	DefaultID func() string
 )
 
 // OrderOption defines the ordering options for the Project queries.
@@ -99,9 +104,9 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByGismoID orders the results by the gismo_id field.
-func ByGismoID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldGismoID, opts...).ToFunc()
+// ByProjectIdentifierID orders the results by the project_identifier_id field.
+func ByProjectIdentifierID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldProjectIdentifierID, opts...).ToFunc()
 }
 
 // ByFoundingDate orders the results by the founding_date field.
@@ -144,7 +149,16 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
-// ByTs orders the results by the ts field.
-func ByTs(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldTs, opts...).ToFunc()
+// ByIdentifiedByField orders the results by identifiedBy field.
+func ByIdentifiedByField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newIdentifiedByStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newIdentifiedByStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(IdentifiedByInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, IdentifiedByTable, IdentifiedByColumn),
+	)
 }

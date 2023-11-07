@@ -3,7 +3,6 @@
 package migrate
 
 import (
-	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/dialect/sql/schema"
 	"entgo.io/ent/schema/field"
 )
@@ -11,8 +10,7 @@ import (
 var (
 	// ProjectsColumns holds the columns for the "projects" table.
 	ProjectsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString, Unique: true},
-		{Name: "gismo_id", Type: field.TypeString, Unique: true},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "identifier", Type: field.TypeJSON},
 		{Name: "name", Type: field.TypeJSON},
 		{Name: "description", Type: field.TypeJSON},
@@ -24,29 +22,47 @@ var (
 		{Name: "deleted", Type: field.TypeBool, Default: false},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "ts", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"postgres": "tsvector NULL GENERATED ALWAYS AS ((to_tsvector('simple'::regconfig, jsonb_path_query_array(identifier, '$.**{2}'::jsonpath)) || to_tsvector('simple'::regconfig, (id)::text)) || to_tsvector('usimple'::regconfig, jsonb_path_query_array(name, '$.**{2}'::jsonpath))) STORED"}},
+		{Name: "project_identifier_id", Type: field.TypeInt},
 	}
 	// ProjectsTable holds the schema information for the "projects" table.
 	ProjectsTable = &schema.Table{
 		Name:       "projects",
 		Columns:    ProjectsColumns,
 		PrimaryKey: []*schema.Column{ProjectsColumns[0]},
-		Indexes: []*schema.Index{
+		ForeignKeys: []*schema.ForeignKey{
 			{
-				Name:    "project_ts",
-				Unique:  false,
-				Columns: []*schema.Column{ProjectsColumns[13]},
-				Annotation: &entsql.IndexAnnotation{
-					Type: "GIN",
-				},
+				Symbol:     "projects_project_identifiers_projects",
+				Columns:    []*schema.Column{ProjectsColumns[12]},
+				RefColumns: []*schema.Column{ProjectIdentifiersColumns[0]},
+				OnDelete:   schema.NoAction,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "project_project_identifier_id",
+				Unique:  true,
+				Columns: []*schema.Column{ProjectsColumns[12]},
+			},
+		},
+	}
+	// ProjectIdentifiersColumns holds the columns for the "project_identifiers" table.
+	ProjectIdentifiersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "external_id", Type: field.TypeString, Unique: true},
+	}
+	// ProjectIdentifiersTable holds the schema information for the "project_identifiers" table.
+	ProjectIdentifiersTable = &schema.Table{
+		Name:       "project_identifiers",
+		Columns:    ProjectIdentifiersColumns,
+		PrimaryKey: []*schema.Column{ProjectIdentifiersColumns[0]},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		ProjectsTable,
+		ProjectIdentifiersTable,
 	}
 )
 
 func init() {
+	ProjectsTable.ForeignKeys[0].RefTable = ProjectIdentifiersTable
 }

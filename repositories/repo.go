@@ -13,8 +13,7 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 
 	"github.com/ugent-library/projects/ent"
-	"github.com/ugent-library/projects/ent/project"
-	"github.com/ugent-library/projects/ent/schema"
+	"github.com/ugent-library/projects/ent/projectidentifier"
 	"github.com/ugent-library/projects/models"
 )
 
@@ -40,6 +39,13 @@ func New(c Config) (*Repo, error) {
 	driver := sqldialect.OpenDB(dialect.Postgres, db)
 	client := ent.NewClient(ent.Driver(driver)).Debug()
 
+	// err = client.Schema.Create(context.TODO(),
+	// 	migrate.WithDropIndex(true),
+	// )
+	// if err != nil {
+	// 	return nil, err
+	// }
+
 	return &Repo{
 		config: c,
 		client: client,
@@ -47,35 +53,79 @@ func New(c Config) (*Repo, error) {
 }
 
 func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
-	err := r.client.Project.Create().
-		SetGismoID(p.ID).
-		SetIdentifier(schema.Identifier{
-			Value: p.Identifier,
-		}).
-		SetName(schema.TranslatedString{
-			Value: p.Name,
-		}).
-		SetDescription(schema.TranslatedString{
-			Value: p.Description,
-		}).
-		SetFoundingDate(p.FoundingDate).
-		SetDissolutionDate(p.DissolutionDate).
-		SetGrantID(p.Grant).
-		SetFundingProgramme(p.FundingProgramme).
-		SetAcronym(p.Acronym).
-		SetDeleted(p.Deleted).
-		SetCreatedAt(p.DateCreated).
-		SetUpdatedAt(p.DateModified).
-		OnConflictColumns(project.FieldGismoID).
-		UpdateNewValues().
-		Exec(ctx)
+	sql := `
+	WITH add_external_identifier AS (
+		INSERT INTO project_identifiers (external_id)
+		values ($1) ON CONFLICT (external_id) DO NOTHING
+		RETURNING id
+	),
+	external_identifier AS (
+		SELECT id
+		FROM add_external_identifier
+		UNION
+		SELECT id
+		FROM project_identifiers
+		WHERE external_id = $1
+	)
+	INSERT INTO projects(
+			project_identifier_id,
+			identifier,
+			name,
+			description,
+			founding_date,
+			dissolution_date,
+			acronym,
+			grant_id,
+			funding_programme,
+			deleted,
+			created_at,
+			updated_at
+		)
+	SELECT external_identifier.id,
+		$2,
+		$3,
+		$4,
+		$5,
+		$6,
+		$7,
+		$8,
+		$9,
+		$10,
+		current_timestamp,
+		current_timestamp
+	FROM external_identifier ON CONFLICT (project_identifier_id) DO
+	UPDATE
+	SET identifier = excluded.identifier,
+		name = excluded.name,
+		description = excluded.description,
+		founding_date = excluded.founding_date,
+		dissolution_date = excluded.dissolution_date,
+		acronym = excluded.acronym,
+		grant_id = excluded.grant_id,
+		funding_programme = excluded.funding_programme,
+		deleted = excluded.deleted,
+		updated_at = excluded.updated_at
+	WHERE projects.identifier != excluded.identifier
+		OR projects.name != excluded.name
+		OR projects.description != excluded.description
+		OR projects.founding_date != excluded.founding_date
+		OR projects.dissolution_date != excluded.dissolution_date
+		OR projects.acronym != excluded.acronym
+		OR projects.grant_id != excluded.grant_id
+		OR projects.funding_programme != excluded.funding_programme
+		OR projects.deleted != excluded.deleted
+		OR projects.updated_at != excluded.updated_at
+	`
+
+	_, err := r.client.ExecContext(ctx, sql, p.ID, p.GetIdentifier(), p.GetName(), p.GetDescription(), p.FoundingDate, p.DissolutionDate, p.Acronym, p.Grant, p.FundingProgramme, p.Deleted)
 
 	return err
 }
 
 func (r *Repo) GetProject(ctx context.Context, id string) (*models.Project, error) {
-	row, err := r.client.Project.Query().
-		Where(project.GismoID(id)).
+	row, err := r.client.ProjectIdentifier.Query().
+		Where(projectidentifier.ExternalID(id)).
+		QueryProjects().
 		Only(ctx)
 
 	if ent.IsNotFound(err) {
@@ -94,8 +144,9 @@ func (r *Repo) GetProject(ctx context.Context, id string) (*models.Project, erro
 }
 
 func (r *Repo) DeleteProject(ctx context.Context, id string) error {
-	p, err := r.client.Project.Query().
-		Where(project.GismoID(id)).
+	p, err := r.client.ProjectIdentifier.Query().
+		Where(projectidentifier.ExternalID(id)).
+		QueryProjects().
 		Only(ctx)
 
 	switch {
@@ -141,7 +192,7 @@ func (r *Repo) SuggestProjects(ctx context.Context, query string) ([]*models.Pro
 
 func rowToProject(row *ent.Project) *models.Project {
 	p := &models.Project{
-		ID:              row.ID,
+		// ID:              row.ID,
 		Identifier:      row.Identifier.Value,
 		DateCreated:     row.CreatedAt,
 		DateModified:    row.UpdatedAt,

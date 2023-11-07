@@ -21,6 +21,18 @@ func (f ProjectFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ProjectMutation", m)
 }
 
+// The ProjectIdentifierFunc type is an adapter to allow the use of ordinary
+// function as ProjectIdentifier mutator.
+type ProjectIdentifierFunc func(context.Context, *ent.ProjectIdentifierMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ProjectIdentifierFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ProjectIdentifierMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ProjectIdentifierMutation", m)
+}
+
 // Condition is a hook condition function.
 type Condition func(context.Context, ent.Mutation) bool
 

@@ -4,11 +4,9 @@ import (
 	"time"
 
 	"entgo.io/ent"
-	"entgo.io/ent/dialect"
-	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
-	"github.com/oklog/ulid/v2"
 )
 
 var timeUTC = func() time.Time {
@@ -20,7 +18,7 @@ type Project struct {
 }
 
 type Identifier struct {
-	Value map[string][]string `json:"Value"`
+	Value map[string][]string `json:"value"`
 }
 
 type TranslatedString struct {
@@ -29,14 +27,7 @@ type TranslatedString struct {
 
 func (Project) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("id").
-			Immutable().
-			Unique().
-			DefaultFunc(func() string {
-				return ulid.Make().String()
-			}),
-		field.String("gismo_id").
-			Unique(),
+		field.Int("project_identifier_id"),
 		field.JSON("identifier", Identifier{}).
 			Default(Identifier{}),
 		field.JSON("name", TranslatedString{}).
@@ -61,17 +52,34 @@ func (Project) Fields() []ent.Field {
 		field.Time("updated_at").
 			Default(timeUTC).
 			UpdateDefault(timeUTC),
-		field.String("ts").
-			Optional().
-			SchemaType(map[string]string{
-				dialect.Postgres: "tsvector NULL GENERATED ALWAYS AS ((to_tsvector('simple'::regconfig, jsonb_path_query_array(identifier, '$.**{2}'::jsonpath)) || to_tsvector('simple'::regconfig, (id)::text)) || to_tsvector('usimple'::regconfig, jsonb_path_query_array(name, '$.**{2}'::jsonpath))) STORED",
-			}),
+		// field.String("ts").
+		// 	Optional().
+		// 	SchemaType(map[string]string{
+		// 		dialect.Postgres: "tsvector NULL GENERATED ALWAYS AS ((to_tsvector('simple'::regconfig, jsonb_path_query_array(identifier, '$.**{2}'::jsonpath)) || to_tsvector('simple'::regconfig, (id)::text)) || to_tsvector('usimple'::regconfig, jsonb_path_query_array(name, '$.**{2}'::jsonpath))) STORED",
+		// 	}),
+	}
+}
+
+func (Project) Edges() []ent.Edge {
+	return []ent.Edge{
+		edge.From("identifiedBy", ProjectIdentifier.Type).
+			Field("project_identifier_id").
+			Ref("projects").
+			Unique().
+			Required(),
 	}
 }
 
 func (Project) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("ts").
-			Annotations(entsql.IndexType("GIN")),
+		index.Fields("project_identifier_id").
+			Unique(),
 	}
 }
+
+// func (Project) Indexes() []ent.Index {
+// 	return []ent.Index{
+// 		index.Fields("ts").
+// 			Annotations(entsql.IndexType("GIN")),
+// 	}
+// }
