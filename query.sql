@@ -74,7 +74,7 @@ SELECT pid,
     created_at,
     updated_at
 FROM projects
-WHERE ts @@ to_tsquery($1)
+WHERE ts @@ websearch_to_tsquery($1)
 LIMIT 10;
 
 -- name: DeleteProject :one

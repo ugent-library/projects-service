@@ -143,44 +143,13 @@ func toTSQuery(query string) string {
 			continue
 		}
 
-		parts = append(parts, fmt.Sprintf("'%s' || ':*'", qp))
+		parts = append(parts, qp)
 	}
 
 	d := fmt.Sprintf(
 		"%s",
-		strings.Join(parts, " || ' & ' || "),
+		strings.Join(parts, " "),
 	)
 
 	return d
 }
-
-// func toTSQuery2(query string) (string, []any) {
-// 	// remove duplicate spaces
-// 	query = regexMultipleSpaces.ReplaceAllString(query, " ")
-// 	// trim
-// 	query = strings.TrimSpace(query)
-
-// 	queryParts := make([]string, 0)
-// 	queryArgs := make([]any, 0)
-// 	argCounter := 0
-
-// 	for _, qp := range strings.Split(query, " ") {
-// 		// remove terms that contain brackets
-// 		if regexNoBrackets.MatchString(qp) {
-// 			continue
-// 		}
-// 		argCounter++
-
-// 		// $1 || ':*'
-// 		queryParts = append(queryParts, fmt.Sprintf("$%d || ':*'", argCounter))
-// 		queryArgs = append(queryArgs, qp)
-// 	}
-
-// 	// $1:* & $2:*
-// 	tsQuery := fmt.Sprintf(
-// 		"to_tsquery('usimple', %s)",
-// 		strings.Join(queryParts, " || ' & ' || "),
-// 	)
-
-// 	return tsQuery, queryArgs
-// }
