@@ -53,7 +53,7 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
 		for _, id := range ids {
 			tmp[id.GetPropertyID()] = append(tmp[id.GetPropertyID()], id.GetValue())
 		}
-		p.Identifier = tmp
+		p.Identifier = models.Identifiers{Value: tmp}
 	}
 
 	if strs := req.GetName(); len(strs) > 0 {
@@ -62,7 +62,7 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
 			tmp[str.GetLanguage()] = str.GetValue()
 		}
 
-		p.Name = tmp
+		p.Name = models.TranslatedString{Value: tmp}
 	}
 
 	if strs := req.GetDescription(); len(strs) > 0 {
@@ -71,7 +71,7 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
 			tmp[str.GetLanguage()] = str.GetValue()
 		}
 
-		p.Description = tmp
+		p.Description = models.TranslatedString{Value: tmp}
 	}
 
 	if v, ok := req.GetFoundingDate().Get(); ok {
@@ -105,8 +105,18 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
 
 func (s *Service) DeleteProject(ctx context.Context, req *DeleteProjectRequest) error {
 	v := req.GetID()
+
 	err := s.repo.DeleteProject(ctx, v)
-	if err != nil {
+	switch {
+	case errors.Is(err, repositories.ErrNotFound):
+		return &ErrorStatusCode{
+			StatusCode: 404,
+			Response: Error{
+				Code:    404,
+				Message: fmt.Sprintf("Project not found: %s", v),
+			},
+		}
+	case err != nil:
 		return err
 	}
 
@@ -116,14 +126,17 @@ func (s *Service) DeleteProject(ctx context.Context, req *DeleteProjectRequest) 
 func (s *Service) GetProject(ctx context.Context, req *GetProjectRequest) (GetProjectRes, error) {
 	v := req.GetID()
 	p, err := s.repo.GetProject(ctx, v)
-	if errors.Is(err, repositories.ErrNotFound) {
-		return &ErrorStatusCode{
+	switch {
+	case errors.Is(err, repositories.ErrNotFound):
+		return nil, &ErrorStatusCode{
 			StatusCode: 404,
 			Response: Error{
 				Code:    404,
 				Message: fmt.Sprintf("Project not found: %s", v),
 			},
-		}, nil
+		}
+	case err != nil:
+		return nil, err
 	}
 
 	oasp := mapToOASProject(p)
@@ -160,7 +173,7 @@ func (s *Service) NewError(ctx context.Context, err error) *ErrorStatusCode {
 
 func mapToOASProject(p *models.Project) *GetProject {
 	sids := make([]GetProjectIdentifierItem, 0)
-	for prop, ids := range p.Identifier {
+	for prop, ids := range p.Identifier.Value {
 		for _, id := range ids {
 			sids = append(sids, GetProjectIdentifierItem{
 				Type:       "PropertyValue",
@@ -180,7 +193,7 @@ func mapToOASProject(p *models.Project) *GetProject {
 	r.ID = p.ID
 
 	name := make([]GetProjectNameItem, 0)
-	for lang, val := range p.Name {
+	for lang, val := range p.Name.Value {
 		name = append(name, GetProjectNameItem{
 			Language: lang,
 			Value:    val,
@@ -189,7 +202,7 @@ func mapToOASProject(p *models.Project) *GetProject {
 	r.SetName(name)
 
 	desc := make([]GetProjectDescriptionItem, 0)
-	for lang, val := range p.Description {
+	for lang, val := range p.Description.Value {
 		desc = append(desc, GetProjectDescriptionItem{
 			Language: lang,
 			Value:    val,

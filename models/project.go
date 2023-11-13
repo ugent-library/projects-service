@@ -1,15 +1,22 @@
 package models
 
 import (
-	"encoding/json"
 	"time"
 )
 
+type Identifiers struct {
+	Value map[string][]string `json:"value"`
+}
+
+type TranslatedString struct {
+	Value map[string]string `json:"value"`
+}
+
 type Project struct {
 	ID               string
-	Identifier       map[string][]string
-	Name             map[string]string
-	Description      map[string]string
+	Identifier       Identifiers
+	Name             TranslatedString
+	Description      TranslatedString
 	FoundingDate     string
 	DissolutionDate  string
 	Grant            string
@@ -18,46 +25,4 @@ type Project struct {
 	Deleted          bool
 	DateCreated      time.Time
 	DateModified     time.Time
-}
-
-func (p *Project) GetIdentifier() string {
-	d, err := json.Marshal(struct {
-		Value map[string][]string `json:"value"`
-	}{
-		Value: p.Identifier,
-	})
-
-	if err != nil {
-		panic(err)
-	}
-
-	return string(d)
-}
-
-func (p *Project) GetName() string {
-	d, err := json.Marshal(struct {
-		Value map[string]string `json:"value"`
-	}{
-		Value: p.Name,
-	})
-
-	if err != nil {
-		panic(err)
-	}
-
-	return string(d)
-}
-
-func (p *Project) GetDescription() string {
-	d, err := json.Marshal(struct {
-		Value map[string]string `json:"value"`
-	}{
-		Value: p.Description,
-	})
-
-	if err != nil {
-		panic(err)
-	}
-
-	return string(d)
 }

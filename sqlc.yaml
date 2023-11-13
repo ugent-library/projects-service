@@ -1,0 +1,26 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "query.sql"
+    schema: "etc/migrations"
+    gen:
+      go:
+        package: "sqlc"
+        out: "sqlc"
+        sql_package: "pgx/v5"
+        overrides:
+          - column: "projects.identifiers"
+            go_type:
+              import: "github.com/ugent-library/projects/models"
+              package: "models"
+              type: "Identifiers"
+          - column: "projects.name"
+            go_type:
+              import: "github.com/ugent-library/projects/models"
+              package: "models"
+              type: "TranslatedString"
+          - column: "projects.description"
+            go_type:
+              import: "github.com/ugent-library/projects/models"
+              package: "models"
+              type: "TranslatedString"
