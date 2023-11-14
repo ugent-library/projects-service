@@ -9,6 +9,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib"
 
 	"github.com/ugent-library/projects/models"
@@ -31,12 +32,12 @@ type Config struct {
 func New(c Config) (*Repo, error) {
 	ctx := context.Background()
 
-	conn, err := pgx.Connect(ctx, c.Conn)
+	pool, err := pgxpool.New(ctx, c.Conn)
 	if err != nil {
 		return nil, err
 	}
 
-	client := sqlc.New(conn)
+	client := sqlc.New(pool)
 
 	return &Repo{
 		config: c,
@@ -46,7 +47,7 @@ func New(c Config) (*Repo, error) {
 
 func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 	d := sqlc.UpsertProjectParams{
-		PrimaryIdentifier:  "test",
+		PrimaryIdentifier:  p.ID,
 		Identifiers:        p.Identifier,
 		Name:               p.Name,
 		Description:        p.Description,
