@@ -199,9 +199,9 @@ func (s *AddProjectIdentifierItem) SetValue(val string) {
 }
 
 type AddProjectIsFundedBy struct {
-	Type        string                                `json:"type"`
-	Identifier  string                                `json:"identifier"`
-	IsAwardedBy OptNilAddProjectIsFundedByIsAwardedBy `json:"isAwardedBy"`
+	Type          string                                `json:"type"`
+	HasCallNumber string                                `json:"hasCallNumber"`
+	IsAwardedBy   OptNilAddProjectIsFundedByIsAwardedBy `json:"isAwardedBy"`
 }
 
 // GetType returns the value of Type.
@@ -209,9 +209,9 @@ func (s *AddProjectIsFundedBy) GetType() string {
 	return s.Type
 }
 
-// GetIdentifier returns the value of Identifier.
-func (s *AddProjectIsFundedBy) GetIdentifier() string {
-	return s.Identifier
+// GetHasCallNumber returns the value of HasCallNumber.
+func (s *AddProjectIsFundedBy) GetHasCallNumber() string {
+	return s.HasCallNumber
 }
 
 // GetIsAwardedBy returns the value of IsAwardedBy.
@@ -224,9 +224,9 @@ func (s *AddProjectIsFundedBy) SetType(val string) {
 	s.Type = val
 }
 
-// SetIdentifier sets the value of Identifier.
-func (s *AddProjectIsFundedBy) SetIdentifier(val string) {
-	s.Identifier = val
+// SetHasCallNumber sets the value of HasCallNumber.
+func (s *AddProjectIsFundedBy) SetHasCallNumber(val string) {
+	s.HasCallNumber = val
 }
 
 // SetIsAwardedBy sets the value of IsAwardedBy.
@@ -563,9 +563,9 @@ func (s *GetProjectIdentifierItem) SetValue(val string) {
 }
 
 type GetProjectIsFundedBy struct {
-	Type        string                                `json:"type"`
-	Identifier  string                                `json:"identifier"`
-	IsAwardedBy OptNilGetProjectIsFundedByIsAwardedBy `json:"isAwardedBy"`
+	Type          string                                `json:"type"`
+	HasCallNumber string                                `json:"hasCallNumber"`
+	IsAwardedBy   OptNilGetProjectIsFundedByIsAwardedBy `json:"isAwardedBy"`
 }
 
 // GetType returns the value of Type.
@@ -573,9 +573,9 @@ func (s *GetProjectIsFundedBy) GetType() string {
 	return s.Type
 }
 
-// GetIdentifier returns the value of Identifier.
-func (s *GetProjectIsFundedBy) GetIdentifier() string {
-	return s.Identifier
+// GetHasCallNumber returns the value of HasCallNumber.
+func (s *GetProjectIsFundedBy) GetHasCallNumber() string {
+	return s.HasCallNumber
 }
 
 // GetIsAwardedBy returns the value of IsAwardedBy.
@@ -588,9 +588,9 @@ func (s *GetProjectIsFundedBy) SetType(val string) {
 	s.Type = val
 }
 
-// SetIdentifier sets the value of Identifier.
-func (s *GetProjectIsFundedBy) SetIdentifier(val string) {
-	s.Identifier = val
+// SetHasCallNumber sets the value of HasCallNumber.
+func (s *GetProjectIsFundedBy) SetHasCallNumber(val string) {
+	s.HasCallNumber = val
 }
 
 // SetIsAwardedBy sets the value of IsAwardedBy.

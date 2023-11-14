@@ -180,7 +180,7 @@ components:
           properties:
             type:
               type: string
-            identifier:
+            hasCallNumber:
               type: string
             isAwardedBy:
               type: object
@@ -191,7 +191,7 @@ components:
                 name:
                   type: string
               required: [type, name]
-          required: [type, identifier]
+          required: [type, hasCallNumber]
         hasAcronym:
           type: array
           items:

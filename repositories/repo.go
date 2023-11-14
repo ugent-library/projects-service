@@ -46,16 +46,15 @@ func New(c Config) (*Repo, error) {
 
 func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 	d := sqlc.UpsertProjectParams{
-		PrimaryIdentifier: "test",
-		Identifiers:       p.Identifier,
-		Name:              p.Name,
-		Description:       p.Description,
-		FoundingDate:      pgtype.Text{String: p.FoundingDate, Valid: true},
-		DissolutionDate:   pgtype.Text{String: p.DissolutionDate, Valid: true},
-		Acronym:           p.Acronym,
-		// TODO eu_acronym
-		// TODO eu_grant
-		// TODO eu_funding_programme
+		PrimaryIdentifier:  "test",
+		Identifiers:        p.Identifier,
+		Name:               p.Name,
+		Description:        p.Description,
+		FoundingDate:       pgtype.Text{String: p.FoundingDate, Valid: true},
+		DissolutionDate:    pgtype.Text{String: p.DissolutionDate, Valid: true},
+		Acronym:            p.Acronym,
+		EuGrantCall:        pgtype.Text{String: p.GrantCall, Valid: true},
+		EuFundingProgramme: pgtype.Text{String: p.FundingProgramme, Valid: true},
 	}
 
 	err := r.client.UpsertProject(ctx, d)
@@ -70,17 +69,17 @@ func (r *Repo) GetProject(ctx context.Context, id string) (*models.Project, erro
 	}
 
 	p := &models.Project{
-		ID:              row.PrimaryIdentifier,
-		Name:            row.Name,
-		Description:     row.Description,
-		Identifier:      row.Identifiers,
-		FoundingDate:    row.FoundingDate.String,
-		DissolutionDate: row.DissolutionDate.String,
-		Acronym:         row.Acronym,
-		// Grant
-		// FundingProgramme
-		DateCreated:  row.CreatedAt.Time,
-		DateModified: row.UpdatedAt.Time,
+		ID:               row.PrimaryIdentifier,
+		Name:             row.Name,
+		Description:      row.Description,
+		Identifier:       row.Identifiers,
+		FoundingDate:     row.FoundingDate.String,
+		DissolutionDate:  row.DissolutionDate.String,
+		Acronym:          row.Acronym,
+		GrantCall:        row.EuGrantCall.String,
+		FundingProgramme: row.EuFundingProgramme.String,
+		DateCreated:      row.CreatedAt.Time,
+		DateModified:     row.UpdatedAt.Time,
 	}
 
 	return p, nil
@@ -121,10 +120,9 @@ func (r *Repo) SuggestProjects(ctx context.Context, query string) ([]*models.Pro
 			FoundingDate:    row.FoundingDate.String,
 			DissolutionDate: row.DissolutionDate.String,
 			Acronym:         row.Acronym,
-			// Grant
-			// FundingProgramme
-			DateCreated:  row.CreatedAt.Time,
-			DateModified: row.UpdatedAt.Time,
+			GrantCall:       row.EuGrantCall.String,
+			DateCreated:     row.CreatedAt.Time,
+			DateModified:    row.UpdatedAt.Time,
 		})
 	}
 	return projects, nil

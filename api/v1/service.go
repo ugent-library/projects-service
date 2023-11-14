@@ -95,8 +95,8 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
 	}
 
 	if fb, ok := req.GetIsFundedBy().Get(); ok {
-		id := fb.GetIdentifier()
-		p.Grant = id
+		id := fb.GetHasCallNumber()
+		p.GrantCall = id
 
 		if ab, ok := fb.GetIsAwardedBy().Get(); ok {
 			name := ab.GetName()
@@ -232,10 +232,10 @@ func mapToOASProject(p *models.Project) *GetProject {
 	}
 	r.SetHasAcronym(acrs)
 
-	if p.Grant != "" {
+	if p.GrantCall != "" {
 		g := GetProjectIsFundedBy{
-			Type:       "Grant",
-			Identifier: p.Grant,
+			Type:          "Grant",
+			HasCallNumber: p.GrantCall,
 		}
 
 		if p.FundingProgramme != "" {

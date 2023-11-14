@@ -583,8 +583,8 @@ func (s *AddProjectIsFundedBy) encodeFields(e *jx.Encoder) {
 		e.Str(s.Type)
 	}
 	{
-		e.FieldStart("identifier")
-		e.Str(s.Identifier)
+		e.FieldStart("hasCallNumber")
+		e.Str(s.HasCallNumber)
 	}
 	{
 		if s.IsAwardedBy.Set {
@@ -596,7 +596,7 @@ func (s *AddProjectIsFundedBy) encodeFields(e *jx.Encoder) {
 
 var jsonFieldsNameOfAddProjectIsFundedBy = [3]string{
 	0: "type",
-	1: "identifier",
+	1: "hasCallNumber",
 	2: "isAwardedBy",
 }
 
@@ -621,17 +621,17 @@ func (s *AddProjectIsFundedBy) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"type\"")
 			}
-		case "identifier":
+		case "hasCallNumber":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := d.Str()
-				s.Identifier = string(v)
+				s.HasCallNumber = string(v)
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"identifier\"")
+				return errors.Wrap(err, "decode field \"hasCallNumber\"")
 			}
 		case "isAwardedBy":
 			if err := func() error {
@@ -1703,8 +1703,8 @@ func (s *GetProjectIsFundedBy) encodeFields(e *jx.Encoder) {
 		e.Str(s.Type)
 	}
 	{
-		e.FieldStart("identifier")
-		e.Str(s.Identifier)
+		e.FieldStart("hasCallNumber")
+		e.Str(s.HasCallNumber)
 	}
 	{
 		if s.IsAwardedBy.Set {
@@ -1716,7 +1716,7 @@ func (s *GetProjectIsFundedBy) encodeFields(e *jx.Encoder) {
 
 var jsonFieldsNameOfGetProjectIsFundedBy = [3]string{
 	0: "type",
-	1: "identifier",
+	1: "hasCallNumber",
 	2: "isAwardedBy",
 }
 
@@ -1741,17 +1741,17 @@ func (s *GetProjectIsFundedBy) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"type\"")
 			}
-		case "identifier":
+		case "hasCallNumber":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := d.Str()
-				s.Identifier = string(v)
+				s.HasCallNumber = string(v)
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"identifier\"")
+				return errors.Wrap(err, "decode field \"hasCallNumber\"")
 			}
 		case "isAwardedBy":
 			if err := func() error {

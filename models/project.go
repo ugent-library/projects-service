@@ -23,7 +23,7 @@ type Project struct {
 	Description      TranslatedString
 	FoundingDate     string
 	DissolutionDate  string
-	Grant            string
+	GrantCall        string
 	FundingProgramme string
 	Acronym          Acronym
 	Deleted          bool
