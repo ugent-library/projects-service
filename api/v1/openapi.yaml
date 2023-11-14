@@ -193,7 +193,9 @@ components:
               required: [type, name]
           required: [type, identifier]
         hasAcronym:
-          type: string
+          type: array
+          items:
+            type: string
         name:
           type: array
           items:

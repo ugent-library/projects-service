@@ -12,6 +12,10 @@ type TranslatedString struct {
 	Value map[string]string `json:"value"`
 }
 
+type Acronym struct {
+	Value []string `json:value`
+}
+
 type Project struct {
 	ID               string
 	Identifier       Identifiers
@@ -21,7 +25,7 @@ type Project struct {
 	DissolutionDate  string
 	Grant            string
 	FundingProgramme string
-	Acronym          string
+	Acronym          Acronym
 	Deleted          bool
 	DateCreated      time.Time
 	DateModified     time.Time

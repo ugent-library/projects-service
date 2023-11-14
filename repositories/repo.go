@@ -52,7 +52,7 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 		Description:       p.Description,
 		FoundingDate:      pgtype.Text{String: p.FoundingDate, Valid: true},
 		DissolutionDate:   pgtype.Text{String: p.DissolutionDate, Valid: true},
-		Acronym:           pgtype.Text{String: p.Acronym, Valid: true},
+		Acronym:           p.Acronym,
 		// TODO eu_acronym
 		// TODO eu_grant
 		// TODO eu_funding_programme
@@ -76,7 +76,7 @@ func (r *Repo) GetProject(ctx context.Context, id string) (*models.Project, erro
 		Identifier:      row.Identifiers,
 		FoundingDate:    row.FoundingDate.String,
 		DissolutionDate: row.DissolutionDate.String,
-		Acronym:         row.Acronym.String,
+		Acronym:         row.Acronym,
 		// Grant
 		// FundingProgramme
 		DateCreated:  row.CreatedAt.Time,
@@ -120,7 +120,7 @@ func (r *Repo) SuggestProjects(ctx context.Context, query string) ([]*models.Pro
 			Identifier:      row.Identifiers,
 			FoundingDate:    row.FoundingDate.String,
 			DissolutionDate: row.DissolutionDate.String,
-			Acronym:         row.Acronym.String,
+			Acronym:         row.Acronym,
 			// Grant
 			// FundingProgramme
 			DateCreated:  row.CreatedAt.Time,

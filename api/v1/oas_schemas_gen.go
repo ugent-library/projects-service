@@ -20,7 +20,7 @@ type AddProject struct {
 	Type            string                      `json:"type"`
 	Identifier      []AddProjectIdentifierItem  `json:"identifier"`
 	IsFundedBy      OptAddProjectIsFundedBy     `json:"isFundedBy"`
-	HasAcronym      OptString                   `json:"hasAcronym"`
+	HasAcronym      []string                    `json:"hasAcronym"`
 	Name            []AddProjectNameItem        `json:"name"`
 	Description     []AddProjectDescriptionItem `json:"description"`
 	FoundingDate    OptString                   `json:"foundingDate"`
@@ -58,7 +58,7 @@ func (s *AddProject) GetIsFundedBy() OptAddProjectIsFundedBy {
 }
 
 // GetHasAcronym returns the value of HasAcronym.
-func (s *AddProject) GetHasAcronym() OptString {
+func (s *AddProject) GetHasAcronym() []string {
 	return s.HasAcronym
 }
 
@@ -113,7 +113,7 @@ func (s *AddProject) SetIsFundedBy(val OptAddProjectIsFundedBy) {
 }
 
 // SetHasAcronym sets the value of HasAcronym.
-func (s *AddProject) SetHasAcronym(val OptString) {
+func (s *AddProject) SetHasAcronym(val []string) {
 	s.HasAcronym = val
 }
 
@@ -382,7 +382,7 @@ type GetProject struct {
 	Type            string                      `json:"type"`
 	Identifier      []GetProjectIdentifierItem  `json:"identifier"`
 	IsFundedBy      OptGetProjectIsFundedBy     `json:"isFundedBy"`
-	HasAcronym      OptString                   `json:"hasAcronym"`
+	HasAcronym      []string                    `json:"hasAcronym"`
 	Name            []GetProjectNameItem        `json:"name"`
 	Description     []GetProjectDescriptionItem `json:"description"`
 	FoundingDate    OptString                   `json:"foundingDate"`
@@ -420,7 +420,7 @@ func (s *GetProject) GetIsFundedBy() OptGetProjectIsFundedBy {
 }
 
 // GetHasAcronym returns the value of HasAcronym.
-func (s *GetProject) GetHasAcronym() OptString {
+func (s *GetProject) GetHasAcronym() []string {
 	return s.HasAcronym
 }
 
@@ -475,7 +475,7 @@ func (s *GetProject) SetIsFundedBy(val OptGetProjectIsFundedBy) {
 }
 
 // SetHasAcronym sets the value of HasAcronym.
-func (s *GetProject) SetHasAcronym(val OptString) {
+func (s *GetProject) SetHasAcronym(val []string) {
 	s.HasAcronym = val
 }
 

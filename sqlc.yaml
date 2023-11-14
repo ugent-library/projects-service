@@ -24,3 +24,8 @@ sql:
               import: "github.com/ugent-library/projects/models"
               package: "models"
               type: "TranslatedString"
+          - column: "projects.acronym"
+            go_type:
+              import: "github.com/ugent-library/projects/models"
+              package: "models"
+              type: "Acronym"

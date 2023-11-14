@@ -82,8 +82,16 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
 		p.DissolutionDate = v
 	}
 
-	if v, ok := req.GetHasAcronym().Get(); ok {
-		p.Acronym = v
+	if ids := req.GetIdentifier(); len(ids) > 0 {
+		tmp := make(map[string][]string)
+		for _, id := range ids {
+			tmp[id.GetPropertyID()] = append(tmp[id.GetPropertyID()], id.GetValue())
+		}
+		p.Identifier = models.Identifiers{Value: tmp}
+	}
+
+	if acrs := req.GetHasAcronym(); len(acrs) > 0 {
+		p.Acronym = models.Acronym{Value: acrs}
 	}
 
 	if fb, ok := req.GetIsFundedBy().Get(); ok {
@@ -218,9 +226,11 @@ func mapToOASProject(p *models.Project) *GetProject {
 		r.SetDissolutionDate(NewOptString(p.DissolutionDate))
 	}
 
-	if p.Acronym != "" {
-		r.SetHasAcronym(NewOptString(p.Acronym))
+	acrs := make([]string, 0)
+	for _, acr := range p.Acronym.Value {
+		acrs = append(acrs, acr)
 	}
+	r.SetHasAcronym(acrs)
 
 	if p.Grant != "" {
 		g := GetProjectIsFundedBy{

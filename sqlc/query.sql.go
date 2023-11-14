@@ -34,8 +34,7 @@ SELECT pid,
     founding_date,
     dissolution_date,
     acronym,
-    eu_acronym,
-    eu_grant,
+    eu_grant_call,
     eu_funding_programme,
     created_at,
     updated_at
@@ -52,9 +51,8 @@ type GetProjectRow struct {
 	Description        models.TranslatedString
 	FoundingDate       pgtype.Text
 	DissolutionDate    pgtype.Text
-	Acronym            pgtype.Text
-	EuAcronym          pgtype.Text
-	EuGrant            pgtype.Text
+	Acronym            models.Acronym
+	EuGrantCall        pgtype.Text
 	EuFundingProgramme pgtype.Text
 	CreatedAt          pgtype.Timestamptz
 	UpdatedAt          pgtype.Timestamptz
@@ -72,8 +70,7 @@ func (q *Queries) GetProject(ctx context.Context, primaryIdentifier string) (Get
 		&i.FoundingDate,
 		&i.DissolutionDate,
 		&i.Acronym,
-		&i.EuAcronym,
-		&i.EuGrant,
+		&i.EuGrantCall,
 		&i.EuFundingProgramme,
 		&i.CreatedAt,
 		&i.UpdatedAt,
@@ -91,8 +88,7 @@ SELECT pid,
     founding_date,
     dissolution_date,
     acronym,
-    eu_acronym,
-    eu_grant,
+    eu_grant_call,
     eu_funding_programme,
     created_at,
     updated_at
@@ -109,9 +105,8 @@ type SuggestProjectsRow struct {
 	Description        models.TranslatedString
 	FoundingDate       pgtype.Text
 	DissolutionDate    pgtype.Text
-	Acronym            pgtype.Text
-	EuAcronym          pgtype.Text
-	EuGrant            pgtype.Text
+	Acronym            models.Acronym
+	EuGrantCall        pgtype.Text
 	EuFundingProgramme pgtype.Text
 	CreatedAt          pgtype.Timestamptz
 	UpdatedAt          pgtype.Timestamptz
@@ -135,8 +130,7 @@ func (q *Queries) SuggestProjects(ctx context.Context, websearchToTsquery string
 			&i.FoundingDate,
 			&i.DissolutionDate,
 			&i.Acronym,
-			&i.EuAcronym,
-			&i.EuGrant,
+			&i.EuGrantCall,
 			&i.EuFundingProgramme,
 			&i.CreatedAt,
 			&i.UpdatedAt,
@@ -160,8 +154,7 @@ INSERT INTO projects(
         founding_date,
         dissolution_date,
         acronym,
-        eu_acronym,
-        eu_grant,
+        eu_grant_call,
         eu_funding_programme,
         created_at,
         updated_at
@@ -176,7 +169,6 @@ VALUES(
         $7,
         $8,
         $9,
-        $10,
         current_timestamp,
         current_timestamp
     ) ON CONFLICT (primary_identifier) DO
@@ -187,8 +179,7 @@ SET identifiers = excluded.identifiers,
     founding_date = excluded.founding_date,
     dissolution_date = excluded.dissolution_date,
     acronym = excluded.acronym,
-    eu_acronym = excluded.eu_acronym,
-    eu_grant = excluded.eu_grant,
+    eu_grant_call = excluded.eu_grant_call,
     eu_funding_programme = excluded.eu_funding_programme,
     created_at = projects.created_at,
     updated_at = current_timestamp
@@ -201,9 +192,8 @@ type UpsertProjectParams struct {
 	Description        models.TranslatedString
 	FoundingDate       pgtype.Text
 	DissolutionDate    pgtype.Text
-	Acronym            pgtype.Text
-	EuAcronym          pgtype.Text
-	EuGrant            pgtype.Text
+	Acronym            models.Acronym
+	EuGrantCall        pgtype.Text
 	EuFundingProgramme pgtype.Text
 }
 
@@ -216,8 +206,7 @@ func (q *Queries) UpsertProject(ctx context.Context, arg UpsertProjectParams) er
 		arg.FoundingDate,
 		arg.DissolutionDate,
 		arg.Acronym,
-		arg.EuAcronym,
-		arg.EuGrant,
+		arg.EuGrantCall,
 		arg.EuFundingProgramme,
 	)
 	return err

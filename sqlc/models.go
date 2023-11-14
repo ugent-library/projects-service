@@ -17,9 +17,8 @@ type Project struct {
 	Description        models.TranslatedString
 	FoundingDate       pgtype.Text
 	DissolutionDate    pgtype.Text
-	Acronym            pgtype.Text
-	EuAcronym          pgtype.Text
-	EuGrant            pgtype.Text
+	Acronym            models.Acronym
+	EuGrantCall        pgtype.Text
 	EuFundingProgramme pgtype.Text
 	CreatedAt          pgtype.Timestamptz
 	UpdatedAt          pgtype.Timestamptz

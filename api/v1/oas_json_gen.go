@@ -60,9 +60,13 @@ func (s *AddProject) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
-		if s.HasAcronym.Set {
+		if s.HasAcronym != nil {
 			e.FieldStart("hasAcronym")
-			s.HasAcronym.Encode(e)
+			e.ArrStart()
+			for _, elem := range s.HasAcronym {
+				e.Str(elem)
+			}
+			e.ArrEnd()
 		}
 	}
 	{
@@ -194,8 +198,17 @@ func (s *AddProject) Decode(d *jx.Decoder) error {
 			}
 		case "hasAcronym":
 			if err := func() error {
-				s.HasAcronym.Reset()
-				if err := s.HasAcronym.Decode(d); err != nil {
+				s.HasAcronym = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.HasAcronym = append(s.HasAcronym, elem)
+					return nil
+				}); err != nil {
 					return err
 				}
 				return nil
@@ -1161,9 +1174,13 @@ func (s *GetProject) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
-		if s.HasAcronym.Set {
+		if s.HasAcronym != nil {
 			e.FieldStart("hasAcronym")
-			s.HasAcronym.Encode(e)
+			e.ArrStart()
+			for _, elem := range s.HasAcronym {
+				e.Str(elem)
+			}
+			e.ArrEnd()
 		}
 	}
 	{
@@ -1301,8 +1318,17 @@ func (s *GetProject) Decode(d *jx.Decoder) error {
 			}
 		case "hasAcronym":
 			if err := func() error {
-				s.HasAcronym.Reset()
-				if err := s.HasAcronym.Decode(d); err != nil {
+				s.HasAcronym = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.HasAcronym = append(s.HasAcronym, elem)
+					return nil
+				}); err != nil {
 					return err
 				}
 				return nil
