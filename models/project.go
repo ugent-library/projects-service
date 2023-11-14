@@ -13,7 +13,7 @@ type TranslatedString struct {
 }
 
 type Acronym struct {
-	Value []string `json:value`
+	Value []string `json:"value"`
 }
 
 type Project struct {
