@@ -191,7 +191,7 @@ components:
                 name:
                   type: string
               required: [type, name]
-          required: [type, hasCallNumber]
+          required: [type]
         hasAcronym:
           type: array
           items:

@@ -200,7 +200,7 @@ func (s *AddProjectIdentifierItem) SetValue(val string) {
 
 type AddProjectIsFundedBy struct {
 	Type          string                                `json:"type"`
-	HasCallNumber string                                `json:"hasCallNumber"`
+	HasCallNumber OptString                             `json:"hasCallNumber"`
 	IsAwardedBy   OptNilAddProjectIsFundedByIsAwardedBy `json:"isAwardedBy"`
 }
 
@@ -210,7 +210,7 @@ func (s *AddProjectIsFundedBy) GetType() string {
 }
 
 // GetHasCallNumber returns the value of HasCallNumber.
-func (s *AddProjectIsFundedBy) GetHasCallNumber() string {
+func (s *AddProjectIsFundedBy) GetHasCallNumber() OptString {
 	return s.HasCallNumber
 }
 
@@ -225,7 +225,7 @@ func (s *AddProjectIsFundedBy) SetType(val string) {
 }
 
 // SetHasCallNumber sets the value of HasCallNumber.
-func (s *AddProjectIsFundedBy) SetHasCallNumber(val string) {
+func (s *AddProjectIsFundedBy) SetHasCallNumber(val OptString) {
 	s.HasCallNumber = val
 }
 
@@ -564,7 +564,7 @@ func (s *GetProjectIdentifierItem) SetValue(val string) {
 
 type GetProjectIsFundedBy struct {
 	Type          string                                `json:"type"`
-	HasCallNumber string                                `json:"hasCallNumber"`
+	HasCallNumber OptString                             `json:"hasCallNumber"`
 	IsAwardedBy   OptNilGetProjectIsFundedByIsAwardedBy `json:"isAwardedBy"`
 }
 
@@ -574,7 +574,7 @@ func (s *GetProjectIsFundedBy) GetType() string {
 }
 
 // GetHasCallNumber returns the value of HasCallNumber.
-func (s *GetProjectIsFundedBy) GetHasCallNumber() string {
+func (s *GetProjectIsFundedBy) GetHasCallNumber() OptString {
 	return s.HasCallNumber
 }
 
@@ -589,7 +589,7 @@ func (s *GetProjectIsFundedBy) SetType(val string) {
 }
 
 // SetHasCallNumber sets the value of HasCallNumber.
-func (s *GetProjectIsFundedBy) SetHasCallNumber(val string) {
+func (s *GetProjectIsFundedBy) SetHasCallNumber(val OptString) {
 	s.HasCallNumber = val
 }
 

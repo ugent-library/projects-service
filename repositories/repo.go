@@ -47,15 +47,15 @@ func New(c Config) (*Repo, error) {
 
 func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 	d := sqlc.UpsertProjectParams{
-		PrimaryIdentifier:  p.ID,
-		Identifiers:        p.Identifier,
-		Name:               p.Name,
-		Description:        p.Description,
-		FoundingDate:       pgtype.Text{String: p.FoundingDate, Valid: true},
-		DissolutionDate:    pgtype.Text{String: p.DissolutionDate, Valid: true},
-		Acronym:            p.Acronym,
-		EuGrantCall:        pgtype.Text{String: p.GrantCall, Valid: true},
-		EuFundingProgramme: pgtype.Text{String: p.FundingProgramme, Valid: true},
+		ExternalPrimaryIdentifier: p.ID,
+		ExternalIdentifiers:       p.Identifier,
+		Name:                      p.Name,
+		Description:               p.Description,
+		FoundingDate:              pgtype.Text{String: p.FoundingDate, Valid: true},
+		DissolutionDate:           pgtype.Text{String: p.DissolutionDate, Valid: true},
+		Acronym:                   p.Acronym,
+		EuGrantCall:               pgtype.Text{String: p.GrantCall, Valid: true},
+		EuFundingProgramme:        pgtype.Text{String: p.FundingProgramme, Valid: true},
 	}
 
 	err := r.client.UpsertProject(ctx, d)
@@ -70,10 +70,10 @@ func (r *Repo) GetProject(ctx context.Context, id string) (*models.Project, erro
 	}
 
 	p := &models.Project{
-		ID:               row.PrimaryIdentifier,
+		ID:               row.ExternalPrimaryIdentifier,
 		Name:             row.Name,
 		Description:      row.Description,
-		Identifier:       row.Identifiers,
+		Identifier:       row.ExternalIdentifiers,
 		FoundingDate:     row.FoundingDate.String,
 		DissolutionDate:  row.DissolutionDate.String,
 		Acronym:          row.Acronym,
@@ -114,10 +114,10 @@ func (r *Repo) SuggestProjects(ctx context.Context, query string) ([]*models.Pro
 
 	for _, row := range rows {
 		projects = append(projects, &models.Project{
-			ID:              row.PrimaryIdentifier,
+			ID:              row.ExternalPrimaryIdentifier,
 			Name:            row.Name,
 			Description:     row.Description,
-			Identifier:      row.Identifiers,
+			Identifier:      row.ExternalIdentifiers,
 			FoundingDate:    row.FoundingDate.String,
 			DissolutionDate: row.DissolutionDate.String,
 			Acronym:         row.Acronym,

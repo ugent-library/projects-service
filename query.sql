@@ -1,7 +1,7 @@
 -- name: UpsertProject :exec
 INSERT INTO projects(
-        primary_identifier,
-        identifiers,
+        external_primary_identifier,
+        external_identifiers,
         name,
         description,
         founding_date,
@@ -24,9 +24,9 @@ VALUES(
         $9,
         current_timestamp,
         current_timestamp
-    ) ON CONFLICT (primary_identifier) DO
+    ) ON CONFLICT (external_primary_identifier) DO
 UPDATE
-SET identifiers = excluded.identifiers,
+SET external_identifiers = excluded.external_identifiers,
     name = excluded.name,
     description = excluded.description,
     founding_date = excluded.founding_date,
@@ -38,9 +38,9 @@ SET identifiers = excluded.identifiers,
     updated_at = current_timestamp;
 
 -- name: GetProject :one
-SELECT pid,
-    primary_identifier,
-    identifiers,
+SELECT pk,
+    external_primary_identifier,
+    external_identifiers,
     name,
     description,
     founding_date,
@@ -51,14 +51,14 @@ SELECT pid,
     created_at,
     updated_at
 FROM projects
-WHERE primary_identifier = $1
+WHERE external_primary_identifier = $1
 LIMIT 1;
 
 -- name: SuggestProjects :many
 
-SELECT pid,
-    primary_identifier,
-    identifiers,
+SELECT pk,
+    external_primary_identifier,
+    external_identifiers,
     name,
     description,
     founding_date,
@@ -74,5 +74,5 @@ LIMIT 10;
 
 -- name: DeleteProject :one
 DELETE FROM projects
-WHERE primary_identifier = $1
-RETURNING pid;
+WHERE external_primary_identifier = $1
+RETURNING pk;

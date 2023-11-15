@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/go-faster/errors"
 	"github.com/ugent-library/projects/models"
@@ -53,7 +54,7 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
 		for _, id := range ids {
 			tmp[id.GetPropertyID()] = append(tmp[id.GetPropertyID()], id.GetValue())
 		}
-		p.Identifier = models.Identifiers{Value: tmp}
+		p.Identifier = models.ExternalIdentifiers{Value: tmp}
 	}
 
 	if strs := req.GetName(); len(strs) > 0 {
@@ -87,7 +88,7 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
 		for _, id := range ids {
 			tmp[id.GetPropertyID()] = append(tmp[id.GetPropertyID()], id.GetValue())
 		}
-		p.Identifier = models.Identifiers{Value: tmp}
+		p.Identifier = models.ExternalIdentifiers{Value: tmp}
 	}
 
 	if acrs := req.GetHasAcronym(); len(acrs) > 0 {
@@ -95,8 +96,9 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
 	}
 
 	if fb, ok := req.GetIsFundedBy().Get(); ok {
-		id := fb.GetHasCallNumber()
-		p.GrantCall = id
+		if v, ok := fb.GetHasCallNumber().Get(); ok {
+			p.GrantCall = v
+		}
 
 		if ab, ok := fb.GetIsAwardedBy().Get(); ok {
 			name := ab.GetName()
@@ -232,21 +234,21 @@ func mapToOASProject(p *models.Project) *GetProject {
 	}
 	r.SetHasAcronym(acrs)
 
-	if p.GrantCall != "" {
-		g := GetProjectIsFundedBy{
-			Type:          "Grant",
-			HasCallNumber: p.GrantCall,
-		}
+	log.Printf("%+v", p.GrantCall)
 
-		if p.FundingProgramme != "" {
-			g.IsAwardedBy.SetTo(GetProjectIsFundedByIsAwardedBy{
-				Type: "FundingProgramme",
-				Name: p.FundingProgramme,
-			})
-		}
-
-		r.IsFundedBy.SetTo(g)
+	g := GetProjectIsFundedBy{
+		Type:          "Grant",
+		HasCallNumber: NewOptString(p.GrantCall),
 	}
+
+	if p.FundingProgramme != "" {
+		g.IsAwardedBy.SetTo(GetProjectIsFundedByIsAwardedBy{
+			Type: "FundingProgramme",
+			Name: p.FundingProgramme,
+		})
+	}
+
+	r.IsFundedBy.SetTo(g)
 
 	return r
 }

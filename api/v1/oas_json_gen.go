@@ -583,8 +583,10 @@ func (s *AddProjectIsFundedBy) encodeFields(e *jx.Encoder) {
 		e.Str(s.Type)
 	}
 	{
-		e.FieldStart("hasCallNumber")
-		e.Str(s.HasCallNumber)
+		if s.HasCallNumber.Set {
+			e.FieldStart("hasCallNumber")
+			s.HasCallNumber.Encode(e)
+		}
 	}
 	{
 		if s.IsAwardedBy.Set {
@@ -622,11 +624,9 @@ func (s *AddProjectIsFundedBy) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"type\"")
 			}
 		case "hasCallNumber":
-			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
-				v, err := d.Str()
-				s.HasCallNumber = string(v)
-				if err != nil {
+				s.HasCallNumber.Reset()
+				if err := s.HasCallNumber.Decode(d); err != nil {
 					return err
 				}
 				return nil
@@ -653,7 +653,7 @@ func (s *AddProjectIsFundedBy) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000011,
+		0b00000001,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -1703,8 +1703,10 @@ func (s *GetProjectIsFundedBy) encodeFields(e *jx.Encoder) {
 		e.Str(s.Type)
 	}
 	{
-		e.FieldStart("hasCallNumber")
-		e.Str(s.HasCallNumber)
+		if s.HasCallNumber.Set {
+			e.FieldStart("hasCallNumber")
+			s.HasCallNumber.Encode(e)
+		}
 	}
 	{
 		if s.IsAwardedBy.Set {
@@ -1742,11 +1744,9 @@ func (s *GetProjectIsFundedBy) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"type\"")
 			}
 		case "hasCallNumber":
-			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
-				v, err := d.Str()
-				s.HasCallNumber = string(v)
-				if err != nil {
+				s.HasCallNumber.Reset()
+				if err := s.HasCallNumber.Decode(d); err != nil {
 					return err
 				}
 				return nil
@@ -1773,7 +1773,7 @@ func (s *GetProjectIsFundedBy) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000011,
+		0b00000001,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

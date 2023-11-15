@@ -9,11 +9,11 @@ sql:
         out: "sqlc"
         sql_package: "pgx/v5"
         overrides:
-          - column: "projects.identifiers"
+          - column: "projects.external_identifiers"
             go_type:
               import: "github.com/ugent-library/projects/models"
               package: "models"
-              type: "Identifiers"
+              type: "ExternalIdentifiers"
           - column: "projects.name"
             go_type:
               import: "github.com/ugent-library/projects/models"

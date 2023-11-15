@@ -10,17 +10,17 @@ import (
 )
 
 type Project struct {
-	Pid                int64
-	PrimaryIdentifier  string
-	Identifiers        models.Identifiers
-	Name               models.TranslatedString
-	Description        models.TranslatedString
-	FoundingDate       pgtype.Text
-	DissolutionDate    pgtype.Text
-	Acronym            models.Acronym
-	EuGrantCall        pgtype.Text
-	EuFundingProgramme pgtype.Text
-	CreatedAt          pgtype.Timestamptz
-	UpdatedAt          pgtype.Timestamptz
-	Ts                 interface{}
+	Pk                        int64
+	ExternalPrimaryIdentifier string
+	ExternalIdentifiers       models.ExternalIdentifiers
+	Name                      models.TranslatedString
+	Description               models.TranslatedString
+	FoundingDate              pgtype.Text
+	DissolutionDate           pgtype.Text
+	Acronym                   models.Acronym
+	EuGrantCall               pgtype.Text
+	EuFundingProgramme        pgtype.Text
+	CreatedAt                 pgtype.Timestamptz
+	UpdatedAt                 pgtype.Timestamptz
+	Ts                        interface{}
 }

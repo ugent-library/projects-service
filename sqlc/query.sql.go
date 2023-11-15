@@ -14,21 +14,21 @@ import (
 
 const deleteProject = `-- name: DeleteProject :one
 DELETE FROM projects
-WHERE primary_identifier = $1
-RETURNING pid
+WHERE external_primary_identifier = $1
+RETURNING pk
 `
 
-func (q *Queries) DeleteProject(ctx context.Context, primaryIdentifier string) (int64, error) {
-	row := q.db.QueryRow(ctx, deleteProject, primaryIdentifier)
-	var pid int64
-	err := row.Scan(&pid)
-	return pid, err
+func (q *Queries) DeleteProject(ctx context.Context, externalPrimaryIdentifier string) (int64, error) {
+	row := q.db.QueryRow(ctx, deleteProject, externalPrimaryIdentifier)
+	var pk int64
+	err := row.Scan(&pk)
+	return pk, err
 }
 
 const getProject = `-- name: GetProject :one
-SELECT pid,
-    primary_identifier,
-    identifiers,
+SELECT pk,
+    external_primary_identifier,
+    external_identifiers,
     name,
     description,
     founding_date,
@@ -39,32 +39,32 @@ SELECT pid,
     created_at,
     updated_at
 FROM projects
-WHERE primary_identifier = $1
+WHERE external_primary_identifier = $1
 LIMIT 1
 `
 
 type GetProjectRow struct {
-	Pid                int64
-	PrimaryIdentifier  string
-	Identifiers        models.Identifiers
-	Name               models.TranslatedString
-	Description        models.TranslatedString
-	FoundingDate       pgtype.Text
-	DissolutionDate    pgtype.Text
-	Acronym            models.Acronym
-	EuGrantCall        pgtype.Text
-	EuFundingProgramme pgtype.Text
-	CreatedAt          pgtype.Timestamptz
-	UpdatedAt          pgtype.Timestamptz
+	Pk                        int64
+	ExternalPrimaryIdentifier string
+	ExternalIdentifiers       models.ExternalIdentifiers
+	Name                      models.TranslatedString
+	Description               models.TranslatedString
+	FoundingDate              pgtype.Text
+	DissolutionDate           pgtype.Text
+	Acronym                   models.Acronym
+	EuGrantCall               pgtype.Text
+	EuFundingProgramme        pgtype.Text
+	CreatedAt                 pgtype.Timestamptz
+	UpdatedAt                 pgtype.Timestamptz
 }
 
-func (q *Queries) GetProject(ctx context.Context, primaryIdentifier string) (GetProjectRow, error) {
-	row := q.db.QueryRow(ctx, getProject, primaryIdentifier)
+func (q *Queries) GetProject(ctx context.Context, externalPrimaryIdentifier string) (GetProjectRow, error) {
+	row := q.db.QueryRow(ctx, getProject, externalPrimaryIdentifier)
 	var i GetProjectRow
 	err := row.Scan(
-		&i.Pid,
-		&i.PrimaryIdentifier,
-		&i.Identifiers,
+		&i.Pk,
+		&i.ExternalPrimaryIdentifier,
+		&i.ExternalIdentifiers,
 		&i.Name,
 		&i.Description,
 		&i.FoundingDate,
@@ -80,9 +80,9 @@ func (q *Queries) GetProject(ctx context.Context, primaryIdentifier string) (Get
 
 const suggestProjects = `-- name: SuggestProjects :many
 
-SELECT pid,
-    primary_identifier,
-    identifiers,
+SELECT pk,
+    external_primary_identifier,
+    external_identifiers,
     name,
     description,
     founding_date,
@@ -98,18 +98,18 @@ LIMIT 10
 `
 
 type SuggestProjectsRow struct {
-	Pid                int64
-	PrimaryIdentifier  string
-	Identifiers        models.Identifiers
-	Name               models.TranslatedString
-	Description        models.TranslatedString
-	FoundingDate       pgtype.Text
-	DissolutionDate    pgtype.Text
-	Acronym            models.Acronym
-	EuGrantCall        pgtype.Text
-	EuFundingProgramme pgtype.Text
-	CreatedAt          pgtype.Timestamptz
-	UpdatedAt          pgtype.Timestamptz
+	Pk                        int64
+	ExternalPrimaryIdentifier string
+	ExternalIdentifiers       models.ExternalIdentifiers
+	Name                      models.TranslatedString
+	Description               models.TranslatedString
+	FoundingDate              pgtype.Text
+	DissolutionDate           pgtype.Text
+	Acronym                   models.Acronym
+	EuGrantCall               pgtype.Text
+	EuFundingProgramme        pgtype.Text
+	CreatedAt                 pgtype.Timestamptz
+	UpdatedAt                 pgtype.Timestamptz
 }
 
 func (q *Queries) SuggestProjects(ctx context.Context, websearchToTsquery string) ([]SuggestProjectsRow, error) {
@@ -122,9 +122,9 @@ func (q *Queries) SuggestProjects(ctx context.Context, websearchToTsquery string
 	for rows.Next() {
 		var i SuggestProjectsRow
 		if err := rows.Scan(
-			&i.Pid,
-			&i.PrimaryIdentifier,
-			&i.Identifiers,
+			&i.Pk,
+			&i.ExternalPrimaryIdentifier,
+			&i.ExternalIdentifiers,
 			&i.Name,
 			&i.Description,
 			&i.FoundingDate,
@@ -147,8 +147,8 @@ func (q *Queries) SuggestProjects(ctx context.Context, websearchToTsquery string
 
 const upsertProject = `-- name: UpsertProject :exec
 INSERT INTO projects(
-        primary_identifier,
-        identifiers,
+        external_primary_identifier,
+        external_identifiers,
         name,
         description,
         founding_date,
@@ -171,9 +171,9 @@ VALUES(
         $9,
         current_timestamp,
         current_timestamp
-    ) ON CONFLICT (primary_identifier) DO
+    ) ON CONFLICT (external_primary_identifier) DO
 UPDATE
-SET identifiers = excluded.identifiers,
+SET external_identifiers = excluded.external_identifiers,
     name = excluded.name,
     description = excluded.description,
     founding_date = excluded.founding_date,
@@ -186,21 +186,21 @@ SET identifiers = excluded.identifiers,
 `
 
 type UpsertProjectParams struct {
-	PrimaryIdentifier  string
-	Identifiers        models.Identifiers
-	Name               models.TranslatedString
-	Description        models.TranslatedString
-	FoundingDate       pgtype.Text
-	DissolutionDate    pgtype.Text
-	Acronym            models.Acronym
-	EuGrantCall        pgtype.Text
-	EuFundingProgramme pgtype.Text
+	ExternalPrimaryIdentifier string
+	ExternalIdentifiers       models.ExternalIdentifiers
+	Name                      models.TranslatedString
+	Description               models.TranslatedString
+	FoundingDate              pgtype.Text
+	DissolutionDate           pgtype.Text
+	Acronym                   models.Acronym
+	EuGrantCall               pgtype.Text
+	EuFundingProgramme        pgtype.Text
 }
 
 func (q *Queries) UpsertProject(ctx context.Context, arg UpsertProjectParams) error {
 	_, err := q.db.Exec(ctx, upsertProject,
-		arg.PrimaryIdentifier,
-		arg.Identifiers,
+		arg.ExternalPrimaryIdentifier,
+		arg.ExternalIdentifiers,
 		arg.Name,
 		arg.Description,
 		arg.FoundingDate,

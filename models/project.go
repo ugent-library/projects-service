@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type Identifiers struct {
+type ExternalIdentifiers struct {
 	Value map[string][]string `json:"value"`
 }
 
@@ -18,7 +18,7 @@ type Acronym struct {
 
 type Project struct {
 	ID               string
-	Identifier       Identifiers
+	Identifier       ExternalIdentifiers
 	Name             TranslatedString
 	Description      TranslatedString
 	FoundingDate     string
