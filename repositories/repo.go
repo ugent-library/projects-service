@@ -130,24 +130,23 @@ func (r *Repo) SuggestProjects(ctx context.Context, query string) ([]*models.Pro
 }
 
 var regexNoMultipleSpaces = regexp.MustCompile(`\s+`)
-var regexNoBrackets = regexp.MustCompile(`[\[\]()\{\}]`)
+var nonAlphanumericRegex = regexp.MustCompile(`[^\p{L}\p{N} ]+`)
 
 func toTSQuery(query string) string {
 	query = regexNoMultipleSpaces.ReplaceAllString(query, " ")
+	query = nonAlphanumericRegex.ReplaceAllString(query, "")
 	query = strings.TrimSpace(query)
 
 	parts := make([]string, 0)
 	for _, qp := range strings.Split(query, " ") {
-		if regexNoBrackets.MatchString(qp) {
-			continue
-		}
-
 		parts = append(parts, qp)
 	}
 
+	parts[len(parts)-1] = fmt.Sprintf("%s:*", parts[len(parts)-1])
+
 	d := fmt.Sprintf(
 		"%s",
-		strings.Join(parts, " "),
+		strings.Join(parts, " <-> "),
 	)
 
 	return d

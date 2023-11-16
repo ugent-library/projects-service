@@ -93,7 +93,7 @@ SELECT pk,
     created_at,
     updated_at
 FROM projects
-WHERE ts @@ websearch_to_tsquery($1)
+WHERE ts @@ to_tsquery($1)
 LIMIT 10
 `
 
@@ -112,8 +112,8 @@ type SuggestProjectsRow struct {
 	UpdatedAt                 pgtype.Timestamptz
 }
 
-func (q *Queries) SuggestProjects(ctx context.Context, websearchToTsquery string) ([]SuggestProjectsRow, error) {
-	rows, err := q.db.Query(ctx, suggestProjects, websearchToTsquery)
+func (q *Queries) SuggestProjects(ctx context.Context, toTsquery string) ([]SuggestProjectsRow, error) {
+	rows, err := q.db.Query(ctx, suggestProjects, toTsquery)
 	if err != nil {
 		return nil, err
 	}
