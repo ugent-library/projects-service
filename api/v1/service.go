@@ -54,7 +54,7 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
 		for _, id := range ids {
 			tmp[id.GetPropertyID()] = append(tmp[id.GetPropertyID()], id.GetValue())
 		}
-		p.Identifier = models.ExternalIdentifiers{Value: tmp}
+		p.Identifier = tmp
 	}
 
 	if strs := req.GetName(); len(strs) > 0 {
@@ -63,7 +63,7 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
 			tmp[str.GetLanguage()] = str.GetValue()
 		}
 
-		p.Name = models.TranslatedString{Value: tmp}
+		p.Name = tmp
 	}
 
 	if strs := req.GetDescription(); len(strs) > 0 {
@@ -72,7 +72,7 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
 			tmp[str.GetLanguage()] = str.GetValue()
 		}
 
-		p.Description = models.TranslatedString{Value: tmp}
+		p.Description = tmp
 	}
 
 	if v, ok := req.GetFoundingDate().Get(); ok {
@@ -88,11 +88,11 @@ func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
 		for _, id := range ids {
 			tmp[id.GetPropertyID()] = append(tmp[id.GetPropertyID()], id.GetValue())
 		}
-		p.Identifier = models.ExternalIdentifiers{Value: tmp}
+		p.Identifier = tmp
 	}
 
 	if acrs := req.GetHasAcronym(); len(acrs) > 0 {
-		p.Acronym = models.Acronym{Value: acrs}
+		p.Acronym = acrs
 	}
 
 	if fb, ok := req.GetIsFundedBy().Get(); ok {
@@ -183,7 +183,7 @@ func (s *Service) NewError(ctx context.Context, err error) *ErrorStatusCode {
 
 func mapToOASProject(p *models.Project) *GetProject {
 	sids := make([]GetProjectIdentifierItem, 0)
-	for prop, ids := range p.Identifier.Value {
+	for prop, ids := range p.Identifier {
 		for _, id := range ids {
 			sids = append(sids, GetProjectIdentifierItem{
 				Type:       "PropertyValue",
@@ -203,7 +203,7 @@ func mapToOASProject(p *models.Project) *GetProject {
 	r.ID = p.ID
 
 	name := make([]GetProjectNameItem, 0)
-	for lang, val := range p.Name.Value {
+	for lang, val := range p.Name {
 		name = append(name, GetProjectNameItem{
 			Language: lang,
 			Value:    val,
@@ -212,7 +212,7 @@ func mapToOASProject(p *models.Project) *GetProject {
 	r.SetName(name)
 
 	desc := make([]GetProjectDescriptionItem, 0)
-	for lang, val := range p.Description.Value {
+	for lang, val := range p.Description {
 		desc = append(desc, GetProjectDescriptionItem{
 			Language: lang,
 			Value:    val,
@@ -229,7 +229,7 @@ func mapToOASProject(p *models.Project) *GetProject {
 	}
 
 	acrs := make([]string, 0)
-	for _, acr := range p.Acronym.Value {
+	for _, acr := range p.Acronym {
 		acrs = append(acrs, acr)
 	}
 	r.SetHasAcronym(acrs)

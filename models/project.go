@@ -4,17 +4,9 @@ import (
 	"time"
 )
 
-type ExternalIdentifiers struct {
-	Value map[string][]string `json:"value"`
-}
-
-type TranslatedString struct {
-	Value map[string]string `json:"value"`
-}
-
-type Acronym struct {
-	Value []string `json:"value"`
-}
+type ExternalIdentifiers = map[string][]string
+type TranslatedString = map[string]string
+type Acronym = []string
 
 type Project struct {
 	ID               string
