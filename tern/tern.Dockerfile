@@ -10,7 +10,7 @@ FROM alpine:latest
 WORKDIR /migrations
 COPY --from=build /build/etc/migrations .
 COPY --from=build /usr/local/bin/tern  /usr/local/bin/
-COPY --from=build /build/docker/tern.sh .
+COPY --from=build /build/tern/tern.sh .
 RUN chmod +x /migrations/tern.sh
 
 ENV PGDATABASE $PGDATABASE
