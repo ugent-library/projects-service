@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/go-faster/errors"
 	"github.com/ugent-library/projects/models"
@@ -233,8 +232,6 @@ func mapToOASProject(p *models.Project) *GetProject {
 		acrs = append(acrs, acr)
 	}
 	r.SetHasAcronym(acrs)
-
-	log.Printf("%+v", p.GrantCall)
 
 	g := GetProjectIsFundedBy{
 		Type:          "Grant",
