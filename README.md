@@ -32,10 +32,11 @@ PROJECTS_REPO_SECRET       # PostgreSQL secret seed
 
 ### Application boot
 
-Manually:
+Via Reflex:
 
 ```go
-go run main.go server
+cp reflex.conf.example .reflex.conf
+reflex -d none -c .reflex.conf
 ```
 
 Or via Docker:
@@ -64,14 +65,15 @@ cp reflex.example.conf reflex.conf
 reflex -c reflex.conf
 ```
 
-## Database migrations
+## Database
 
-If you make a change to the schema files in `ent/schema/`, you will need to run these steps:
+Making changes to the database schema:
 
-* `cd ent && go generate ./...` to generate `ent` Go code.
 * `tern migrate new` to create a new migration file.
 * Add SQL code to the migration file.
 * `tern migrate apply` to apply pending migrations to the database.
+
+This projects uses [sqlc](https://sqlc.dev/).
 
 ## OpenAPI
 
