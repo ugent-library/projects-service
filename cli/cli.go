@@ -19,7 +19,7 @@ var (
 )
 
 func init() {
-	cobra.OnInitialize(initConfig, initLogger)
+	cobra.OnInitialize(initVersion, initConfig, initLogger)
 	cobra.OnFinalize(func() {
 		logger.Sync()
 	})
@@ -27,6 +27,10 @@ func init() {
 
 func initConfig() {
 	cobra.CheckErr(env.Parse(&config))
+}
+
+func initVersion() {
+	cobra.CheckErr(env.Parse(&version))
 }
 
 func initLogger() {
