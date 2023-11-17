@@ -130,7 +130,7 @@ func (r *Repo) SuggestProjects(ctx context.Context, query string) ([]*models.Pro
 }
 
 var regexNoMultipleSpaces = regexp.MustCompile(`\s+`)
-var nonAlphanumericRegex = regexp.MustCompile(`[^\p{L}\p{N} ]+`)
+var nonAlphanumericRegex = regexp.MustCompile(`[^\p{L}\p{N}\p{Pd}\p{Po} ]+`)
 
 func toTSQuery(query string) string {
 	query = regexNoMultipleSpaces.ReplaceAllString(query, " ")
