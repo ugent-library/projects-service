@@ -94,7 +94,7 @@ SELECT pk,
     updated_at
 FROM projects
 WHERE ts @@ to_tsquery('usimple', $1)
-LIMIT 10
+LIMIT 20
 `
 
 type SuggestProjectsRow struct {
