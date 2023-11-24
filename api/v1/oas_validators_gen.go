@@ -11,6 +11,10 @@ import (
 )
 
 func (s *AddProject) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
 	var failures []validate.FieldError
 	if err := func() error {
 		if s.Identifier == nil {
@@ -30,6 +34,10 @@ func (s *AddProject) Validate() error {
 }
 
 func (s *DeleteProjectRequest) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
 	var failures []validate.FieldError
 	if err := func() error {
 		if err := (validate.String{
@@ -57,6 +65,10 @@ func (s *DeleteProjectRequest) Validate() error {
 }
 
 func (s *GetProject) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
 	var failures []validate.FieldError
 	if err := func() error {
 		if s.Identifier == nil {
@@ -76,6 +88,10 @@ func (s *GetProject) Validate() error {
 }
 
 func (s *GetProjectRequest) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
 	var failures []validate.FieldError
 	if err := func() error {
 		if err := (validate.String{
@@ -103,10 +119,14 @@ func (s *GetProjectRequest) Validate() error {
 }
 
 func (s *SuggestProjectsRequest) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
 	var failures []validate.FieldError
 	if err := func() error {
 		if err := (validate.String{
-			MinLength:    1,
+			MinLength:    0,
 			MinLengthSet: true,
 			MaxLength:    0,
 			MaxLengthSet: false,
@@ -130,6 +150,10 @@ func (s *SuggestProjectsRequest) Validate() error {
 }
 
 func (s *SuggestProjectsResponse) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
 	var failures []validate.FieldError
 	if err := func() error {
 		if s.Data == nil {

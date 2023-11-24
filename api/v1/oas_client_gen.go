@@ -119,15 +119,6 @@ func (c *Client) sendAddProject(ctx context.Context, request *AddProject) (res *
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/add-project"),
 	}
-	// Validate request before sending.
-	if err := func() error {
-		if err := request.Validate(); err != nil {
-			return err
-		}
-		return nil
-	}(); err != nil {
-		return res, errors.Wrap(err, "validate")
-	}
 
 	// Run stopwatch.
 	startTime := time.Now()
@@ -235,15 +226,6 @@ func (c *Client) sendDeleteProject(ctx context.Context, request *DeleteProjectRe
 		otelogen.OperationID("deleteProject"),
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/delete-project"),
-	}
-	// Validate request before sending.
-	if err := func() error {
-		if err := request.Validate(); err != nil {
-			return err
-		}
-		return nil
-	}(); err != nil {
-		return res, errors.Wrap(err, "validate")
 	}
 
 	// Run stopwatch.
@@ -353,15 +335,6 @@ func (c *Client) sendGetProject(ctx context.Context, request *GetProjectRequest)
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/get-project"),
 	}
-	// Validate request before sending.
-	if err := func() error {
-		if err := request.Validate(); err != nil {
-			return err
-		}
-		return nil
-	}(); err != nil {
-		return res, errors.Wrap(err, "validate")
-	}
 
 	// Run stopwatch.
 	startTime := time.Now()
@@ -469,15 +442,6 @@ func (c *Client) sendSuggestProjects(ctx context.Context, request *SuggestProjec
 		otelogen.OperationID("suggestProjects"),
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/suggest-projects"),
-	}
-	// Validate request before sending.
-	if err := func() error {
-		if err := request.Validate(); err != nil {
-			return err
-		}
-		return nil
-	}(); err != nil {
-		return res, errors.Wrap(err, "validate")
 	}
 
 	// Run stopwatch.

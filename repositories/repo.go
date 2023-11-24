@@ -100,11 +100,15 @@ func (r *Repo) DeleteProject(ctx context.Context, id string) error {
 }
 
 func (r *Repo) SuggestProjects(ctx context.Context, query string) ([]*models.Project, error) {
-	toTSQuery := toTSQuery(query)
-	rows, err := r.client.SuggestProjects(ctx, toTSQuery)
+	var rows []sqlc.SuggestProjectsRow
+	var err error
 
-	if err != nil {
-		return nil, err
+	if query != "" {
+		toTSQuery := toTSQuery(query)
+		rows, err = r.client.SuggestProjects(ctx, toTSQuery)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	projects := make([]*models.Project, 0, len(rows))
