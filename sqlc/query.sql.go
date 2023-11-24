@@ -9,7 +9,7 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5/pgtype"
-	models "github.com/ugent-library/projects/models"
+	models "github.com/ugent-library/projects-service/models"
 )
 
 const deleteProject = `-- name: DeleteProject :one

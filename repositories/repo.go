@@ -12,8 +12,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib"
 
-	"github.com/ugent-library/projects/models"
-	"github.com/ugent-library/projects/sqlc"
+	"github.com/ugent-library/projects-service/models"
+	"github.com/ugent-library/projects-service/sqlc"
 )
 
 var ErrNotFound = errors.New("not found")

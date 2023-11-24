@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/go-faster/errors"
-	"github.com/ugent-library/projects/models"
-	"github.com/ugent-library/projects/repositories"
+	"github.com/ugent-library/projects-service/models"
+	"github.com/ugent-library/projects-service/repositories"
 )
 
 type Service struct {

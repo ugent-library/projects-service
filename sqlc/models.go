@@ -6,7 +6,7 @@ package sqlc
 
 import (
 	"github.com/jackc/pgx/v5/pgtype"
-	models "github.com/ugent-library/projects/models"
+	models "github.com/ugent-library/projects-service/models"
 )
 
 type Project struct {

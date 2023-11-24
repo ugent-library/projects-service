@@ -1,4 +1,4 @@
-module github.com/ugent-library/projects
+module github.com/ugent-library/projects-service
 
 go 1.20
 

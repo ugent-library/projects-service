@@ -12,9 +12,9 @@ import (
 	"github.com/ory/graceful"
 	"github.com/spf13/cobra"
 	"github.com/ugent-library/httpx/render"
+	"github.com/ugent-library/projects-service/api/v1"
+	"github.com/ugent-library/projects-service/repositories"
 
-	"github.com/ugent-library/projects/api/v1"
-	"github.com/ugent-library/projects/repositories"
 	"github.com/ugent-library/zaphttp"
 	"github.com/ugent-library/zaphttp/zapchi"
 )

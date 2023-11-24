@@ -11,21 +11,21 @@ sql:
         overrides:
           - column: "projects.external_identifiers"
             go_type:
-              import: "github.com/ugent-library/projects/models"
+              import: "github.com/ugent-library/projects-service/models"
               package: "models"
               type: "ExternalIdentifiers"
           - column: "projects.name"
             go_type:
-              import: "github.com/ugent-library/projects/models"
+              import: "github.com/ugent-library/projects-service/models"
               package: "models"
               type: "TranslatedString"
           - column: "projects.description"
             go_type:
-              import: "github.com/ugent-library/projects/models"
+              import: "github.com/ugent-library/projects-service/models"
               package: "models"
               type: "TranslatedString"
           - column: "projects.acronym"
             go_type:
-              import: "github.com/ugent-library/projects/models"
+              import: "github.com/ugent-library/projects-service/models"
               package: "models"
               type: "Acronym"
