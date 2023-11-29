@@ -228,9 +228,7 @@ func mapToOASProject(p *models.Project) *GetProject {
 	}
 
 	acrs := make([]string, 0)
-	for _, acr := range p.Acronym {
-		acrs = append(acrs, acr)
-	}
+	acrs = append(acrs, p.Acronym...)
 	r.SetHasAcronym(acrs)
 
 	g := GetProjectIsFundedBy{
