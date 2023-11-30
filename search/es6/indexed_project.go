@@ -1,8 +1,6 @@
 package es6
 
 import (
-	"log"
-
 	"github.com/ugent-library/projects-service/models"
 )
 
@@ -28,10 +26,6 @@ func NewProjectDocument(p *models.Project) *projectDocument {
 		EUCallID:             p.GrantCall,
 		EUFrameworkProgramme: p.FundingProgramme,
 	}
-
-	log.Println("----")
-	log.Println(p.DateCreated)
-	log.Println("----")
 
 	tmp := make([]string, len(p.Name))
 	for _, v := range p.Name {
