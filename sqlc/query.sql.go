@@ -12,6 +12,78 @@ import (
 	models "github.com/ugent-library/projects-service/models"
 )
 
+const betweenProjects = `-- name: BetweenProjects :many
+
+SELECT pk,
+    external_primary_identifier,
+    external_identifiers,
+    name,
+    description,
+    founding_date,
+    dissolution_date,
+    acronym,
+    eu_grant_call,
+    eu_funding_programme,
+    created_at,
+    updated_at
+FROM projects
+WHERE created_at >= $1 AND created_at <= $2
+ORDER BY created_at ASC
+`
+
+type BetweenProjectsParams struct {
+	CreatedAt   pgtype.Timestamptz
+	CreatedAt_2 pgtype.Timestamptz
+}
+
+type BetweenProjectsRow struct {
+	Pk                        int64
+	ExternalPrimaryIdentifier string
+	ExternalIdentifiers       models.ExternalIdentifiers
+	Name                      models.TranslatedString
+	Description               models.TranslatedString
+	FoundingDate              pgtype.Text
+	DissolutionDate           pgtype.Text
+	Acronym                   models.Acronym
+	EuGrantCall               pgtype.Text
+	EuFundingProgramme        pgtype.Text
+	CreatedAt                 pgtype.Timestamptz
+	UpdatedAt                 pgtype.Timestamptz
+}
+
+func (q *Queries) BetweenProjects(ctx context.Context, arg BetweenProjectsParams) ([]BetweenProjectsRow, error) {
+	rows, err := q.db.Query(ctx, betweenProjects, arg.CreatedAt, arg.CreatedAt_2)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []BetweenProjectsRow
+	for rows.Next() {
+		var i BetweenProjectsRow
+		if err := rows.Scan(
+			&i.Pk,
+			&i.ExternalPrimaryIdentifier,
+			&i.ExternalIdentifiers,
+			&i.Name,
+			&i.Description,
+			&i.FoundingDate,
+			&i.DissolutionDate,
+			&i.Acronym,
+			&i.EuGrantCall,
+			&i.EuFundingProgramme,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const deleteProject = `-- name: DeleteProject :one
 DELETE FROM projects
 WHERE external_primary_identifier = $1
@@ -23,6 +95,79 @@ func (q *Queries) DeleteProject(ctx context.Context, externalPrimaryIdentifier s
 	var pk int64
 	err := row.Scan(&pk)
 	return pk, err
+}
+
+const eachProject = `-- name: EachProject :many
+
+SELECT pk,
+    external_primary_identifier,
+    external_identifiers,
+    name,
+    description,
+    founding_date,
+    dissolution_date,
+    acronym,
+    eu_grant_call,
+    eu_funding_programme,
+    created_at,
+    updated_at
+FROM projects
+ORDER BY pk ASC 
+OFFSET $1
+LIMIT $2
+`
+
+type EachProjectParams struct {
+	Offset int32
+	Limit  int32
+}
+
+type EachProjectRow struct {
+	Pk                        int64
+	ExternalPrimaryIdentifier string
+	ExternalIdentifiers       models.ExternalIdentifiers
+	Name                      models.TranslatedString
+	Description               models.TranslatedString
+	FoundingDate              pgtype.Text
+	DissolutionDate           pgtype.Text
+	Acronym                   models.Acronym
+	EuGrantCall               pgtype.Text
+	EuFundingProgramme        pgtype.Text
+	CreatedAt                 pgtype.Timestamptz
+	UpdatedAt                 pgtype.Timestamptz
+}
+
+func (q *Queries) EachProject(ctx context.Context, arg EachProjectParams) ([]EachProjectRow, error) {
+	rows, err := q.db.Query(ctx, eachProject, arg.Offset, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []EachProjectRow
+	for rows.Next() {
+		var i EachProjectRow
+		if err := rows.Scan(
+			&i.Pk,
+			&i.ExternalPrimaryIdentifier,
+			&i.ExternalIdentifiers,
+			&i.Name,
+			&i.Description,
+			&i.FoundingDate,
+			&i.DissolutionDate,
+			&i.Acronym,
+			&i.EuGrantCall,
+			&i.EuFundingProgramme,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getProject = `-- name: GetProject :one

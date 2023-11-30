@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -131,6 +132,76 @@ func (r *Repo) SuggestProjects(ctx context.Context, query string) ([]*models.Pro
 		})
 	}
 	return projects, nil
+}
+
+func (r *Repo) EachProject(ctx context.Context, fn func(p *models.Project) bool) error {
+	var page int32
+	var size int32
+
+	page = 0
+	size = 1000
+
+	for {
+		rows, err := r.client.EachProject(ctx, sqlc.EachProjectParams{Offset: page, Limit: size})
+		if err != nil {
+			return err
+		}
+
+		if len(rows) <= 0 {
+			break
+		}
+
+		for _, row := range rows {
+			pr := &models.Project{
+				ID:              row.ExternalPrimaryIdentifier,
+				Name:            row.Name,
+				Description:     row.Description,
+				Identifier:      row.ExternalIdentifiers,
+				FoundingDate:    row.FoundingDate.String,
+				DissolutionDate: row.DissolutionDate.String,
+				Acronym:         row.Acronym,
+				GrantCall:       row.EuGrantCall.String,
+				DateCreated:     row.CreatedAt.Time,
+				DateModified:    row.UpdatedAt.Time,
+			}
+
+			fn(pr)
+		}
+
+		page = page + size
+	}
+
+	return nil
+}
+
+func (r *Repo) BetweenProjects(ctx context.Context, t1, t2 time.Time, fn func(p *models.Project) bool) error {
+	rows, err := r.client.BetweenProjects(ctx, sqlc.BetweenProjectsParams{
+		CreatedAt:   pgtype.Timestamptz{Time: t1, Valid: true},
+		CreatedAt_2: pgtype.Timestamptz{Time: t2, Valid: true},
+	})
+
+	if err != nil {
+		return err
+	}
+
+	for _, row := range rows {
+		pr := &models.Project{
+			ID:              row.ExternalPrimaryIdentifier,
+			Name:            row.Name,
+			Description:     row.Description,
+			Identifier:      row.ExternalIdentifiers,
+			FoundingDate:    row.FoundingDate.String,
+			DissolutionDate: row.DissolutionDate.String,
+			Acronym:         row.Acronym,
+			GrantCall:       row.EuGrantCall.String,
+			DateCreated:     row.CreatedAt.Time,
+			DateModified:    row.UpdatedAt.Time,
+		}
+
+		fn(pr)
+	}
+
+	return nil
 }
 
 var regexNoMultipleSpaces = regexp.MustCompile(`\s+`)

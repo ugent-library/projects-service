@@ -76,3 +76,40 @@ LIMIT 20;
 DELETE FROM projects
 WHERE external_primary_identifier = $1
 RETURNING pk;
+
+-- name: EachProject :many
+
+SELECT pk,
+    external_primary_identifier,
+    external_identifiers,
+    name,
+    description,
+    founding_date,
+    dissolution_date,
+    acronym,
+    eu_grant_call,
+    eu_funding_programme,
+    created_at,
+    updated_at
+FROM projects
+ORDER BY pk ASC 
+OFFSET $1
+LIMIT $2;
+
+-- name: BetweenProjects :many
+
+SELECT pk,
+    external_primary_identifier,
+    external_identifiers,
+    name,
+    description,
+    founding_date,
+    dissolution_date,
+    acronym,
+    eu_grant_call,
+    eu_funding_programme,
+    created_at,
+    updated_at
+FROM projects
+WHERE created_at >= $1 AND created_at <= $2
+ORDER BY created_at ASC;
