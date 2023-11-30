@@ -7,15 +7,18 @@ import (
 	"github.com/go-faster/errors"
 	"github.com/ugent-library/projects-service/models"
 	"github.com/ugent-library/projects-service/repositories"
+	"github.com/ugent-library/projects-service/search"
 )
 
 type Service struct {
-	repo *repositories.Repo
+	repo     *repositories.Repo
+	searcher *search.Searcher
 }
 
-func NewService(repo *repositories.Repo) *Service {
+func NewService(repo *repositories.Repo, searcher *search.Searcher) *Service {
 	return &Service{
-		repo: repo,
+		repo:     repo,
+		searcher: searcher,
 	}
 }
 
@@ -154,16 +157,28 @@ func (s *Service) GetProject(ctx context.Context, req *GetProjectRequest) (GetPr
 }
 
 func (s *Service) SuggestProjects(ctx context.Context, req *SuggestProjectsRequest) (*SuggestProjectsResponse, error) {
-	ps, err := s.repo.SuggestProjects(ctx, req.Query)
+	hits, err := s.searcher.SuggestProjects(req.Query)
+
 	if err != nil {
 		return nil, err
 	}
 
 	res := &SuggestProjectsResponse{
-		Data: make([]GetProject, 0, len(ps)),
+		Data: make([]GetProject, 0, len(hits)),
 	}
 
-	for _, p := range ps {
+	for _, id := range hits {
+		p, err := s.repo.GetProject(ctx, id)
+
+		if err != nil {
+			switch {
+			case errors.Is(err, repositories.ErrNotFound):
+				continue
+			case err != nil:
+				return nil, err
+			}
+		}
+
 		res.Data = append(res.Data, *mapToOASProject(p))
 	}
 

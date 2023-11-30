@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/alexliesenfeld/health"
@@ -14,6 +15,8 @@ import (
 	"github.com/ugent-library/httpx/render"
 	"github.com/ugent-library/projects-service/api/v1"
 	"github.com/ugent-library/projects-service/repositories"
+	"github.com/ugent-library/projects-service/search"
+	"github.com/ugent-library/projects-service/search/es6"
 
 	"github.com/ugent-library/zaphttp"
 	"github.com/ugent-library/zaphttp/zapchi"
@@ -47,8 +50,18 @@ var serverCmd = &cobra.Command{
 			return err
 		}
 
+		// setup searcher
+		e, err := es6.NewEngine(es6.Config{
+			Conn: strings.Split(config.Search.Conn, ","),
+		})
+		if err != nil {
+			return err
+		}
+
+		searcher := search.NewSearcher(e, config.Search.Index)
+
 		// setup api
-		apiServer, err := api.NewServer(api.NewService(repo), &apiSecurityHandler{APIKey: config.APIKey})
+		apiServer, err := api.NewServer(api.NewService(repo, searcher), &apiSecurityHandler{APIKey: config.APIKey})
 		if err != nil {
 			return err
 		}
