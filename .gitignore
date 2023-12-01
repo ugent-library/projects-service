@@ -18,8 +18,8 @@
 # vendor/
 
 # Go workspace file
-go.work
-*.json
+go.work*
+/*.json
 *.jsonld
 
 # Junk

@@ -19,6 +19,11 @@ type Config struct {
 		Conn   string `env:"CONN,notEmpty"`
 		Secret string `env:"SECRET,notEmpty"`
 	} `envPrefix:"PROJECTS_REPO_"`
+	Search struct {
+		Conn      string `env:"CONN,notEmpty"`
+		Index     string `env:"INDEX,notEmpty"`
+		Retention int    `env:"RETENTION" envDefault:"5"`
+	} `envPrefix:"PROJECTS_SEARCH_"`
 }
 
 func (c Config) Addr() string {
