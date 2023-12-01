@@ -90,7 +90,7 @@ var reindexCmd = &cobra.Command{
 		endTime := time.Now()
 
 		// second indexing round
-		repo.BetweenProjects(ctx, startTime, endTime, func(p *models.Project) bool {
+		repo.EachProjectBetween(ctx, startTime, endTime, func(p *models.Project) bool {
 			doc := es6.NewProjectDocument(p)
 
 			d, _ := json.Marshal(doc)

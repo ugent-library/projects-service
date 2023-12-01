@@ -137,7 +137,7 @@ func (r *Repo) EachProject(ctx context.Context, fn func(p *models.Project) bool)
 	return nil
 }
 
-func (r *Repo) BetweenProjects(ctx context.Context, t1, t2 time.Time, fn func(p *models.Project) bool) error {
+func (r *Repo) EachProjectBetween(ctx context.Context, t1, t2 time.Time, fn func(p *models.Project) bool) error {
 	rows, err := r.client.BetweenProjects(ctx, sqlc.BetweenProjectsParams{
 		CreatedAt:   pgtype.Timestamptz{Time: t1, Valid: true},
 		CreatedAt_2: pgtype.Timestamptz{Time: t2, Valid: true},
