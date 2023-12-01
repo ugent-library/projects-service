@@ -12,10 +12,10 @@ import (
 
 type Service struct {
 	repo     *repositories.Repo
-	searcher *search.Searcher
+	searcher search.Searcher
 }
 
-func NewService(repo *repositories.Repo, searcher *search.Searcher) *Service {
+func NewService(repo *repositories.Repo, searcher search.Searcher) *Service {
 	return &Service{
 		repo:     repo,
 		searcher: searcher,
@@ -167,7 +167,7 @@ func (s *Service) SuggestProjects(ctx context.Context, req *SuggestProjectsReque
 		Data: make([]GetProject, 0, len(hits)),
 	}
 
-	for _, id := range hits {
+	for id := range hits {
 		p, err := s.repo.GetProject(ctx, id)
 
 		switch {

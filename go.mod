@@ -5,7 +5,6 @@ go 1.21.4
 require (
 	github.com/alexliesenfeld/health v0.7.0
 	github.com/caarlos0/env/v8 v8.0.0
-	github.com/elastic/go-elasticsearch v0.0.0
 	github.com/elastic/go-elasticsearch/v6 v6.8.10
 	github.com/go-chi/chi/v5 v5.0.10
 	github.com/go-faster/errors v0.7.0

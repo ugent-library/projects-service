@@ -26,14 +26,16 @@ type responseBody struct {
 }
 
 type Config struct {
-	Conn []string
+	Conn  []string
+	Index string
 }
 
-type engine struct {
+type search struct {
 	client *elasticsearch.Client
+	index  string
 }
 
-func NewEngine(c Config) (*engine, error) {
+func NewSearcher(c Config) (*search, error) {
 	client, err := elasticsearch.NewClient(elasticsearch.Config{
 		Addresses: c.Conn,
 	})
@@ -42,12 +44,13 @@ func NewEngine(c Config) (*engine, error) {
 		return nil, fmt.Errorf("elastic search: can't connect with server: %w", err)
 	}
 
-	return &engine{
+	return &search{
 		client: client,
+		index:  c.Index,
 	}, nil
 }
 
-func (s *engine) search(index string, requestBody M, responseBody any) error {
+func (s *search) search(requestBody M, responseBody any) error {
 	sorts := make([]string, 0)
 
 	if v, exists := requestBody["sort"]; exists {
@@ -57,7 +60,7 @@ func (s *engine) search(index string, requestBody M, responseBody any) error {
 
 	opts := []func(*esapi.SearchRequest){
 		s.client.Search.WithContext(context.Background()),
-		s.client.Search.WithIndex(index),
+		s.client.Search.WithIndex(s.index),
 		s.client.Search.WithTrackTotalHits(true),
 		s.client.Search.WithSort(sorts...),
 	}
@@ -91,7 +94,7 @@ func (s *engine) search(index string, requestBody M, responseBody any) error {
 	return nil
 }
 
-func (s *engine) SuggestProjects(index, q string) (map[string]json.RawMessage, error) {
+func (s *search) SuggestProjects(q string) (map[string]json.RawMessage, error) {
 	var boosts = map[string]string{
 		"iweto_id":               "100",
 		"gismo_id":               "80",
@@ -141,7 +144,7 @@ func (s *engine) SuggestProjects(index, q string) (map[string]json.RawMessage, e
 
 	responseBody := &responseBody{}
 
-	if err := s.search(index, requestBody, responseBody); err != nil {
+	if err := s.search(requestBody, responseBody); err != nil {
 		return nil, err
 	}
 

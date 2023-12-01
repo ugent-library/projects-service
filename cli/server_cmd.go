@@ -15,7 +15,6 @@ import (
 	"github.com/ugent-library/httpx/render"
 	"github.com/ugent-library/projects-service/api/v1"
 	"github.com/ugent-library/projects-service/repositories"
-	"github.com/ugent-library/projects-service/search"
 	"github.com/ugent-library/projects-service/search/es6"
 
 	"github.com/ugent-library/zaphttp"
@@ -51,14 +50,14 @@ var serverCmd = &cobra.Command{
 		}
 
 		// setup searcher
-		e, err := es6.NewEngine(es6.Config{
+		searcher, err := es6.NewSearcher(es6.Config{
 			Conn: strings.Split(config.Search.Conn, ","),
 		})
 		if err != nil {
 			return err
 		}
 
-		searcher := search.NewSearcher(e, config.Search.Index)
+		// searcher := search.NewSearcher(e, config.Search.Index)
 
 		// setup api
 		apiServer, err := api.NewServer(api.NewService(repo, searcher), &apiSecurityHandler{APIKey: config.APIKey})
