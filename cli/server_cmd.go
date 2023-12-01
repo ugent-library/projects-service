@@ -51,13 +51,12 @@ var serverCmd = &cobra.Command{
 
 		// setup searcher
 		searcher, err := es6.NewSearcher(es6.Config{
-			Conn: strings.Split(config.Search.Conn, ","),
+			Conn:  strings.Split(config.Search.Conn, ","),
+			Index: config.Search.Index,
 		})
 		if err != nil {
 			return err
 		}
-
-		// searcher := search.NewSearcher(e, config.Search.Index)
 
 		// setup api
 		apiServer, err := api.NewServer(api.NewService(repo, searcher), &apiSecurityHandler{APIKey: config.APIKey})
