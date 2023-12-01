@@ -45,7 +45,7 @@ var reindexCmd = &cobra.Command{
 		}
 
 		// init a switcher
-		settings, err := os.ReadFile("etc/search/es6/project.json")
+		settings, err := os.ReadFile("etc/es6/settings.json")
 		if err != nil {
 			return err
 		}
