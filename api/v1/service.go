@@ -170,13 +170,11 @@ func (s *Service) SuggestProjects(ctx context.Context, req *SuggestProjectsReque
 	for _, id := range hits {
 		p, err := s.repo.GetProject(ctx, id)
 
-		if err != nil {
-			switch {
-			case errors.Is(err, repositories.ErrNotFound):
-				continue
-			case err != nil:
-				return nil, err
-			}
+		switch {
+		case errors.Is(err, repositories.ErrNotFound):
+			continue
+		case err != nil:
+			return nil, err
 		}
 
 		res.Data = append(res.Data, *mapToOASProject(p))
