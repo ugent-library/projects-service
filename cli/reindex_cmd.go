@@ -3,7 +3,6 @@ package cli
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"os"
 	"strings"
 	"time"
@@ -62,14 +61,13 @@ var reindexCmd = &cobra.Command{
 		// init an indexer
 		indexer, err := index.NewIndexer(client, idx, index.IndexerConfig{
 			OnError: func(err error) {
-				log.Printf("%+v", err)
+				logger.Errorf("Indexer error: %w", err)
 			},
 			OnIndexFailure: func(str string, err error) {
-				log.Printf("%+v", err)
-				log.Println("FAILED")
+				logger.Errorf("Failed indexing document: %s, %w", str, err)
 			},
 			OnIndexSuccess: func(str string) {
-				log.Println("SUCCESS")
+				logger.Infof("Indexed document: %s", str)
 			},
 		})
 		if err != nil {
@@ -81,11 +79,6 @@ var reindexCmd = &cobra.Command{
 			doc := es6.NewProjectDocument(p)
 
 			d, _ := json.Marshal(doc)
-			// if err != nil {
-			// 	// error
-			// }
-
-			log.Println(p.ID)
 
 			indexer.Index(ctx, p.ID, d)
 			return true
@@ -101,9 +94,6 @@ var reindexCmd = &cobra.Command{
 			doc := es6.NewProjectDocument(p)
 
 			d, _ := json.Marshal(doc)
-			// if err != nil {
-			// 	// error
-			// }
 
 			indexer.Index(ctx, p.ID, d)
 			return true
