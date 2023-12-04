@@ -27,7 +27,8 @@ PROJECTS_HOST              # host or IP (default: localhost)
 PROJECTS_PORT              # host port (default: 3000)
 PROJECTS_API_KEY           # REST API Key
 PROJECTS_REPO_CONN         # PostgreSQL DSN connection string
-PROJECTS_REPO_SECRET       # PostgreSQL secret seed
+PROJECTS_SEARCH_CONN       # Search (es6) DSN connection string
+PROJECTS_SEARCH_INDEX      # Search (es§) index name
 ```
 
 ### Application boot

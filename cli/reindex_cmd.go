@@ -28,8 +28,7 @@ var reindexCmd = &cobra.Command{
 
 		// setup repo
 		repo, err := repositories.New(repositories.Config{
-			Conn:   config.Repo.Conn,
-			Secret: []byte(config.Repo.Secret),
+			Conn: config.Repo.Conn,
 		})
 		if err != nil {
 			return err

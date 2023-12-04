@@ -23,8 +23,7 @@ type Repo struct {
 }
 
 type Config struct {
-	Conn   string
-	Secret []byte
+	Conn string
 }
 
 func New(c Config) (*Repo, error) {

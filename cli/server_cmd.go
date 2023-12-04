@@ -42,8 +42,7 @@ var serverCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// setup repo
 		repo, err := repositories.New(repositories.Config{
-			Conn:   config.Repo.Conn,
-			Secret: []byte(config.Repo.Secret),
+			Conn: config.Repo.Conn,
 		})
 		if err != nil {
 			return err

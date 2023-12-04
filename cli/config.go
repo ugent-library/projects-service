@@ -16,8 +16,7 @@ type Config struct {
 	Port   int    `env:"PROJECTS_PORT" envDefault:"3000"`
 	APIKey string `env:"PROJECTS_API_KEY"`
 	Repo   struct {
-		Conn   string `env:"CONN,notEmpty"`
-		Secret string `env:"SECRET,notEmpty"`
+		Conn string `env:"CONN,notEmpty"`
 	} `envPrefix:"PROJECTS_REPO_"`
 	Search struct {
 		Conn      string `env:"CONN,notEmpty"`
