@@ -31,5 +31,5 @@ reflex.conf
 # Config
 .env*
 !.env.example
-atlas.hcl
-!atlas.hcl.example
+docker-compose.yml
+!docker-compose.example.yml

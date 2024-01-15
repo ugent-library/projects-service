@@ -1,0 +1,117 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: dev
+    environment:
+      PROJECTS_ENV: local
+      PROJECTS_HOST: 0.0.0.0
+      PROJECTS_PORT: 3000
+      PROJECTS_API_KEY: ""
+      PROJECTS_REPO_CONN: "postgres://projects:projects@db-app:5432/projects?sslmode=disable"
+      PROJECTS_SEARCH_CONN: "http://es:9200"
+      PROJECTS_SEARCH_INDEX: "projects"
+    ports:
+      - 3000
+    volumes:
+      - .:/src
+    depends_on:
+      db-app:
+        condition: service_healthy
+      es:
+        condition: service_healthy
+
+    command: >
+      sh -c "tern migrate &&
+        go run main.go reindex &&
+        reflex -d none -c reflex.docker.conf;"
+
+  db-app:
+    image: postgres:16-alpine
+    ports:
+      - 5432
+    user: postgres
+    environment:
+      POSTGRES_DB: projects
+      POSTGRES_USER: projects
+      POSTGRES_PASSWORD: projects
+    volumes:
+      - projects-app-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U projects -d projects"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  es:
+    image: elyalvarado/elasticsearch-arm64:6.8.16
+    ports:
+      - 9200
+    environment:
+      - http.host=0.0.0.0
+      - ES_JAVA_OPTS=-Xmx512m -Xms512m -server
+      - discovery.type=single-node
+      - xpack.ml.enabled=false
+      - bootstrap.system_call_filter=false
+    volumes:
+      - projects-es-data:/usr/share/elasticsearch/data
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    command: >
+        /bin/sh -c "./bin/elasticsearch-plugin list | grep -q analysis-icu
+        || ./bin/elasticsearch-plugin install https://artifacts.elastic.co/downloads/elasticsearch-plugins/analysis-icu/analysis-icu-6.8.16.zip;
+        /usr/local/bin/docker-entrypoint.sh"
+    healthcheck:
+      test: curl -s -f es:9200/_cat/health >/dev/null || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # NOTE: Elastic 6.8 doesn't provide an arm64 image. So, we need to use a 
+  # custom image for the time being. Switch to the container below if you are on x86_64.
+
+  # es:
+  #   platform: "linux/amd64"
+  #   image: elasticsearch:6.8.23
+  #   ports:
+  #     - 9200
+  #   environment:
+  #     - http.host=0.0.0.0
+  #     - ES_JAVA_OPTS=-Xmx512m -Xms512m -server
+  #     - discovery.type=single-node
+  #     - xpack.ml.enabled=false
+  #     - bootstrap.system_call_filter=false
+  #   volumes:
+  #     - projects-es-data:/usr/share/elasticsearch/data
+  #   ulimits:
+  #     nofile:
+  #       soft: 65536
+  #       hard: 65536
+  #   command: >
+  #       /bin/sh -c "./bin/elasticsearch-plugin list | grep -q analysis-icu
+  #       || ./bin/elasticsearch-plugin install analysis-icu;
+  #       /usr/local/bin/docker-entrypoint.sh"
+  #   healthcheck:
+  #     test: curl -s -f es:9200/_cat/health >/dev/null || exit 1
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+
+volumes:
+  projects-es-data:
+    driver: local 
+    driver_opts:
+      type: none
+      device: ~/projects/backoffice/es_data
+      o: bind
+  projects-app-db-data:
+    driver: local 
+    driver_opts:
+      type: none
+      device: ~/projects/backoffice/db_data
+      o: bind
