@@ -33,3 +33,6 @@ reflex.conf
 !.env.example
 docker-compose.yml
 !docker-compose.example.yml
+
+# docker temp folder
+tmp

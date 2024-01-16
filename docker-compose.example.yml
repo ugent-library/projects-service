@@ -9,13 +9,13 @@ services:
     environment:
       PROJECTS_ENV: local
       PROJECTS_HOST: 0.0.0.0
-      PROJECTS_PORT: 3000
+      PROJECTS_PORT: 3001
       PROJECTS_API_KEY: ""
       PROJECTS_REPO_CONN: "postgres://projects:projects@db-app:5432/projects?sslmode=disable"
       PROJECTS_SEARCH_CONN: "http://es:9200"
       PROJECTS_SEARCH_INDEX: "projects"
     ports:
-      - 3000
+      - 3001
     volumes:
       - .:/src
     depends_on:
@@ -107,11 +107,11 @@ volumes:
     driver: local 
     driver_opts:
       type: none
-      device: ~/projects/backoffice/es_data
+      device: ./tmp/es_data
       o: bind
   projects-app-db-data:
     driver: local 
     driver_opts:
       type: none
-      device: ~/projects/backoffice/db_data
+      device: ./tmp/app_db_data
       o: bind
