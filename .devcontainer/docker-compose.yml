@@ -5,41 +5,36 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
-      target: dev
-    environment:
-      PROJECTS_ENV: local
-      PROJECTS_HOST: 0.0.0.0
-      PROJECTS_PORT: 3001
-      PROJECTS_API_KEY: ""
-      PROJECTS_REPO_CONN: "postgres://projects:projects@db-app:5432/projects?sslmode=disable"
-      PROJECTS_SEARCH_CONN: "http://es:9200"
-      PROJECTS_SEARCH_INDEX: "projects"
-    ports:
-      - 3001
+    env_file:
+        - ./.env
     volumes:
-      - .:/src
+      - ../..:/src:cached
     depends_on:
       db-app:
         condition: service_healthy
       es:
         condition: service_healthy
-
-    command: >
-      sh -c "tern migrate &&
-        go run main.go reindex &&
-        reflex -d none -c reflex.docker.conf;"
+    command: 
+      - bash
+      - -c
+      - |
+        cd /src
+        go mod download -x
+        tern status
+        tern migrate
+        go run main.go reindex
+        sleep infinity
 
   db-app:
     image: postgres:16-alpine
-    ports:
-      - 5432
     user: postgres
     environment:
       POSTGRES_DB: projects
       POSTGRES_USER: projects
       POSTGRES_PASSWORD: projects
+      PGPORT: 3351
     volumes:
-      - projects-app-db-data:/var/lib/postgresql/data
+      - ../tmp/app-db/db_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U projects -d projects"]
       interval: 10s
@@ -48,16 +43,15 @@ services:
 
   es:
     image: elyalvarado/elasticsearch-arm64:6.8.16
-    ports:
-      - 9200
     environment:
       - http.host=0.0.0.0
+      - http.port=3361
       - ES_JAVA_OPTS=-Xmx512m -Xms512m -server
       - discovery.type=single-node
       - xpack.ml.enabled=false
       - bootstrap.system_call_filter=false
     volumes:
-      - projects-es-data:/usr/share/elasticsearch/data
+      -  ../tmp/es_data:/usr/share/elasticsearch/data
     ulimits:
       nofile:
         soft: 65536
@@ -67,7 +61,7 @@ services:
         || ./bin/elasticsearch-plugin install https://artifacts.elastic.co/downloads/elasticsearch-plugins/analysis-icu/analysis-icu-6.8.16.zip;
         /usr/local/bin/docker-entrypoint.sh"
     healthcheck:
-      test: curl -s -f es:9200/_cat/health >/dev/null || exit 1
+      test: curl -s -f es:3361/_cat/health >/dev/null || exit 1
       interval: 10s
       timeout: 5s
       retries: 5
@@ -78,10 +72,9 @@ services:
   # es:
   #   platform: "linux/amd64"
   #   image: elasticsearch:6.8.23
-  #   ports:
-  #     - 9200
   #   environment:
   #     - http.host=0.0.0.0
+  #     - http.port=3361
   #     - ES_JAVA_OPTS=-Xmx512m -Xms512m -server
   #     - discovery.type=single-node
   #     - xpack.ml.enabled=false
@@ -101,17 +94,3 @@ services:
   #     interval: 30s
   #     timeout: 10s
   #     retries: 5
-
-volumes:
-  projects-es-data:
-    driver: local 
-    driver_opts:
-      type: none
-      device: ./tmp/es_data
-      o: bind
-  projects-app-db-data:
-    driver: local 
-    driver_opts:
-      type: none
-      device: ./tmp/app_db_data
-      o: bind
