@@ -11,7 +11,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/ory/graceful"
 	"github.com/spf13/cobra"
-	"github.com/ugent-library/httpx/render"
+	"github.com/ugent-library/httpx"
 	"github.com/ugent-library/projects-service/api/v1"
 	"github.com/ugent-library/projects-service/repositories"
 
@@ -66,7 +66,7 @@ var serverCmd = &cobra.Command{
 		// mount health and info
 		mux.Get("/health", health.NewHandler(health.NewChecker())) // TODO add checkers
 		mux.Get("/info", func(w http.ResponseWriter, r *http.Request) {
-			render.JSON(w, http.StatusOK, &struct {
+			httpx.RenderJSON(w, http.StatusOK, &struct {
 				Branch string `json:"branch,omitempty"`
 				Commit string `json:"commit,omitempty"`
 				Image  string `json:"image,omitempty"`
