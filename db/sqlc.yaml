@@ -2,11 +2,11 @@ version: "2"
 sql:
   - engine: "postgresql"
     queries: "query.sql"
-    schema: "etc/migrations"
+    schema: "migrations"
     gen:
       go:
-        package: "sqlc"
-        out: "sqlc"
+        package: "db"
+        out: "."
         sql_package: "pgx/v5"
         overrides:
           - column: "projects.external_identifiers"

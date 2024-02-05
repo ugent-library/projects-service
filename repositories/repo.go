@@ -10,15 +10,15 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib"
 
+	"github.com/ugent-library/projects-service/db"
 	"github.com/ugent-library/projects-service/models"
-	"github.com/ugent-library/projects-service/sqlc"
 )
 
 var ErrNotFound = errors.New("not found")
 var ErrConstraint = errors.New("something went wrong")
 
 type Repo struct {
-	client *sqlc.Queries
+	client *db.Queries
 	config Config
 }
 
@@ -34,7 +34,7 @@ func New(c Config) (*Repo, error) {
 		return nil, err
 	}
 
-	client := sqlc.New(pool)
+	client := db.New(pool)
 
 	return &Repo{
 		config: c,
@@ -43,7 +43,7 @@ func New(c Config) (*Repo, error) {
 }
 
 func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
-	d := sqlc.UpsertProjectParams{
+	d := db.UpsertProjectParams{
 		ExternalPrimaryIdentifier: p.ID,
 		ExternalIdentifiers:       p.Identifier,
 		Name:                      p.Name,
@@ -104,7 +104,7 @@ func (r *Repo) EachProject(ctx context.Context, fn func(p *models.Project) bool)
 	size = 1000
 
 	for {
-		rows, err := r.client.EachProject(ctx, sqlc.EachProjectParams{Offset: page, Limit: size})
+		rows, err := r.client.EachProject(ctx, db.EachProjectParams{Offset: page, Limit: size})
 		if err != nil {
 			return err
 		}
@@ -137,7 +137,7 @@ func (r *Repo) EachProject(ctx context.Context, fn func(p *models.Project) bool)
 }
 
 func (r *Repo) EachProjectBetween(ctx context.Context, t1, t2 time.Time, fn func(p *models.Project) bool) error {
-	rows, err := r.client.BetweenProjects(ctx, sqlc.BetweenProjectsParams{
+	rows, err := r.client.BetweenProjects(ctx, db.BetweenProjectsParams{
 		CreatedAt:   pgtype.Timestamptz{Time: t1, Valid: true},
 		CreatedAt_2: pgtype.Timestamptz{Time: t2, Valid: true},
 	})
