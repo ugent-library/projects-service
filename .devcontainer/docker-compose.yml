@@ -9,25 +9,17 @@ services:
         - ./.env
     volumes:
       - ../..:/src:cached
-    depends_on:
-      db-app:
-        condition: service_healthy
-      es:
-        condition: service_healthy
     command: 
       - bash
       - -c
       - |
         cd /src
-        go mod download -x
         tern status
         tern migrate
-        go run main.go reindex
         sleep infinity
 
   db-app:
     image: postgres:16-alpine
-    user: postgres
     environment:
       POSTGRES_DB: projects
       POSTGRES_USER: projects
@@ -51,7 +43,7 @@ services:
       - xpack.ml.enabled=false
       - bootstrap.system_call_filter=false
     volumes:
-      -  ../tmp/es_data:/usr/share/elasticsearch/data
+     -  projects_esdata:/usr/share/elasticsearch/data
     ulimits:
       nofile:
         soft: 65536
@@ -79,8 +71,10 @@ services:
   #     - discovery.type=single-node
   #     - xpack.ml.enabled=false
   #     - bootstrap.system_call_filter=false
+  #   ports:
+  #     - 3361:3361
   #   volumes:
-  #     - projects-es-data:/usr/share/elasticsearch/data
+  #     -  projects_esdata:/usr/share/elasticsearch/data
   #   ulimits:
   #     nofile:
   #       soft: 65536
@@ -90,7 +84,11 @@ services:
   #       || ./bin/elasticsearch-plugin install analysis-icu;
   #       /usr/local/bin/docker-entrypoint.sh"
   #   healthcheck:
-  #     test: curl -s -f es:9200/_cat/health >/dev/null || exit 1
+  #     test: curl -s -f es:3361/_cat/health >/dev/null || exit 1
   #     interval: 30s
   #     timeout: 10s
   #     retries: 5
+
+volumes:
+  projects_esdata:
+    driver: local
