@@ -18,8 +18,9 @@ var ErrNotFound = errors.New("not found")
 var ErrConstraint = errors.New("something went wrong")
 
 type Repo struct {
-	client *db.Queries
-	config Config
+	config  Config
+	db      *pgxpool.Pool
+	queries *db.Queries
 }
 
 type Config struct {
@@ -34,11 +35,10 @@ func New(c Config) (*Repo, error) {
 		return nil, err
 	}
 
-	client := db.New(pool)
-
 	return &Repo{
-		config: c,
-		client: client,
+		config:  c,
+		db:      pool,
+		queries: db.New(pool),
 	}, nil
 }
 
@@ -55,13 +55,13 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 		EuFundingProgramme:        pgtype.Text{String: p.FundingProgramme, Valid: true},
 	}
 
-	err := r.client.UpsertProject(ctx, d)
+	err := r.queries.UpsertProject(ctx, d)
 
 	return err
 }
 
 func (r *Repo) GetProject(ctx context.Context, id string) (*models.Project, error) {
-	row, err := r.client.GetProject(ctx, id)
+	row, err := r.queries.GetProject(ctx, id)
 	if err != nil {
 		return nil, ErrNotFound
 	}
@@ -84,7 +84,7 @@ func (r *Repo) GetProject(ctx context.Context, id string) (*models.Project, erro
 }
 
 func (r *Repo) DeleteProject(ctx context.Context, id string) error {
-	_, err := r.client.DeleteProject(ctx, id)
+	_, err := r.queries.DeleteProject(ctx, id)
 
 	switch {
 	case errors.Is(err, pgx.ErrNoRows):
@@ -104,7 +104,7 @@ func (r *Repo) EachProject(ctx context.Context, fn func(p *models.Project) bool)
 	size = 1000
 
 	for {
-		rows, err := r.client.EachProject(ctx, db.EachProjectParams{Offset: page, Limit: size})
+		rows, err := r.queries.EachProject(ctx, db.EachProjectParams{Offset: page, Limit: size})
 		if err != nil {
 			return err
 		}
@@ -137,7 +137,7 @@ func (r *Repo) EachProject(ctx context.Context, fn func(p *models.Project) bool)
 }
 
 func (r *Repo) EachProjectBetween(ctx context.Context, t1, t2 time.Time, fn func(p *models.Project) bool) error {
-	rows, err := r.client.BetweenProjects(ctx, db.BetweenProjectsParams{
+	rows, err := r.queries.BetweenProjects(ctx, db.BetweenProjectsParams{
 		CreatedAt:   pgtype.Timestamptz{Time: t1, Valid: true},
 		CreatedAt_2: pgtype.Timestamptz{Time: t2, Valid: true},
 	})
