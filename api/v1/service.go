@@ -35,34 +35,9 @@ func (s *Service) GetProject(ctx context.Context, id *Identifier) (GetProjectRes
 		return nil, err
 	}
 
-	attributes := make([]Attribute, len(p.Attributes))
-	for i, attr := range p.Attributes {
-		attributes[i] = Attribute(attr)
-	}
+	res := projectRecordToAPI(p)
 
-	identifiers := make([]Identifier, len(p.Identifiers))
-	for i, id := range p.Identifiers {
-		identifiers[i] = Identifier(id)
-	}
-
-	names := make([]Translation, len(p.Name))
-	for i, name := range p.Name {
-		names[i] = Translation(name)
-	}
-
-	descriptions := make([]Translation, len(p.Description))
-	for i, desc := range p.Description {
-		descriptions[i] = Translation(desc)
-	}
-
-	return &ProjectRecord{
-		Name:            names,
-		Description:     descriptions,
-		FoundingDate:    NewOptString(p.FoundingDate),
-		DissolutionDate: NewOptString(p.DissolutionDate),
-		Attributes:      attributes,
-		Identifiers:     identifiers,
-	}, nil
+	return &res, nil
 }
 
 func (s *Service) AddProject(ctx context.Context, p *Project) error {
@@ -113,5 +88,36 @@ func (s *Service) NewError(ctx context.Context, err error) *ErrorStatusCode {
 			Code:    500,
 			Message: err.Error(),
 		},
+	}
+}
+
+func projectRecordToAPI(p *models.ProjectRecord) ProjectRecord {
+	attributes := make([]Attribute, len(p.Attributes))
+	for i, attr := range p.Attributes {
+		attributes[i] = Attribute(attr)
+	}
+
+	identifiers := make([]Identifier, len(p.Identifiers))
+	for i, id := range p.Identifiers {
+		identifiers[i] = Identifier(id)
+	}
+
+	names := make([]Translation, len(p.Name))
+	for i, name := range p.Name {
+		names[i] = Translation(name)
+	}
+
+	descriptions := make([]Translation, len(p.Description))
+	for i, desc := range p.Description {
+		descriptions[i] = Translation(desc)
+	}
+
+	return ProjectRecord{
+		Name:            names,
+		Description:     descriptions,
+		FoundingDate:    NewOptString(p.FoundingDate),
+		DissolutionDate: NewOptString(p.DissolutionDate),
+		Attributes:      attributes,
+		Identifiers:     identifiers,
 	}
 }
