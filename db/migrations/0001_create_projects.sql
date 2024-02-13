@@ -1,4 +1,4 @@
--- create projects
+-- +goose Up
 
 CREATE TABLE IF NOT EXISTS projects (
   id BIGSERIAL PRIMARY KEY,
@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS projects (
   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE INDEX projects_updated_at_key ON projects (updated_at);
+
 CREATE TABLE IF NOT EXISTS "projects_identifiers" (
   project_id BIGINT NOT NULL REFERENCES projects ON DELETE CASCADE,
   type TEXT CHECK (type <> ''),
@@ -18,6 +20,9 @@ CREATE TABLE IF NOT EXISTS "projects_identifiers" (
   PRIMARY KEY (type, value)
 );
 
----- create above / drop below ----
+CREATE INDEX projects_identifiers_project_id_fkey ON projects_identifiers (project_id);
+
+-- +goose Down
+
 DROP TABLE "projects" CASCADE;
 DROP TABLE "projects_identifiers" CASCADE;

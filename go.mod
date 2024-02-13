@@ -13,6 +13,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/ogen-go/ogen v0.81.2
 	github.com/ory/graceful v0.1.3
+	github.com/pressly/goose/v3 v3.18.0
 	github.com/spf13/cobra v1.8.0
 	github.com/swaggest/swgui v1.8.0
 	github.com/ugent-library/httpx v0.0.0-20230810085329-405b7b83c66c
@@ -38,10 +39,18 @@ require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20231201235250-de7065d80cb9 // indirect
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
+	github.com/lib/pq v1.10.9 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/mfridman/interpolate v0.0.2 // indirect
+	github.com/oklog/ulid/v2 v2.1.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/riverqueue/river v0.0.19 // indirect
+	github.com/riverqueue/river/riverdriver v0.0.19 // indirect
+	github.com/riverqueue/river/riverdriver/riverdatabasesql v0.0.19 // indirect
+	github.com/riverqueue/river/riverdriver/riverpgxv5 v0.0.19 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
+	github.com/sethvargo/go-retry v0.2.4 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/vearutop/statigz v1.4.0 // indirect
 	golang.org/x/crypto v0.18.0 // indirect
