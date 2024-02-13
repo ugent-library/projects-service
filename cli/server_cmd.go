@@ -3,7 +3,6 @@ package cli
 import (
 	"context"
 	"errors"
-	"log"
 	"net/http"
 	"time"
 
@@ -11,14 +10,12 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/ory/graceful"
+	slogchi "github.com/samber/slog-chi"
 	"github.com/spf13/cobra"
 	"github.com/swaggest/swgui/v5emb"
 	"github.com/ugent-library/httpx/render"
 	"github.com/ugent-library/projects-service/api/v1"
 	"github.com/ugent-library/projects-service/repositories"
-
-	"github.com/ugent-library/zaphttp"
-	"github.com/ugent-library/zaphttp/zapchi"
 )
 
 func init() {
@@ -70,8 +67,9 @@ var serverCmd = &cobra.Command{
 		if config.Env != "local" {
 			mux.Use(middleware.RealIP)
 		}
-		mux.Use(zaphttp.SetLogger(logger.Desugar(), zapchi.RequestID))
-		mux.Use(middleware.RequestLogger(zapchi.LogFormatter()))
+		mux.Use(slogchi.NewWithConfig(logger, slogchi.Config{
+			WithRequestID: true,
+		}))
 		mux.Use(middleware.Recoverer)
 
 		// mount health and info

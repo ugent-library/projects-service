@@ -49,6 +49,7 @@ require (
 	github.com/riverqueue/river/riverdriver v0.0.19 // indirect
 	github.com/riverqueue/river/riverdriver/riverdatabasesql v0.0.19 // indirect
 	github.com/riverqueue/river/riverdriver/riverpgxv5 v0.0.19 // indirect
+	github.com/samber/slog-chi v1.9.1 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/sethvargo/go-retry v0.2.4 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
