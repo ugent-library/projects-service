@@ -55,7 +55,6 @@ var serverCmd = &cobra.Command{
 		// }
 
 		// setup api
-		log.Printf("%s", config.APIKey)
 		apiServer, err := api.NewServer(api.NewService(repo), &apiSecurityHandler{APIKey: config.APIKey})
 		if err != nil {
 			return err
