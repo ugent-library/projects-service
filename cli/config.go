@@ -9,20 +9,27 @@ type Version struct {
 	Image  string `env:"IMAGE_NAME"`
 }
 
+// Application configuration
 type Config struct {
 	// Env must be local, development, test or production
-	Env    string `env:"PROJECTS_ENV" envDefault:"production"`
-	Host   string `env:"PROJECTS_HOST"`
-	Port   int    `env:"PROJECTS_PORT" envDefault:"3000"`
-	APIKey string `env:"PROJECTS_API_KEY"`
-	Repo   struct {
+	Env    string `env:"ENV" envDefault:"production"`
+	Host   string `env:"HOST"`
+	Port   int    `env:"PORT" envDefault:"3000"`
+	APIKey string `env:"API_KEY,notEmpty"`
+	// Repository configuration
+	Repo struct {
+		// Database connection string
 		Conn string `env:"CONN,notEmpty"`
-	} `envPrefix:"PROJECTS_REPO_"`
-	Search struct {
-		Conn      string `env:"CONN,notEmpty"`
-		Index     string `env:"INDEX,notEmpty"`
-		Retention int    `env:"RETENTION" envDefault:"5"`
-	} `envPrefix:"PROJECTS_SEARCH_"`
+	} `envPrefix:"REPO_"`
+	// Search index configuration
+	Index struct {
+		// Connection string
+		Conn string `env:"CONN,notEmpty"`
+		// Index name
+		Name string `env:"NAME,notEmpty"`
+		// Index retention
+		Retention int `env:"RETENTION" envDefault:"5"`
+	} `envPrefix:"INDEX_"`
 }
 
 func (c Config) Addr() string {
