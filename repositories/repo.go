@@ -192,42 +192,6 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 	return tx.Commit(ctx)
 }
 
-// func (r *Repo) GetProject(ctx context.Context, id string) (*models.Project, error) {
-// 	row, err := r.queries.GetProject(ctx, id)
-// 	if err != nil {
-// 		return nil, ErrNotFound
-// 	}
-
-// 	p := &models.Project{
-// 		ID:               row.ExternalPrimaryIdentifier,
-// 		Name:             row.Name,
-// 		Description:      row.Description,
-// 		Identifier:       row.ExternalIdentifiers,
-// 		FoundingDate:     row.FoundingDate.String,
-// 		DissolutionDate:  row.DissolutionDate.String,
-// 		Acronym:          row.Acronym,
-// 		GrantCall:        row.EuGrantCall.String,
-// 		FundingProgramme: row.EuFundingProgramme.String,
-// 		DateCreated:      row.CreatedAt.Time,
-// 		DateModified:     row.UpdatedAt.Time,
-// 	}
-
-// 	return p, nil
-// }
-
-// func (r *Repo) DeleteProject(ctx context.Context, id string) error {
-// 	_, err := r.queries.DeleteProject(ctx, id)
-
-// 	switch {
-// 	case errors.Is(err, pgx.ErrNoRows):
-// 		return ErrNotFound
-// 	case err != nil:
-// 		return err
-// 	}
-
-// 	return nil
-// }
-
 // func (r *Repo) EachProject(ctx context.Context, fn func(p *models.Project) bool) error {
 // 	var page int32
 // 	var size int32
