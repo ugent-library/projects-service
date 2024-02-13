@@ -2,185 +2,108 @@ package api
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/go-faster/errors"
 	"github.com/ugent-library/projects-service/models"
 	"github.com/ugent-library/projects-service/repositories"
-	"github.com/ugent-library/projects-service/search"
 )
 
 type Service struct {
-	repo     *repositories.Repo
-	searcher search.Searcher
+	repo *repositories.Repo
+	// searcher search.Searcher
 }
 
-func NewService(repo *repositories.Repo, searcher search.Searcher) *Service {
+func NewService(repo *repositories.Repo) *Service {
 	return &Service{
-		repo:     repo,
-		searcher: searcher,
+		repo: repo,
+		//	searcher: searcher,
 	}
 }
 
-func (s *Service) AddProject(ctx context.Context, req *AddProject) error {
-	p := &models.Project{}
-
-	if v, ok := req.GetID().Get(); ok {
-		tmp, err := s.repo.GetProject(ctx, v)
-		if !errors.Is(err, repositories.ErrNotFound) {
-			p = tmp
-		}
-	}
-
-	if v, ok := req.GetID().Get(); ok {
-		p.ID = v
-	}
-
-	if v, ok := req.GetCreated().Get(); ok {
-		p.DateCreated = v
-	}
-
-	if v, ok := req.GetModified().Get(); ok {
-		// Drop the update if it's older then the last modified datetime in the database.
-		if !p.DateModified.IsZero() {
-			if v.Compare(p.DateModified) != 1 {
-				return nil
-			}
-		}
-
-		p.DateModified = v
-	}
-
-	if ids := req.GetIdentifier(); len(ids) > 0 {
-		tmp := make(map[string][]string)
-		for _, id := range ids {
-			tmp[id.GetPropertyID()] = append(tmp[id.GetPropertyID()], id.GetValue())
-		}
-		p.Identifier = tmp
-	}
-
-	if strs := req.GetName(); len(strs) > 0 {
-		tmp := make(map[string]string)
-		for _, str := range strs {
-			tmp[str.GetLanguage()] = str.GetValue()
-		}
-
-		p.Name = tmp
-	}
-
-	if strs := req.GetDescription(); len(strs) > 0 {
-		tmp := make(map[string]string)
-		for _, str := range strs {
-			tmp[str.GetLanguage()] = str.GetValue()
-		}
-
-		p.Description = tmp
-	}
-
-	if v, ok := req.GetFoundingDate().Get(); ok {
-		p.FoundingDate = v
-	}
-
-	if v, ok := req.GetDissolutionDate().Get(); ok {
-		p.DissolutionDate = v
-	}
-
-	if ids := req.GetIdentifier(); len(ids) > 0 {
-		tmp := make(map[string][]string)
-		for _, id := range ids {
-			tmp[id.GetPropertyID()] = append(tmp[id.GetPropertyID()], id.GetValue())
-		}
-		p.Identifier = tmp
-	}
-
-	if acrs := req.GetHasAcronym(); len(acrs) > 0 {
-		p.Acronym = acrs
-	}
-
-	if fb, ok := req.GetIsFundedBy().Get(); ok {
-		if v, ok := fb.GetHasCallNumber().Get(); ok {
-			p.GrantCall = v
-		}
-
-		if ab, ok := fb.GetIsAwardedBy().Get(); ok {
-			name := ab.GetName()
-			p.FundingProgramme = name
-		}
-	}
-
-	if err := s.repo.AddProject(ctx, p); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *Service) DeleteProject(ctx context.Context, req *DeleteProjectRequest) error {
-	v := req.GetID()
-
-	err := s.repo.DeleteProject(ctx, v)
-	switch {
-	case errors.Is(err, repositories.ErrNotFound):
-		return &ErrorStatusCode{
-			StatusCode: 404,
-			Response: Error{
-				Code:    404,
-				Message: fmt.Sprintf("Project not found: %s", v),
-			},
-		}
-	case err != nil:
-		return err
-	}
-
-	return nil
-}
-
-func (s *Service) GetProject(ctx context.Context, req *GetProjectRequest) (GetProjectRes, error) {
-	v := req.GetID()
-	p, err := s.repo.GetProject(ctx, v)
-	switch {
-	case errors.Is(err, repositories.ErrNotFound):
+func (s *Service) GetProject(ctx context.Context, id *Identifier) (GetProjectRes, error) {
+	p, err := s.repo.GetProject(ctx, models.Identifier(*id))
+	if errors.Is(err, repositories.ErrNotFound) {
 		return nil, &ErrorStatusCode{
 			StatusCode: 404,
 			Response: Error{
 				Code:    404,
-				Message: fmt.Sprintf("Project not found: %s", v),
+				Message: "Project not found",
 			},
 		}
-	case err != nil:
-		return nil, err
 	}
-
-	oasp := mapToOASProject(p)
-
-	return oasp, nil
-}
-
-func (s *Service) SuggestProjects(ctx context.Context, req *SuggestProjectsRequest) (*SuggestProjectsResponse, error) {
-	hits, err := s.searcher.SuggestProjects(req.Query)
-
 	if err != nil {
 		return nil, err
 	}
 
-	res := &SuggestProjectsResponse{
-		Data: make([]GetProject, 0, len(hits)),
+	attributes := make([]Attribute, len(p.Attributes))
+	for i, attr := range p.Attributes {
+		attributes[i] = Attribute(attr)
 	}
 
-	for id := range hits {
-		p, err := s.repo.GetProject(ctx, id)
-
-		switch {
-		case errors.Is(err, repositories.ErrNotFound):
-			continue
-		case err != nil:
-			return nil, err
-		}
-
-		res.Data = append(res.Data, *mapToOASProject(p))
+	identifiers := make([]Identifier, len(p.Identifiers))
+	for i, id := range p.Identifiers {
+		identifiers[i] = Identifier(id)
 	}
 
-	return res, nil
+	names := make([]Translation, len(p.Name))
+	for i, name := range p.Name {
+		names[i] = Translation(name)
+	}
+
+	descriptions := make([]Translation, len(p.Description))
+	for i, desc := range p.Description {
+		descriptions[i] = Translation(desc)
+	}
+
+	return &ProjectRecord{
+		Name:            names,
+		Description:     descriptions,
+		FoundingDate:    NewOptString(p.FoundingDate),
+		DissolutionDate: NewOptString(p.DissolutionDate),
+		Attributes:      attributes,
+		Identifiers:     identifiers,
+	}, nil
+}
+
+func (s *Service) AddProject(ctx context.Context, p *Project) error {
+	attributes := make([]models.Attribute, len(p.Attributes))
+	for i, attr := range p.Attributes {
+		attributes[i] = models.Attribute(attr)
+	}
+
+	identifiers := make([]models.Identifier, len(p.Identifiers))
+	for i, id := range p.Identifiers {
+		identifiers[i] = models.Identifier(id)
+	}
+
+	names := make([]models.Translation, len(p.Name))
+	for i, name := range p.Name {
+		names[i] = models.Translation(name)
+	}
+
+	descriptions := make([]models.Translation, len(p.Description))
+	for i, desc := range p.Description {
+		descriptions[i] = models.Translation(desc)
+	}
+
+	foundingDate := ""
+	if v, ok := p.GetFoundingDate().Get(); ok {
+		foundingDate = v
+	}
+
+	dissolutionDate := ""
+	if v, ok := p.GetDissolutionDate().Get(); ok {
+		dissolutionDate = v
+	}
+
+	return s.repo.AddProject(ctx, &models.Project{
+		Name:            names,
+		Description:     descriptions,
+		FoundingDate:    foundingDate,
+		DissolutionDate: dissolutionDate,
+		Attributes:      attributes,
+		Identifiers:     identifiers,
+	})
 }
 
 func (s *Service) NewError(ctx context.Context, err error) *ErrorStatusCode {
@@ -191,72 +114,4 @@ func (s *Service) NewError(ctx context.Context, err error) *ErrorStatusCode {
 			Message: err.Error(),
 		},
 	}
-}
-
-func mapToOASProject(p *models.Project) *GetProject {
-	sids := make([]GetProjectIdentifierItem, 0)
-	for prop, ids := range p.Identifier {
-		for _, id := range ids {
-			sids = append(sids, GetProjectIdentifierItem{
-				Type:       "PropertyValue",
-				PropertyID: prop,
-				Value:      id,
-			})
-		}
-	}
-
-	r := &GetProject{
-		Type:       "ResearchProject",
-		Identifier: sids,
-		Created:    p.DateCreated,
-		Modified:   p.DateModified,
-	}
-
-	r.ID = p.ID
-
-	name := make([]GetProjectNameItem, 0)
-	for lang, val := range p.Name {
-		name = append(name, GetProjectNameItem{
-			Language: lang,
-			Value:    val,
-		})
-	}
-	r.SetName(name)
-
-	desc := make([]GetProjectDescriptionItem, 0)
-	for lang, val := range p.Description {
-		desc = append(desc, GetProjectDescriptionItem{
-			Language: lang,
-			Value:    val,
-		})
-	}
-	r.SetDescription(desc)
-
-	if p.FoundingDate != "" {
-		r.SetFoundingDate(NewOptString(p.FoundingDate))
-	}
-
-	if p.DissolutionDate != "" {
-		r.SetDissolutionDate(NewOptString(p.DissolutionDate))
-	}
-
-	acrs := make([]string, 0)
-	acrs = append(acrs, p.Acronym...)
-	r.SetHasAcronym(acrs)
-
-	g := GetProjectIsFundedBy{
-		Type:          "Grant",
-		HasCallNumber: NewOptString(p.GrantCall),
-	}
-
-	if p.FundingProgramme != "" {
-		g.IsAwardedBy.SetTo(GetProjectIsFundedByIsAwardedBy{
-			Type: "FundingProgramme",
-			Name: p.FundingProgramme,
-		})
-	}
-
-	r.IsFundedBy.SetTo(g)
-
-	return r
 }

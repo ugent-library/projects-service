@@ -8,24 +8,7 @@ info:
   version: 0.0.1
 
 paths:
-  /add-project:
-    post:
-      summary: Add a single project
-      description: Add a single project
-      operationId: addProject
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AddProjectRequest'
-        required: true
-      responses:
-        '200':
-          description: Success
-        default:
-          $ref: "#/components/responses/Error"
-
-  /get-project:
+  "/get-project":
     post:
       summary: Get a project
       description: Get a project
@@ -34,58 +17,99 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GetProjectRequest'
+              $ref: "#/components/schemas/Identifier"
         required: true
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetProjectResponse"
-        '404':
+                $ref: "#/components/schemas/ProjectRecord"
+        "404":
           description: Project not found
           $ref: "#/components/responses/Error"
         default:
           $ref: "#/components/responses/Error"
 
-  /delete-project:
+  "/add-project":
     post:
-      summary: Delete a project
-      description: Delete a project
-      operationId: deleteProject
+      summary: Upsert a project
+      description: Upsert a project
+      operationId: addProject
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DeleteProjectRequest'
+              $ref: '#/components/schemas/Project'
         required: true
       responses:
         '200':
           description: Success
         default:
-          $ref: '#/components/responses/Error'
+          $ref: "#/components/responses/Error"
 
-  /suggest-projects:
-    post:
-      summary: "Search in projects"
-      description: "Search in projects"
-      operationId: "suggestProjects"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SuggestProjectsRequest"
-        required: true
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SuggestProjectsResponse"
-        default:
-          $ref: "#/components/responses/Error"  
+  # /get-project:
+  #   post:
+  #     summary: Get a project
+  #     description: Get a project
+  #     operationId: getProject
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/GetProjectRequest'
+  #       required: true
+  #     responses:
+  #       '200':
+  #         description: Success
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/GetProjectResponse"
+  #       '404':
+  #         description: Project not found
+  #         $ref: "#/components/responses/Error"
+  #       default:
+  #         $ref: "#/components/responses/Error"
+
+  # /delete-project:
+  #   post:
+  #     summary: Delete a project
+  #     description: Delete a project
+  #     operationId: deleteProject
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/DeleteProjectRequest'
+  #       required: true
+  #     responses:
+  #       '200':
+  #         description: Success
+  #       default:
+  #         $ref: '#/components/responses/Error'
+
+  # /suggest-projects:
+  #   post:
+  #     summary: "Search in projects"
+  #     description: "Search in projects"
+  #     operationId: "suggestProjects"
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: "#/components/schemas/SuggestProjectsRequest"
+  #       required: true
+  #     responses:
+  #       '200':
+  #         description: Success
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/SuggestProjectsResponse"
+  #       default:
+  #         $ref: "#/components/responses/Error"
 
 
 security:
@@ -108,129 +132,6 @@ components:
             $ref: "#/components/schemas/Error"
 
   schemas:
-    AddProjectRequest:
-      $ref: "#/components/schemas/AddProject"      
-
-    GetProjectRequest:
-      type: object
-      properties:
-        id:
-          type: string
-          minLength: 1
-      required: [id]
-
-    GetProjectResponse:
-      $ref: "#/components/schemas/GetProject"
-
-    DeleteProjectRequest:
-      type: object
-      properties:
-        id:
-          type: string
-          minLength: 1
-      required: [id]
-
-    SuggestProjectsRequest:
-      type: object
-      properties:
-        query:
-          type: string
-          minLength: 0
-      required: [query]
-
-    SuggestProjectsResponse:
-      type: object
-      properties:
-        cursor:
-          type: string
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/GetProject"
-
-      required: [data]
-
-    Project:
-      type: object
-      properties:
-        id:
-          type: string
-        created:
-          type: string
-          format: date-time
-        modified:
-          type: string
-          format: date-time
-        type:
-          type: string
-        identifier:
-          type: array
-          items:
-            type: object
-            properties:
-              type:
-                type: string
-              propertyID:
-                type: string
-              value:
-                type: string
-            required: [type, propertyID, value]
-        isFundedBy:
-          type: object
-          properties:
-            type:
-              type: string
-            hasCallNumber:
-              type: string
-            isAwardedBy:
-              type: object
-              nullable: true
-              properties:
-                type:
-                  type: string
-                name:
-                  type: string
-              required: [type, name]
-          required: [type]
-        hasAcronym:
-          type: array
-          items:
-            type: string
-        name:
-          type: array
-          items:
-            type: object
-            properties:
-              language:
-                type: string
-              value:
-                type: string
-            required: [language, value]
-        description:
-          type: array
-          items:
-            type: object
-            properties:
-              language:
-                type: string
-              value:
-                type: string
-            required: [language, value]
-        foundingDate:
-          type: string
-        dissolutionDate:
-          type: string
-
-    AddProject:
-      allOf:
-        - $ref: "#/components/schemas/Project"
-        - required: [type, identifier]
-
-    GetProject:
-      allOf:
-        - $ref: "#/components/schemas/Project"
-        - required: [id, type, identifier, created, modified]
-
     Error:
       type: object
       properties:
@@ -242,3 +143,94 @@ components:
       required:
         - code
         - message
+
+    Project:
+      type: object
+      properties:
+        name:
+          type: array
+          items:
+            $ref: "#/components/schemas/Translation"
+        description:
+          type: array
+          items:
+            $ref: "#/components/schemas/Translation"
+        foundingDate:
+          type: string
+        dissolutionDate:
+          type: string
+        attributes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Attribute"
+        identifiers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Identifier"
+
+    Attribute:
+      type: object
+      properties:
+        scope:
+          type: string
+          minLength: 1
+        key:
+          type: string
+          minLength: 1
+        value:
+          type: string
+          minLength: 1
+      required: [scope, key, value]
+
+    Identifier:
+      type: object
+      properties:
+        type:
+          type: string
+          minLength: 1
+        value:
+          type: string
+          minLength: 1
+      required: [type, value]
+    
+    Translation:
+      type: object
+      properties:
+        lang:
+          type: string
+          minLength: 1
+        value:
+          type: string
+          minLength: 1
+      required: [lang, value]
+
+    ProjectRecord:
+      type: object
+      properties:
+        name:
+          type: array
+          items:
+            $ref: "#/components/schemas/Translation"
+        description:
+          type: array
+          items:
+            $ref: "#/components/schemas/Translation"
+        foundingDate:
+          type: string
+        dissolutionDate:
+          type: string
+        attributes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Attribute"
+        identifiers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Identifier"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required: [name, identifiers, createdAt, updatedAt]

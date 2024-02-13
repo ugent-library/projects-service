@@ -6,21 +6,22 @@ package db
 
 import (
 	"github.com/jackc/pgx/v5/pgtype"
-	models "github.com/ugent-library/projects-service/models"
+	"github.com/ugent-library/projects-service/models"
 )
 
 type Project struct {
-	Pk                        int64
-	ExternalPrimaryIdentifier string
-	ExternalIdentifiers       models.ExternalIdentifiers
-	Name                      models.TranslatedString
-	Description               models.TranslatedString
-	FoundingDate              pgtype.Text
-	DissolutionDate           pgtype.Text
-	Acronym                   models.Acronym
-	EuGrantCall               pgtype.Text
-	EuFundingProgramme        pgtype.Text
-	CreatedAt                 pgtype.Timestamptz
-	UpdatedAt                 pgtype.Timestamptz
-	Ts                        interface{}
+	ID              int64
+	Name            []models.Translation
+	Description     []models.Translation
+	FoundingDate    pgtype.Text
+	DissolutionDate pgtype.Text
+	Attributes      []models.Attribute
+	CreatedAt       pgtype.Timestamptz
+	UpdatedAt       pgtype.Timestamptz
+}
+
+type ProjectsIdentifier struct {
+	ProjectID int64
+	Type      string
+	Value     string
 }

@@ -15,19 +15,10 @@ var _ Handler = UnimplementedHandler{}
 
 // AddProject implements addProject operation.
 //
-// Add a single project.
+// Upsert a project.
 //
 // POST /add-project
-func (UnimplementedHandler) AddProject(ctx context.Context, req *AddProject) error {
-	return ht.ErrNotImplemented
-}
-
-// DeleteProject implements deleteProject operation.
-//
-// Delete a project.
-//
-// POST /delete-project
-func (UnimplementedHandler) DeleteProject(ctx context.Context, req *DeleteProjectRequest) error {
+func (UnimplementedHandler) AddProject(ctx context.Context, req *Project) error {
 	return ht.ErrNotImplemented
 }
 
@@ -36,16 +27,7 @@ func (UnimplementedHandler) DeleteProject(ctx context.Context, req *DeleteProjec
 // Get a project.
 //
 // POST /get-project
-func (UnimplementedHandler) GetProject(ctx context.Context, req *GetProjectRequest) (r GetProjectRes, _ error) {
-	return r, ht.ErrNotImplemented
-}
-
-// SuggestProjects implements suggestProjects operation.
-//
-// Search in projects.
-//
-// POST /suggest-projects
-func (UnimplementedHandler) SuggestProjects(ctx context.Context, req *SuggestProjectsRequest) (r *SuggestProjectsResponse, _ error) {
+func (UnimplementedHandler) GetProject(ctx context.Context, req *Identifier) (r GetProjectRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

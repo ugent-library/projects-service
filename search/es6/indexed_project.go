@@ -1,9 +1,5 @@
 package es6
 
-import (
-	"github.com/ugent-library/projects-service/models"
-)
-
 type projectDocument struct {
 	DateCreated          string   `json:"date_created,omitempty"`
 	DateUpdated          string   `json:"date_updated,omitempty"`
@@ -16,36 +12,36 @@ type projectDocument struct {
 	GismoID              []string `json:"gismo_id,omitempty"`
 }
 
-func NewProjectDocument(p *models.Project) *projectDocument {
-	//time.RFC3339 does not include milliseconds
-	const TimeFormatUTC = "2006-01-02T15:04:05.999Z"
+// func NewProjectDocument(p *models.Project) *projectDocument {
+// 	//time.RFC3339 does not include milliseconds
+// 	const TimeFormatUTC = "2006-01-02T15:04:05.999Z"
 
-	doc := &projectDocument{
-		DateCreated:          p.DateCreated.UTC().Format(TimeFormatUTC),
-		DateUpdated:          p.DateModified.UTC().Format(TimeFormatUTC),
-		EUCallID:             p.GrantCall,
-		EUFrameworkProgramme: p.FundingProgramme,
-	}
+// 	doc := &projectDocument{
+// 		DateCreated:          p.DateCreated.UTC().Format(TimeFormatUTC),
+// 		DateUpdated:          p.DateModified.UTC().Format(TimeFormatUTC),
+// 		EUCallID:             p.GrantCall,
+// 		EUFrameworkProgramme: p.FundingProgramme,
+// 	}
 
-	tmp := make([]string, len(p.Name))
-	for _, v := range p.Name {
-		tmp = append(tmp, v)
-	}
-	doc.Name = tmp
+// 	tmp := make([]string, len(p.Name))
+// 	for _, v := range p.Name {
+// 		tmp = append(tmp, v)
+// 	}
+// 	doc.Name = tmp
 
-	acrs := make([]string, len(p.Acronym))
-	acrs = append(acrs, p.Acronym...)
-	doc.Acronym = acrs
+// 	acrs := make([]string, len(p.Acronym))
+// 	acrs = append(acrs, p.Acronym...)
+// 	doc.Acronym = acrs
 
-	for k, v := range p.Identifier {
-		switch k {
-		case "CORDIS":
-			doc.CordisID = v
-		case "IWETO":
-			doc.IwetoID = v
-		case "GISMO":
-			doc.GismoID = v
-		}
-	}
-	return doc
-}
+// 	for k, v := range p.Identifier {
+// 		switch k {
+// 		case "CORDIS":
+// 			doc.CordisID = v
+// 		case "IWETO":
+// 			doc.IwetoID = v
+// 		case "GISMO":
+// 			doc.GismoID = v
+// 		}
+// 	}
+// 	return doc
+// }

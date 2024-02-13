@@ -49,6 +49,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		switch elem[0] {
 		case '/': // Prefix: "/"
+			origElem := elem
 			if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 				elem = elem[l:]
 			} else {
@@ -60,6 +61,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 			switch elem[0] {
 			case 'a': // Prefix: "add-project"
+				origElem := elem
 				if l := len("add-project"); len(elem) >= l && elem[0:l] == "add-project" {
 					elem = elem[l:]
 				} else {
@@ -77,25 +79,10 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					return
 				}
-			case 'd': // Prefix: "delete-project"
-				if l := len("delete-project"); len(elem) >= l && elem[0:l] == "delete-project" {
-					elem = elem[l:]
-				} else {
-					break
-				}
 
-				if len(elem) == 0 {
-					// Leaf node.
-					switch r.Method {
-					case "POST":
-						s.handleDeleteProjectRequest([0]string{}, elemIsEscaped, w, r)
-					default:
-						s.notAllowed(w, r, "POST")
-					}
-
-					return
-				}
+				elem = origElem
 			case 'g': // Prefix: "get-project"
+				origElem := elem
 				if l := len("get-project"); len(elem) >= l && elem[0:l] == "get-project" {
 					elem = elem[l:]
 				} else {
@@ -113,25 +100,11 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					return
 				}
-			case 's': // Prefix: "suggest-projects"
-				if l := len("suggest-projects"); len(elem) >= l && elem[0:l] == "suggest-projects" {
-					elem = elem[l:]
-				} else {
-					break
-				}
 
-				if len(elem) == 0 {
-					// Leaf node.
-					switch r.Method {
-					case "POST":
-						s.handleSuggestProjectsRequest([0]string{}, elemIsEscaped, w, r)
-					default:
-						s.notAllowed(w, r, "POST")
-					}
-
-					return
-				}
+				elem = origElem
 			}
+
+			elem = origElem
 		}
 	}
 	s.notFound(w, r)
@@ -213,6 +186,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 		}
 		switch elem[0] {
 		case '/': // Prefix: "/"
+			origElem := elem
 			if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 				elem = elem[l:]
 			} else {
@@ -224,6 +198,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 			}
 			switch elem[0] {
 			case 'a': // Prefix: "add-project"
+				origElem := elem
 				if l := len("add-project"); len(elem) >= l && elem[0:l] == "add-project" {
 					elem = elem[l:]
 				} else {
@@ -235,7 +210,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					case "POST":
 						// Leaf: AddProject
 						r.name = "AddProject"
-						r.summary = "Add a single project"
+						r.summary = "Upsert a project"
 						r.operationID = "addProject"
 						r.pathPattern = "/add-project"
 						r.args = args
@@ -245,29 +220,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						return
 					}
 				}
-			case 'd': // Prefix: "delete-project"
-				if l := len("delete-project"); len(elem) >= l && elem[0:l] == "delete-project" {
-					elem = elem[l:]
-				} else {
-					break
-				}
 
-				if len(elem) == 0 {
-					switch method {
-					case "POST":
-						// Leaf: DeleteProject
-						r.name = "DeleteProject"
-						r.summary = "Delete a project"
-						r.operationID = "deleteProject"
-						r.pathPattern = "/delete-project"
-						r.args = args
-						r.count = 0
-						return r, true
-					default:
-						return
-					}
-				}
+				elem = origElem
 			case 'g': // Prefix: "get-project"
+				origElem := elem
 				if l := len("get-project"); len(elem) >= l && elem[0:l] == "get-project" {
 					elem = elem[l:]
 				} else {
@@ -289,29 +245,11 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						return
 					}
 				}
-			case 's': // Prefix: "suggest-projects"
-				if l := len("suggest-projects"); len(elem) >= l && elem[0:l] == "suggest-projects" {
-					elem = elem[l:]
-				} else {
-					break
-				}
 
-				if len(elem) == 0 {
-					switch method {
-					case "POST":
-						// Leaf: SuggestProjects
-						r.name = "SuggestProjects"
-						r.summary = "Search in projects"
-						r.operationID = "suggestProjects"
-						r.pathPattern = "/suggest-projects"
-						r.args = args
-						r.count = 0
-						return r, true
-					default:
-						return
-					}
-				}
+				elem = origElem
 			}
+
+			elem = origElem
 		}
 	}
 	return r, false

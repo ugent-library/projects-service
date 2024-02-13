@@ -10,28 +10,16 @@ import (
 type Handler interface {
 	// AddProject implements addProject operation.
 	//
-	// Add a single project.
+	// Upsert a project.
 	//
 	// POST /add-project
-	AddProject(ctx context.Context, req *AddProject) error
-	// DeleteProject implements deleteProject operation.
-	//
-	// Delete a project.
-	//
-	// POST /delete-project
-	DeleteProject(ctx context.Context, req *DeleteProjectRequest) error
+	AddProject(ctx context.Context, req *Project) error
 	// GetProject implements getProject operation.
 	//
 	// Get a project.
 	//
 	// POST /get-project
-	GetProject(ctx context.Context, req *GetProjectRequest) (GetProjectRes, error)
-	// SuggestProjects implements suggestProjects operation.
-	//
-	// Search in projects.
-	//
-	// POST /suggest-projects
-	SuggestProjects(ctx context.Context, req *SuggestProjectsRequest) (*SuggestProjectsResponse, error)
+	GetProject(ctx context.Context, req *Identifier) (GetProjectRes, error)
 	// NewError creates *ErrorStatusCode from error returned by handler.
 	//
 	// Used for common default response.

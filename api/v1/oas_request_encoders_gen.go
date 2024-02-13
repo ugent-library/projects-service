@@ -12,21 +12,7 @@ import (
 )
 
 func encodeAddProjectRequest(
-	req *AddProject,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeDeleteProjectRequest(
-	req *DeleteProjectRequest,
+	req *Project,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -40,21 +26,7 @@ func encodeDeleteProjectRequest(
 }
 
 func encodeGetProjectRequest(
-	req *GetProjectRequest,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeSuggestProjectsRequest(
-	req *SuggestProjectsRequest,
+	req *Identifier,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

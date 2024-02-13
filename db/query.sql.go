@@ -9,21 +9,15 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5/pgtype"
-	models "github.com/ugent-library/projects-service/models"
+	"github.com/ugent-library/projects-service/models"
 )
 
 const betweenProjects = `-- name: BetweenProjects :many
-
-SELECT pk,
-    external_primary_identifier,
-    external_identifiers,
+SELECT
     name,
     description,
     founding_date,
     dissolution_date,
-    acronym,
-    eu_grant_call,
-    eu_funding_programme,
     created_at,
     updated_at
 FROM projects
@@ -37,18 +31,12 @@ type BetweenProjectsParams struct {
 }
 
 type BetweenProjectsRow struct {
-	Pk                        int64
-	ExternalPrimaryIdentifier string
-	ExternalIdentifiers       models.ExternalIdentifiers
-	Name                      models.TranslatedString
-	Description               models.TranslatedString
-	FoundingDate              pgtype.Text
-	DissolutionDate           pgtype.Text
-	Acronym                   models.Acronym
-	EuGrantCall               pgtype.Text
-	EuFundingProgramme        pgtype.Text
-	CreatedAt                 pgtype.Timestamptz
-	UpdatedAt                 pgtype.Timestamptz
+	Name            []models.Translation
+	Description     []models.Translation
+	FoundingDate    pgtype.Text
+	DissolutionDate pgtype.Text
+	CreatedAt       pgtype.Timestamptz
+	UpdatedAt       pgtype.Timestamptz
 }
 
 func (q *Queries) BetweenProjects(ctx context.Context, arg BetweenProjectsParams) ([]BetweenProjectsRow, error) {
@@ -61,16 +49,10 @@ func (q *Queries) BetweenProjects(ctx context.Context, arg BetweenProjectsParams
 	for rows.Next() {
 		var i BetweenProjectsRow
 		if err := rows.Scan(
-			&i.Pk,
-			&i.ExternalPrimaryIdentifier,
-			&i.ExternalIdentifiers,
 			&i.Name,
 			&i.Description,
 			&i.FoundingDate,
 			&i.DissolutionDate,
-			&i.Acronym,
-			&i.EuGrantCall,
-			&i.EuFundingProgramme,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -84,35 +66,93 @@ func (q *Queries) BetweenProjects(ctx context.Context, arg BetweenProjectsParams
 	return items, nil
 }
 
-const deleteProject = `-- name: DeleteProject :one
-DELETE FROM projects
-WHERE external_primary_identifier = $1
-RETURNING pk
-`
-
-func (q *Queries) DeleteProject(ctx context.Context, externalPrimaryIdentifier string) (int64, error) {
-	row := q.db.QueryRow(ctx, deleteProject, externalPrimaryIdentifier)
-	var pk int64
-	err := row.Scan(&pk)
-	return pk, err
-}
-
-const eachProject = `-- name: EachProject :many
-
-SELECT pk,
-    external_primary_identifier,
-    external_identifiers,
+const createProject = `-- name: CreateProject :one
+INSERT INTO projects(
     name,
     description,
     founding_date,
     dissolution_date,
-    acronym,
-    eu_grant_call,
-    eu_funding_programme,
+    attributes
+)
+VAlUES($1, $2, $3, $4, $5)
+RETURNING id
+`
+
+type CreateProjectParams struct {
+	Name            []models.Translation
+	Description     []models.Translation
+	FoundingDate    pgtype.Text
+	DissolutionDate pgtype.Text
+	Attributes      []models.Attribute
+}
+
+func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (int64, error) {
+	row := q.db.QueryRow(ctx, createProject,
+		arg.Name,
+		arg.Description,
+		arg.FoundingDate,
+		arg.DissolutionDate,
+		arg.Attributes,
+	)
+	var id int64
+	err := row.Scan(&id)
+	return id, err
+}
+
+const createProjectIdentifier = `-- name: CreateProjectIdentifier :exec
+INSERT INTO projects_identifiers(
+    project_id,
+    type,
+    value
+) VALUES ($1, $2, $3)
+`
+
+type CreateProjectIdentifierParams struct {
+	ProjectID int64
+	Type      string
+	Value     string
+}
+
+func (q *Queries) CreateProjectIdentifier(ctx context.Context, arg CreateProjectIdentifierParams) error {
+	_, err := q.db.Exec(ctx, createProjectIdentifier, arg.ProjectID, arg.Type, arg.Value)
+	return err
+}
+
+const deleteProject = `-- name: DeleteProject :exec
+DELETE FROM projects
+WHERE id = $1
+`
+
+func (q *Queries) DeleteProject(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, deleteProject, id)
+	return err
+}
+
+const deleteProjectIdentifier = `-- name: DeleteProjectIdentifier :exec
+DELETE FROM projects_identifiers
+WHERE type = $1 AND value = $2
+`
+
+type DeleteProjectIdentifierParams struct {
+	Type  string
+	Value string
+}
+
+func (q *Queries) DeleteProjectIdentifier(ctx context.Context, arg DeleteProjectIdentifierParams) error {
+	_, err := q.db.Exec(ctx, deleteProjectIdentifier, arg.Type, arg.Value)
+	return err
+}
+
+const eachProject = `-- name: EachProject :many
+SELECT 
+    name,
+    description,
+    founding_date,
+    dissolution_date,
     created_at,
     updated_at
 FROM projects
-ORDER BY pk ASC 
+ORDER BY id ASC 
 OFFSET $1
 LIMIT $2
 `
@@ -123,18 +163,12 @@ type EachProjectParams struct {
 }
 
 type EachProjectRow struct {
-	Pk                        int64
-	ExternalPrimaryIdentifier string
-	ExternalIdentifiers       models.ExternalIdentifiers
-	Name                      models.TranslatedString
-	Description               models.TranslatedString
-	FoundingDate              pgtype.Text
-	DissolutionDate           pgtype.Text
-	Acronym                   models.Acronym
-	EuGrantCall               pgtype.Text
-	EuFundingProgramme        pgtype.Text
-	CreatedAt                 pgtype.Timestamptz
-	UpdatedAt                 pgtype.Timestamptz
+	Name            []models.Translation
+	Description     []models.Translation
+	FoundingDate    pgtype.Text
+	DissolutionDate pgtype.Text
+	CreatedAt       pgtype.Timestamptz
+	UpdatedAt       pgtype.Timestamptz
 }
 
 func (q *Queries) EachProject(ctx context.Context, arg EachProjectParams) ([]EachProjectRow, error) {
@@ -147,16 +181,10 @@ func (q *Queries) EachProject(ctx context.Context, arg EachProjectParams) ([]Eac
 	for rows.Next() {
 		var i EachProjectRow
 		if err := rows.Scan(
-			&i.Pk,
-			&i.ExternalPrimaryIdentifier,
-			&i.ExternalIdentifiers,
 			&i.Name,
 			&i.Description,
 			&i.FoundingDate,
 			&i.DissolutionDate,
-			&i.Acronym,
-			&i.EuGrantCall,
-			&i.EuFundingProgramme,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -171,115 +199,47 @@ func (q *Queries) EachProject(ctx context.Context, arg EachProjectParams) ([]Eac
 }
 
 const getProject = `-- name: GetProject :one
-SELECT pk,
-    external_primary_identifier,
-    external_identifiers,
-    name,
-    description,
-    founding_date,
-    dissolution_date,
-    acronym,
-    eu_grant_call,
-    eu_funding_programme,
-    created_at,
-    updated_at
-FROM projects
-WHERE external_primary_identifier = $1
-LIMIT 1
+SELECT p.id, p.name, p.description, p.founding_date, p.dissolution_date, p.attributes, p.created_at, p.updated_at 
+FROM projects p, projects_identifiers pi
+WHERE p.id = pi.project_id AND pi.type = $1 AND pi.value = $2
 `
 
-type GetProjectRow struct {
-	Pk                        int64
-	ExternalPrimaryIdentifier string
-	ExternalIdentifiers       models.ExternalIdentifiers
-	Name                      models.TranslatedString
-	Description               models.TranslatedString
-	FoundingDate              pgtype.Text
-	DissolutionDate           pgtype.Text
-	Acronym                   models.Acronym
-	EuGrantCall               pgtype.Text
-	EuFundingProgramme        pgtype.Text
-	CreatedAt                 pgtype.Timestamptz
-	UpdatedAt                 pgtype.Timestamptz
+type GetProjectParams struct {
+	Type  string
+	Value string
 }
 
-func (q *Queries) GetProject(ctx context.Context, externalPrimaryIdentifier string) (GetProjectRow, error) {
-	row := q.db.QueryRow(ctx, getProject, externalPrimaryIdentifier)
-	var i GetProjectRow
+func (q *Queries) GetProject(ctx context.Context, arg GetProjectParams) (Project, error) {
+	row := q.db.QueryRow(ctx, getProject, arg.Type, arg.Value)
+	var i Project
 	err := row.Scan(
-		&i.Pk,
-		&i.ExternalPrimaryIdentifier,
-		&i.ExternalIdentifiers,
+		&i.ID,
 		&i.Name,
 		&i.Description,
 		&i.FoundingDate,
 		&i.DissolutionDate,
-		&i.Acronym,
-		&i.EuGrantCall,
-		&i.EuFundingProgramme,
+		&i.Attributes,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
 	return i, err
 }
 
-const suggestProjects = `-- name: SuggestProjects :many
-
-SELECT pk,
-    external_primary_identifier,
-    external_identifiers,
-    name,
-    description,
-    founding_date,
-    dissolution_date,
-    acronym,
-    eu_grant_call,
-    eu_funding_programme,
-    created_at,
-    updated_at
-FROM projects
-WHERE ts @@ to_tsquery('usimple', $1)
-LIMIT 20
+const getProjectIdentifiers = `-- name: GetProjectIdentifiers :many
+SELECT project_id, type, value FROM projects_identifiers
+WHERE project_id = $1
 `
 
-type SuggestProjectsRow struct {
-	Pk                        int64
-	ExternalPrimaryIdentifier string
-	ExternalIdentifiers       models.ExternalIdentifiers
-	Name                      models.TranslatedString
-	Description               models.TranslatedString
-	FoundingDate              pgtype.Text
-	DissolutionDate           pgtype.Text
-	Acronym                   models.Acronym
-	EuGrantCall               pgtype.Text
-	EuFundingProgramme        pgtype.Text
-	CreatedAt                 pgtype.Timestamptz
-	UpdatedAt                 pgtype.Timestamptz
-}
-
-func (q *Queries) SuggestProjects(ctx context.Context, toTsquery string) ([]SuggestProjectsRow, error) {
-	rows, err := q.db.Query(ctx, suggestProjects, toTsquery)
+func (q *Queries) GetProjectIdentifiers(ctx context.Context, projectID int64) ([]ProjectsIdentifier, error) {
+	rows, err := q.db.Query(ctx, getProjectIdentifiers, projectID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []SuggestProjectsRow
+	var items []ProjectsIdentifier
 	for rows.Next() {
-		var i SuggestProjectsRow
-		if err := rows.Scan(
-			&i.Pk,
-			&i.ExternalPrimaryIdentifier,
-			&i.ExternalIdentifiers,
-			&i.Name,
-			&i.Description,
-			&i.FoundingDate,
-			&i.DissolutionDate,
-			&i.Acronym,
-			&i.EuGrantCall,
-			&i.EuFundingProgramme,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-		); err != nil {
+		var i ProjectsIdentifier
+		if err := rows.Scan(&i.ProjectID, &i.Type, &i.Value); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -290,69 +250,35 @@ func (q *Queries) SuggestProjects(ctx context.Context, toTsquery string) ([]Sugg
 	return items, nil
 }
 
-const upsertProject = `-- name: UpsertProject :exec
-INSERT INTO projects(
-        external_primary_identifier,
-        external_identifiers,
-        name,
-        description,
-        founding_date,
-        dissolution_date,
-        acronym,
-        eu_grant_call,
-        eu_funding_programme,
-        created_at,
-        updated_at
-    )
-VALUES(
-        $1,
-        $2,
-        $3,
-        $4,
-        $5,
-        $6,
-        $7,
-        $8,
-        $9,
-        current_timestamp,
-        current_timestamp
-    ) ON CONFLICT (external_primary_identifier) DO
-UPDATE
-SET external_identifiers = excluded.external_identifiers,
-    name = excluded.name,
-    description = excluded.description,
-    founding_date = excluded.founding_date,
-    dissolution_date = excluded.dissolution_date,
-    acronym = excluded.acronym,
-    eu_grant_call = excluded.eu_grant_call,
-    eu_funding_programme = excluded.eu_funding_programme,
-    created_at = projects.created_at,
-    updated_at = current_timestamp
+const updateProject = `-- name: UpdateProject :exec
+UPDATE projects SET (
+    name,
+    description,
+    founding_date,
+    dissolution_date,
+    attributes,
+    updated_at
+) = ($2, $3, $4, $5, $6, CURRENT_TIMESTAMP)
+WHERE id = $1
 `
 
-type UpsertProjectParams struct {
-	ExternalPrimaryIdentifier string
-	ExternalIdentifiers       models.ExternalIdentifiers
-	Name                      models.TranslatedString
-	Description               models.TranslatedString
-	FoundingDate              pgtype.Text
-	DissolutionDate           pgtype.Text
-	Acronym                   models.Acronym
-	EuGrantCall               pgtype.Text
-	EuFundingProgramme        pgtype.Text
+type UpdateProjectParams struct {
+	ID              int64
+	Name            []models.Translation
+	Description     []models.Translation
+	FoundingDate    pgtype.Text
+	DissolutionDate pgtype.Text
+	Attributes      []models.Attribute
 }
 
-func (q *Queries) UpsertProject(ctx context.Context, arg UpsertProjectParams) error {
-	_, err := q.db.Exec(ctx, upsertProject,
-		arg.ExternalPrimaryIdentifier,
-		arg.ExternalIdentifiers,
+func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) error {
+	_, err := q.db.Exec(ctx, updateProject,
+		arg.ID,
 		arg.Name,
 		arg.Description,
 		arg.FoundingDate,
 		arg.DissolutionDate,
-		arg.Acronym,
-		arg.EuGrantCall,
-		arg.EuFundingProgramme,
+		arg.Attributes,
 	)
 	return err
 }

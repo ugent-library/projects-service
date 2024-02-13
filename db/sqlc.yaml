@@ -9,23 +9,18 @@ sql:
         out: "."
         sql_package: "pgx/v5"
         overrides:
-          - column: "projects.external_identifiers"
-            go_type:
-              import: "github.com/ugent-library/projects-service/models"
-              package: "models"
-              type: "ExternalIdentifiers"
           - column: "projects.name"
             go_type:
               import: "github.com/ugent-library/projects-service/models"
-              package: "models"
-              type: "TranslatedString"
+              type: "Translation"
+              slice: true
           - column: "projects.description"
             go_type:
               import: "github.com/ugent-library/projects-service/models"
-              package: "models"
-              type: "TranslatedString"
-          - column: "projects.acronym"
+              type: "Translation"
+              slice: true
+          - column: "projects.attributes"
             go_type:
               import: "github.com/ugent-library/projects-service/models"
-              package: "models"
-              type: "Acronym"
+              type: "Attribute"
+              slice: true
