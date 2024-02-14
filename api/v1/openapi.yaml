@@ -32,6 +32,27 @@ paths:
         default:
           $ref: "#/components/responses/Error"
 
+  "/search-projects":
+    post:
+      summary: "Search projects"
+      description: "Search projects"
+      operationId: "searchProjects"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchProjectsRequest"
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectHits"
+        default:
+          $ref: "#/components/responses/Error"  
+
   "/add-project":
     post:
       summary: Upsert a project
@@ -48,68 +69,6 @@ paths:
           description: Success
         default:
           $ref: "#/components/responses/Error"
-
-  # /get-project:
-  #   post:
-  #     summary: Get a project
-  #     description: Get a project
-  #     operationId: getProject
-  #     requestBody:
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/GetProjectRequest'
-  #       required: true
-  #     responses:
-  #       '200':
-  #         description: Success
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: "#/components/schemas/GetProjectResponse"
-  #       '404':
-  #         description: Project not found
-  #         $ref: "#/components/responses/Error"
-  #       default:
-  #         $ref: "#/components/responses/Error"
-
-  # /delete-project:
-  #   post:
-  #     summary: Delete a project
-  #     description: Delete a project
-  #     operationId: deleteProject
-  #     requestBody:
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/DeleteProjectRequest'
-  #       required: true
-  #     responses:
-  #       '200':
-  #         description: Success
-  #       default:
-  #         $ref: '#/components/responses/Error'
-
-  # /suggest-projects:
-  #   post:
-  #     summary: "Search in projects"
-  #     description: "Search in projects"
-  #     operationId: "suggestProjects"
-  #     requestBody:
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: "#/components/schemas/SuggestProjectsRequest"
-  #       required: true
-  #     responses:
-  #       '200':
-  #         description: Success
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: "#/components/schemas/SuggestProjectsResponse"
-  #       default:
-  #         $ref: "#/components/responses/Error"
 
 
 security:
@@ -144,6 +103,13 @@ components:
         - code
         - message
 
+    SearchProjectsRequest:
+      type: object
+      properties:
+        query:
+          type: string
+      required: [query]
+
     Project:
       type: object
       properties:
@@ -167,6 +133,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Identifier"
+    
+    ProjectHits:
+      type: object
+      properties:
+        hits:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProjectRecord"
+      required: [hits]
 
     Attribute:
       type: object

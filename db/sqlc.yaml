@@ -24,3 +24,8 @@ sql:
               import: "github.com/ugent-library/projects-service/models"
               type: "Attribute"
               slice: true
+          - column: "projects.identifiers"
+            go_type:
+              import: "github.com/ugent-library/projects-service/models"
+              type: "Identifier"
+              slice: true

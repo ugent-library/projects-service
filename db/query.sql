@@ -45,17 +45,24 @@ DELETE FROM projects_identifiers
 WHERE type = $1 AND value = $2;
 
 -- name: EachProject :many
-SELECT 
-    name,
-    description,
-    founding_date,
-    dissolution_date,
-    created_at,
-    updated_at
-FROM projects
-ORDER BY id ASC 
-OFFSET $1
-LIMIT $2;
+SELECT p.*, json_agg(json_build_object('type', pi.type, 'value', pi.value)) AS identifiers
+FROM projects p
+LEFT JOIN projects_identifiers pi ON p.id = pi.project_id
+WHERE p.id > $1
+GROUP BY p.id LIMIT $2;
+
+-- -- name: EachProject :many
+-- SELECT 
+--     name,
+--     description,
+--     founding_date,
+--     dissolution_date,
+--     created_at,
+--     updated_at
+-- FROM projects
+-- ORDER BY id ASC 
+-- OFFSET $1
+-- LIMIT $2;
 
 -- name: BetweenProjects :many
 SELECT

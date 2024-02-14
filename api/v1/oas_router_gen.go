@@ -102,6 +102,27 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				}
 
 				elem = origElem
+			case 's': // Prefix: "search-projects"
+				origElem := elem
+				if l := len("search-projects"); len(elem) >= l && elem[0:l] == "search-projects" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "POST":
+						s.handleSearchProjectsRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "POST")
+					}
+
+					return
+				}
+
+				elem = origElem
 			}
 
 			elem = origElem
@@ -238,6 +259,31 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.summary = "Get a project"
 						r.operationID = "getProject"
 						r.pathPattern = "/get-project"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+
+				elem = origElem
+			case 's': // Prefix: "search-projects"
+				origElem := elem
+				if l := len("search-projects"); len(elem) >= l && elem[0:l] == "search-projects" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch method {
+					case "POST":
+						// Leaf: SearchProjects
+						r.name = "SearchProjects"
+						r.summary = "Search projects"
+						r.operationID = "searchProjects"
+						r.pathPattern = "/search-projects"
 						r.args = args
 						r.count = 0
 						return r, true

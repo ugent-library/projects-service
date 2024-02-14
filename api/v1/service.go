@@ -4,19 +4,20 @@ import (
 	"context"
 
 	"github.com/go-faster/errors"
+	"github.com/ugent-library/projects-service/indexes"
 	"github.com/ugent-library/projects-service/models"
 	"github.com/ugent-library/projects-service/repositories"
 )
 
 type Service struct {
-	repo *repositories.Repo
-	// searcher search.Searcher
+	repo  *repositories.Repo
+	index *indexes.Index
 }
 
-func NewService(repo *repositories.Repo) *Service {
+func NewService(repo *repositories.Repo, index *indexes.Index) *Service {
 	return &Service{
-		repo: repo,
-		//	searcher: searcher,
+		repo:  repo,
+		index: index,
 	}
 }
 
@@ -38,6 +39,20 @@ func (s *Service) GetProject(ctx context.Context, id *Identifier) (GetProjectRes
 	res := projectRecordToAPI(p)
 
 	return &res, nil
+}
+
+func (s *Service) SearchProjects(ctx context.Context, req *SearchProjectsRequest) (*ProjectHits, error) {
+	hits, err := s.index.SearchProjects(ctx, req.Query)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &ProjectHits{Hits: make([]ProjectRecord, len(hits))}
+	for i, pr := range hits {
+		res.Hits[i] = projectRecordToAPI(pr)
+	}
+
+	return res, nil
 }
 
 func (s *Service) AddProject(ctx context.Context, p *Project) error {

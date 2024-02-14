@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -23,6 +24,10 @@ type ProjectRecord struct {
 type Identifier struct {
 	Type  string `json:"type,omitempty"`
 	Value string `json:"value,omitempty"`
+}
+
+func (i *Identifier) String() string {
+	return fmt.Sprintf("%s:%s", i.Type, i.Value)
 }
 
 type Attribute struct {

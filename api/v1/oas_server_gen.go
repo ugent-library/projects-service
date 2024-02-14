@@ -20,6 +20,12 @@ type Handler interface {
 	//
 	// POST /get-project
 	GetProject(ctx context.Context, req *Identifier) (GetProjectRes, error)
+	// SearchProjects implements searchProjects operation.
+	//
+	// Search projects.
+	//
+	// POST /search-projects
+	SearchProjects(ctx context.Context, req *SearchProjectsRequest) (*ProjectHits, error)
 	// NewError creates *ErrorStatusCode from error returned by handler.
 	//
 	// Used for common default response.

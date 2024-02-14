@@ -261,6 +261,21 @@ func (s *Project) SetIdentifiers(val []Identifier) {
 	s.Identifiers = val
 }
 
+// Ref: #/components/schemas/ProjectHits
+type ProjectHits struct {
+	Hits []ProjectRecord `json:"hits"`
+}
+
+// GetHits returns the value of Hits.
+func (s *ProjectHits) GetHits() []ProjectRecord {
+	return s.Hits
+}
+
+// SetHits sets the value of Hits.
+func (s *ProjectHits) SetHits(val []ProjectRecord) {
+	s.Hits = val
+}
+
 // Ref: #/components/schemas/ProjectRecord
 type ProjectRecord struct {
 	Name            []Translation `json:"name"`
@@ -354,6 +369,21 @@ func (s *ProjectRecord) SetUpdatedAt(val time.Time) {
 }
 
 func (*ProjectRecord) getProjectRes() {}
+
+// Ref: #/components/schemas/SearchProjectsRequest
+type SearchProjectsRequest struct {
+	Query string `json:"query"`
+}
+
+// GetQuery returns the value of Query.
+func (s *SearchProjectsRequest) GetQuery() string {
+	return s.Query
+}
+
+// SetQuery sets the value of Query.
+func (s *SearchProjectsRequest) SetQuery(val string) {
+	s.Query = val
+}
 
 // Ref: #/components/schemas/Translation
 type Translation struct {

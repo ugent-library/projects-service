@@ -31,6 +31,15 @@ func (UnimplementedHandler) GetProject(ctx context.Context, req *Identifier) (r 
 	return r, ht.ErrNotImplemented
 }
 
+// SearchProjects implements searchProjects operation.
+//
+// Search projects.
+//
+// POST /search-projects
+func (UnimplementedHandler) SearchProjects(ctx context.Context, req *SearchProjectsRequest) (r *ProjectHits, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // NewError creates *ErrorStatusCode from error returned by handler.
 //
 // Used for common default response.

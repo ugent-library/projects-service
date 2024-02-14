@@ -9,12 +9,17 @@ import (
 	"github.com/alexliesenfeld/health"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/ory/graceful"
+	"github.com/riverqueue/river"
+	"github.com/riverqueue/river/riverdriver/riverpgxv5"
 	slogchi "github.com/samber/slog-chi"
 	"github.com/spf13/cobra"
 	"github.com/swaggest/swgui/v5emb"
 	"github.com/ugent-library/httpx/render"
 	"github.com/ugent-library/projects-service/api/v1"
+	"github.com/ugent-library/projects-service/indexes"
+	"github.com/ugent-library/projects-service/jobs"
 	"github.com/ugent-library/projects-service/repositories"
 )
 
@@ -37,25 +42,61 @@ var serverCmd = &cobra.Command{
 	Use:   "server",
 	Short: "Start the server",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		ctx := context.Background()
+
 		// setup repo
-		repo, err := repositories.New(repositories.Config{
-			Conn: config.Repo.Conn,
+		pool, err := pgxpool.New(ctx, config.Repo.Conn)
+		if err != nil {
+			return err
+		}
+
+		repo, err := repositories.New(repositories.RepoConfig{
+			Conn: pool,
 		})
 		if err != nil {
 			return err
 		}
 
-		// setup searcher
-		// searcher, err := es6.NewSearcher(es6.Config{
-		// 	Conn:  strings.Split(config.Search.Conn, ","),
-		// 	Index: config.Search.Index,
-		// })
-		// if err != nil {
-		// 	return err
-		// }
+		// Setup index
+		index, err := indexes.NewIndex(indexes.IndexConfig{
+			Conn:      config.Index.Conn,
+			Name:      config.Index.Name,
+			Retention: config.Index.Retention,
+			Logger:    logger,
+		})
+		if err != nil {
+			return err
+		}
+
+		// start job server
+		riverWorkers := river.NewWorkers()
+		river.AddWorker(riverWorkers, jobs.NewReindexProjectsWorker(repo, index))
+		riverClient, err := river.NewClient(riverpgxv5.New(pool), &river.Config{
+			Logger:  logger,
+			Workers: riverWorkers,
+			Queues: map[string]river.QueueConfig{
+				river.QueueDefault: {MaxWorkers: 100},
+			},
+			PeriodicJobs: []*river.PeriodicJob{
+				river.NewPeriodicJob(
+					river.PeriodicInterval(30*time.Second),
+					func() (river.JobArgs, *river.InsertOpts) {
+						return jobs.ReindexProjectsArgs{}, nil
+					},
+					&river.PeriodicJobOpts{RunOnStart: true},
+				),
+			},
+		})
+		if err != nil {
+			return err
+		}
+		if err := riverClient.Start(ctx); err != nil {
+			return err
+		}
+		defer riverClient.Stop(ctx)
 
 		// setup api
-		apiServer, err := api.NewServer(api.NewService(repo), &apiSecurityHandler{APIKey: config.APIKey})
+		apiServer, err := api.NewServer(api.NewService(repo, index), &apiSecurityHandler{APIKey: config.APIKey})
 		if err != nil {
 			return err
 		}
@@ -103,7 +144,7 @@ var serverCmd = &cobra.Command{
 			ReadTimeout:  10 * time.Second,
 			WriteTimeout: 10 * time.Second,
 		})
-		logger.Infof("starting server at %s", config.Addr())
+		logger.Info("starting server", "addr", config.Addr())
 		if err := graceful.Graceful(server.ListenAndServe, server.Shutdown); err != nil {
 			return err
 		}

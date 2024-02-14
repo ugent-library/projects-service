@@ -7,7 +7,6 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
-	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib"
 
 	"github.com/ugent-library/projects-service/db"
@@ -18,37 +17,22 @@ var ErrNotFound = errors.New("not found")
 var ErrConstraint = errors.New("something went wrong")
 
 type Repo struct {
-	config  Config
-	db      *pgxpool.Pool
+	conn    Conn
 	queries *db.Queries
 }
 
-type Config struct {
-	Conn string
+type RepoConfig struct {
+	Conn Conn
 }
 
-func New(c Config) (*Repo, error) {
-	ctx := context.Background()
-
-	pool, err := pgxpool.New(ctx, c.Conn)
-	if err != nil {
-		return nil, err
-	}
-
+func New(c RepoConfig) (*Repo, error) {
 	return &Repo{
-		config:  c,
-		db:      pool,
-		queries: db.New(pool),
+		conn:    c.Conn,
+		queries: db.New(c.Conn),
 	}, nil
 }
 
 func (r *Repo) GetProject(ctx context.Context, id models.Identifier) (*models.ProjectRecord, error) {
-	tx, err := r.db.Begin(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer tx.Rollback(ctx)
-
 	project, err := r.queries.GetProject(ctx, db.GetProjectParams(id))
 	if err == pgx.ErrNoRows {
 		return nil, ErrNotFound
@@ -79,11 +63,11 @@ func (r *Repo) GetProject(ctx context.Context, id models.Identifier) (*models.Pr
 		p.Project.Identifiers[i] = models.Identifier{Type: id.Type, Value: id.Value}
 	}
 
-	return p, tx.Commit(ctx)
+	return p, nil
 }
 
 func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
-	tx, err := r.db.Begin(ctx)
+	tx, err := r.conn.Begin(ctx)
 	if err != nil {
 		return err
 	}
@@ -190,6 +174,38 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 	}
 
 	return tx.Commit(ctx)
+}
+
+func (r *Repo) EachProject(ctx context.Context, fn func(*models.ProjectRecord) bool) error {
+	id := "0"
+
+	for {
+		rows, err := r.queries.EachProject(ctx, db.EachProjectParams{ID: id, Limit: 100})
+		if err != nil {
+			return err
+		}
+
+		if len(rows) <= 0 {
+			break
+		}
+
+		for _, row := range rows {
+			p := &models.ProjectRecord{
+				Project: models.Project{
+					Name:            row.Name,
+					Description:     row.Description,
+					FoundingDate:    row.FoundingDate.String,
+					DissolutionDate: row.DissolutionDate.String,
+					Attributes:      row.Attributes,
+					Identifiers:     row.Identifiers,
+				},
+				CreatedAt: row.CreatedAt.Time,
+				UpdatedAt: row.UpdatedAt.Time,
+			}
+		}
+	}
+
+	return nil
 }
 
 // func (r *Repo) EachProject(ctx context.Context, fn func(p *models.Project) bool) error {

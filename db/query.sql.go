@@ -13,6 +13,7 @@ import (
 )
 
 const betweenProjects = `-- name: BetweenProjects :many
+
 SELECT
     name,
     description,
@@ -39,6 +40,20 @@ type BetweenProjectsRow struct {
 	UpdatedAt       pgtype.Timestamptz
 }
 
+// -- name: EachProject :many
+// SELECT
+//
+//	name,
+//	description,
+//	founding_date,
+//	dissolution_date,
+//	created_at,
+//	updated_at
+//
+// FROM projects
+// ORDER BY id ASC
+// OFFSET $1
+// LIMIT $2;
 func (q *Queries) BetweenProjects(ctx context.Context, arg BetweenProjectsParams) ([]BetweenProjectsRow, error) {
 	rows, err := q.db.Query(ctx, betweenProjects, arg.CreatedAt, arg.CreatedAt_2)
 	if err != nil {
@@ -144,35 +159,32 @@ func (q *Queries) DeleteProjectIdentifier(ctx context.Context, arg DeleteProject
 }
 
 const eachProject = `-- name: EachProject :many
-SELECT 
-    name,
-    description,
-    founding_date,
-    dissolution_date,
-    created_at,
-    updated_at
-FROM projects
-ORDER BY id ASC 
-OFFSET $1
-LIMIT $2
+SELECT p.id, p.name, p.description, p.founding_date, p.dissolution_date, p.attributes, p.created_at, p.updated_at, json_agg(json_build_object('type', pi.type, 'value', pi.value)) AS identifiers
+FROM projects p
+LEFT JOIN projects_identifiers pi ON p.id = pi.project_id
+WHERE p.id > $1
+GROUP BY p.id LIMIT $2
 `
 
 type EachProjectParams struct {
-	Offset int32
-	Limit  int32
+	ID    int64
+	Limit int32
 }
 
 type EachProjectRow struct {
+	ID              int64
 	Name            []models.Translation
 	Description     []models.Translation
 	FoundingDate    pgtype.Text
 	DissolutionDate pgtype.Text
+	Attributes      []models.Attribute
 	CreatedAt       pgtype.Timestamptz
 	UpdatedAt       pgtype.Timestamptz
+	Identifiers     []byte
 }
 
 func (q *Queries) EachProject(ctx context.Context, arg EachProjectParams) ([]EachProjectRow, error) {
-	rows, err := q.db.Query(ctx, eachProject, arg.Offset, arg.Limit)
+	rows, err := q.db.Query(ctx, eachProject, arg.ID, arg.Limit)
 	if err != nil {
 		return nil, err
 	}
@@ -181,12 +193,15 @@ func (q *Queries) EachProject(ctx context.Context, arg EachProjectParams) ([]Eac
 	for rows.Next() {
 		var i EachProjectRow
 		if err := rows.Scan(
+			&i.ID,
 			&i.Name,
 			&i.Description,
 			&i.FoundingDate,
 			&i.DissolutionDate,
+			&i.Attributes,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Identifiers,
 		); err != nil {
 			return nil, err
 		}
