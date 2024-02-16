@@ -79,7 +79,7 @@ var serverCmd = &cobra.Command{
 			},
 			PeriodicJobs: []*river.PeriodicJob{
 				river.NewPeriodicJob(
-					river.PeriodicInterval(30*time.Second),
+					river.PeriodicInterval(30*time.Minute),
 					func() (river.JobArgs, *river.InsertOpts) {
 						return jobs.ReindexProjectsArgs{}, nil
 					},
