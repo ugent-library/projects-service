@@ -10,8 +10,10 @@ import (
 	"io"
 	"log/slog"
 	"strings"
+	"time"
 
 	"github.com/elastic/go-elasticsearch/v6"
+	"github.com/elastic/go-elasticsearch/v6/esutil"
 	index "github.com/ugent-library/index/es6"
 	"github.com/ugent-library/projects-service/models"
 )
@@ -19,20 +21,24 @@ import (
 //go:embed *.json
 var settingsFS embed.FS
 
+var defaultFlushInterval = 1 * time.Second
+
 type ProjectIter func(context.Context, func(*models.ProjectRecord) bool) error
 
 type IndexConfig struct {
-	Conn      string
-	Name      string
-	Retention int
-	Logger    *slog.Logger
+	Conn          string
+	Name          string
+	Retention     int
+	Logger        *slog.Logger
+	FlushInterval time.Duration
 }
 
 type Index struct {
-	client    *elasticsearch.Client
-	alias     string
-	retention int
-	logger    *slog.Logger
+	client        *elasticsearch.Client
+	alias         string
+	retention     int
+	flushInterval time.Duration
+	logger        *slog.Logger
 }
 
 func NewIndex(c IndexConfig) (*Index, error) {
@@ -44,10 +50,11 @@ func NewIndex(c IndexConfig) (*Index, error) {
 	}
 
 	return &Index{
-		client:    client,
-		alias:     c.Name,
-		retention: c.Retention,
-		logger:    c.Logger,
+		client:        client,
+		alias:         c.Name,
+		retention:     c.Retention,
+		flushInterval: c.FlushInterval,
+		logger:        c.Logger,
 	}, nil
 }
 
@@ -150,19 +157,23 @@ func (idx *Index) ReindexProjects(ctx context.Context, iter ProjectIter) error {
 		return err
 	}
 
-	indexer, err := index.NewIndexer(idx.client, switcher.Name(), index.IndexerConfig{
-		OnError: func(err error) {
-			idx.logger.ErrorContext(ctx, "index error", slog.Any("error", err))
+	if idx.flushInterval == 0 {
+		idx.flushInterval = defaultFlushInterval
+	}
+
+	bi, err := esutil.NewBulkIndexer(esutil.BulkIndexerConfig{
+		Client:        idx.client,
+		Index:         switcher.Name(),
+		FlushInterval: idx.flushInterval,
+		Refresh:       "true",
+		OnError: func(ctx context.Context, err error) {
+			idx.logger.ErrorContext(ctx, "index error", slog.Any("error", fmt.Errorf("index error: %w", err)))
 		},
-		OnIndexFailure: func(docID string, err error) {
-			idx.logger.ErrorContext(ctx, "index failure", slog.String("doc_id", docID), slog.Any("error", err))
-		},
-		OnIndexSuccess: func(docID string) {},
 	})
 	if err != nil {
 		return err
 	}
-	defer indexer.Close(ctx)
+	defer bi.Close(ctx)
 
 	var indexErr error
 	err = iter(ctx, func(p *models.ProjectRecord) bool {
@@ -171,7 +182,26 @@ func (idx *Index) ReindexProjects(ctx context.Context, iter ProjectIter) error {
 			indexErr = err
 			return false
 		}
-		indexErr = indexer.Index(ctx, p.Identifiers[0].String(), doc)
+
+		indexErr := bi.Add(
+			ctx,
+			esutil.BulkIndexerItem{
+				Action:       "index",
+				DocumentID:   p.Identifiers[0].String(),
+				DocumentType: "_doc",
+				Body:         bytes.NewReader(doc),
+				OnFailure: func(ctx context.Context, item esutil.BulkIndexerItem, res esutil.BulkIndexerResponseItem, err error) {
+					if err != nil {
+						err = fmt.Errorf("index error: %v", err)
+					} else {
+						err = fmt.Errorf("index error: %s: %s", res.Error.Type, res.Error.Reason)
+					}
+
+					idx.logger.ErrorContext(ctx, "index failure", slog.String("doc_id", item.DocumentID), slog.Any("error", err))
+				},
+			},
+		)
+
 		return indexErr == nil
 	})
 	if err != nil {
