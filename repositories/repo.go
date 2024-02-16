@@ -34,35 +34,15 @@ func New(c RepoConfig) (*Repo, error) {
 }
 
 func (r *Repo) GetProject(ctx context.Context, id models.Identifier) (*models.ProjectRecord, error) {
-	project, err := r.queries.GetProject(ctx, db.GetProjectParams(id))
+	var row projectRow
+	err := pgxscan.Get(ctx, r.conn, &row, getProjectQuery, id.Type, id.Value)
 	if err == pgx.ErrNoRows {
 		return nil, ErrNotFound
 	}
 	if err != nil {
 		return nil, err
 	}
-
-	ids, err := r.queries.GetProjectIdentifiers(ctx, project.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	p := &models.ProjectRecord{
-		Name:            project.Name,
-		Description:     project.Description,
-		FoundingDate:    project.FoundingDate.String,
-		DissolutionDate: project.DissolutionDate.String,
-		Attributes:      project.Attributes,
-		Identifiers:     make([]models.Identifier, len(ids)),
-		CreatedAt:       project.CreatedAt.Time,
-		UpdatedAt:       project.UpdatedAt.Time,
-	}
-
-	for i, id := range ids {
-		p.Identifiers[i] = models.Identifier{Type: id.Type, Value: id.Value}
-	}
-
-	return p, nil
+	return row.toProjectRecord(), nil
 }
 
 func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {

@@ -41,6 +41,18 @@ func (row projectRow) toProjectRecord() *models.ProjectRecord {
 	}
 }
 
+const getProjectQuery = `
+WITH identifiers AS (
+	SELECT pi1.*
+	FROM projects_identifiers pi1
+	LEFT JOIN projects_identifiers pi2 ON pi1.project_id = pi2.project_id
+	WHERE pi2.type = $1 AND pi2.value = $2	
+)
+SELECT p.*, json_agg(json_build_object('type', i.type, 'value', i.value)) AS identifiers
+FROM projects p, identifiers i WHERE p.id = i.project_id
+GROUP BY p.id;
+`
+
 const getEachProjectQuery = `
 SELECT p.*, json_agg(json_build_object('type', pi.type, 'value', pi.value)) AS identifiers
 FROM projects p

@@ -134,5 +134,7 @@ func projectRecordToAPI(p *models.ProjectRecord) ProjectRecord {
 		DissolutionDate: NewOptString(p.DissolutionDate),
 		Attributes:      attributes,
 		Identifiers:     identifiers,
+		CreatedAt:       p.CreatedAt,
+		UpdatedAt:       p.UpdatedAt,
 	}
 }
