@@ -5,6 +5,7 @@ import (
 	"errors"
 	"slices"
 
+	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -47,20 +48,18 @@ func (r *Repo) GetProject(ctx context.Context, id models.Identifier) (*models.Pr
 	}
 
 	p := &models.ProjectRecord{
-		Project: models.Project{
-			Name:            project.Name,
-			Description:     project.Description,
-			FoundingDate:    project.FoundingDate.String,
-			DissolutionDate: project.DissolutionDate.String,
-			Attributes:      project.Attributes,
-			Identifiers:     make([]models.Identifier, len(ids)),
-		},
-		CreatedAt: project.CreatedAt.Time,
-		UpdatedAt: project.UpdatedAt.Time,
+		Name:            project.Name,
+		Description:     project.Description,
+		FoundingDate:    project.FoundingDate.String,
+		DissolutionDate: project.DissolutionDate.String,
+		Attributes:      project.Attributes,
+		Identifiers:     make([]models.Identifier, len(ids)),
+		CreatedAt:       project.CreatedAt.Time,
+		UpdatedAt:       project.UpdatedAt.Time,
 	}
 
 	for i, id := range ids {
-		p.Project.Identifiers[i] = models.Identifier{Type: id.Type, Value: id.Value}
+		p.Identifiers[i] = models.Identifier{Type: id.Type, Value: id.Value}
 	}
 
 	return p, nil
@@ -177,103 +176,23 @@ func (r *Repo) AddProject(ctx context.Context, p *models.Project) error {
 }
 
 func (r *Repo) EachProject(ctx context.Context, fn func(*models.ProjectRecord) bool) error {
-	id := "0"
+	rows, err := r.conn.Query(ctx, getEachProjectQuery)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
 
-	for {
-		rows, err := r.queries.EachProject(ctx, db.EachProjectParams{ID: id, Limit: 100})
-		if err != nil {
+	rs := pgxscan.NewRowScanner(rows)
+	for rows.Next() {
+		var row projectRow
+		if err := rs.Scan(&row); err != nil {
 			return err
 		}
 
-		if len(rows) <= 0 {
+		if ok := fn(row.toProjectRecord()); !ok {
 			break
-		}
-
-		for _, row := range rows {
-			p := &models.ProjectRecord{
-				Project: models.Project{
-					Name:            row.Name,
-					Description:     row.Description,
-					FoundingDate:    row.FoundingDate.String,
-					DissolutionDate: row.DissolutionDate.String,
-					Attributes:      row.Attributes,
-					Identifiers:     row.Identifiers,
-				},
-				CreatedAt: row.CreatedAt.Time,
-				UpdatedAt: row.UpdatedAt.Time,
-			}
 		}
 	}
 
-	return nil
+	return rows.Err()
 }
-
-// func (r *Repo) EachProject(ctx context.Context, fn func(p *models.Project) bool) error {
-// 	var page int32
-// 	var size int32
-
-// 	page = 0
-// 	size = 1000
-
-// 	for {
-// 		rows, err := r.queries.EachProject(ctx, db.EachProjectParams{Offset: page, Limit: size})
-// 		if err != nil {
-// 			return err
-// 		}
-
-// 		if len(rows) <= 0 {
-// 			break
-// 		}
-
-// 		for _, row := range rows {
-// 			pr := &models.Project{
-// 				ID:              row.ExternalPrimaryIdentifier,
-// 				Name:            row.Name,
-// 				Description:     row.Description,
-// 				Identifier:      row.ExternalIdentifiers,
-// 				FoundingDate:    row.FoundingDate.String,
-// 				DissolutionDate: row.DissolutionDate.String,
-// 				Acronym:         row.Acronym,
-// 				GrantCall:       row.EuGrantCall.String,
-// 				DateCreated:     row.CreatedAt.Time,
-// 				DateModified:    row.UpdatedAt.Time,
-// 			}
-
-// 			fn(pr)
-// 		}
-
-// 		page = page + size
-// 	}
-
-// 	return nil
-// }
-
-// func (r *Repo) EachProjectBetween(ctx context.Context, t1, t2 time.Time, fn func(p *models.Project) bool) error {
-// 	rows, err := r.queries.BetweenProjects(ctx, db.BetweenProjectsParams{
-// 		CreatedAt:   pgtype.Timestamptz{Time: t1, Valid: true},
-// 		CreatedAt_2: pgtype.Timestamptz{Time: t2, Valid: true},
-// 	})
-
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	for _, row := range rows {
-// 		pr := &models.Project{
-// 			ID:              row.ExternalPrimaryIdentifier,
-// 			Name:            row.Name,
-// 			Description:     row.Description,
-// 			Identifier:      row.ExternalIdentifiers,
-// 			FoundingDate:    row.FoundingDate.String,
-// 			DissolutionDate: row.DissolutionDate.String,
-// 			Acronym:         row.Acronym,
-// 			GrantCall:       row.EuGrantCall.String,
-// 			DateCreated:     row.CreatedAt.Time,
-// 			DateModified:    row.UpdatedAt.Time,
-// 		}
-
-// 		fn(pr)
-// 	}
-
-// 	return nil
-// }

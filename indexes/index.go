@@ -64,7 +64,9 @@ type responseBody[T any] struct {
 }
 
 var boosts = map[string]string{
-	"": "",
+	"identifiers":  "100",
+	"phrase_ngram": "0.05",
+	"ngram":        "0.01",
 }
 
 func (idx *Index) SearchProjects(ctx context.Context, q string) ([]*models.ProjectRecord, error) {
@@ -155,6 +157,7 @@ func (idx *Index) ReindexProjects(ctx context.Context, iter ProjectIter) error {
 		OnIndexFailure: func(docID string, err error) {
 			idx.logger.ErrorContext(ctx, "index failure", slog.String("doc_id", docID), slog.Any("error", err))
 		},
+		OnIndexSuccess: func(docID string) {},
 	})
 	if err != nil {
 		return err
@@ -182,10 +185,10 @@ func (idx *Index) ReindexProjects(ctx context.Context, iter ProjectIter) error {
 }
 
 type indexProject struct {
-	Names        []string `json:"names"`
-	Descriptions []string `json:"descriptions"`
-	Identifiers  []string `json:"identifiers"`
-	Record       *models.ProjectRecord
+	Names        []string              `json:"names"`
+	Descriptions []string              `json:"descriptions"`
+	Identifiers  []string              `json:"identifiers"`
+	Record       *models.ProjectRecord `json:"record"`
 }
 
 func newIndexProject(p *models.ProjectRecord) *indexProject {

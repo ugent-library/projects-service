@@ -50,28 +50,3 @@ FROM projects p
 LEFT JOIN projects_identifiers pi ON p.id = pi.project_id
 WHERE p.id > $1
 GROUP BY p.id LIMIT $2;
-
--- -- name: EachProject :many
--- SELECT 
---     name,
---     description,
---     founding_date,
---     dissolution_date,
---     created_at,
---     updated_at
--- FROM projects
--- ORDER BY id ASC 
--- OFFSET $1
--- LIMIT $2;
-
--- name: BetweenProjects :many
-SELECT
-    name,
-    description,
-    founding_date,
-    dissolution_date,
-    created_at,
-    updated_at
-FROM projects
-WHERE created_at >= $1 AND created_at <= $2
-ORDER BY created_at ASC;

@@ -10,15 +10,20 @@ type Project struct {
 	Description     []Translation `json:"description,omitempty"`
 	FoundingDate    string        `json:"founding_date,omitempty"`
 	DissolutionDate string        `json:"dissolution_date,omitempty"`
-	Deleted         bool          `json:"deleted,omitempty"`
 	Attributes      []Attribute   `json:"attributes,omitempty"`
 	Identifiers     []Identifier  `json:"identifiers,omitempty"`
 }
 
 type ProjectRecord struct {
-	Project
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	Name            []Translation `json:"name,omitempty"`
+	Description     []Translation `json:"description,omitempty"`
+	FoundingDate    string        `json:"founding_date,omitempty"`
+	DissolutionDate string        `json:"dissolution_date,omitempty"`
+	Deleted         bool          `json:"deleted,omitempty"`
+	Attributes      []Attribute   `json:"attributes,omitempty"`
+	Identifiers     []Identifier  `json:"identifiers,omitempty"`
+	CreatedAt       time.Time     `json:"created_at,omitempty"`
+	UpdatedAt       time.Time     `json:"updated_at,omitempty"`
 }
 
 type Identifier struct {
